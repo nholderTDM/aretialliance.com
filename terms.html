@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Areti Alliance | Terms of Service</title>
+    <!-- Use the same styles as your main site -->
+    <style>
+        :root {
+            --primary-blue: #0C3B66;
+            --bright-blue: #1E88E5;
+            --flame-orange: #FF5722;
+            --amber-orange: #FF9800;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333333;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Logo animation */
+        @keyframes rotateY {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+        
+        .logo svg, .footer-logo svg {
+            perspective: 800px;
+            transform-style: preserve-3d;
+        }
+        
+        .logo-emblem {
+            animation: rotateY 15s linear infinite;
+            transform-origin: center;
+        }
+        
+        .footer-logo .logo-emblem {
+            animation: rotateY 15s linear infinite;
+            transform-origin: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .logo svg {
+            margin-right: 0;
+            width: 120px;
+            height: 120px;
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .logo-text-main {
+            font-family: Impact, 'Arial Black', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--white);
+            letter-spacing: 1px;
+            line-height: 1;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        
+        .logo-text-sub {
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--white);
+            letter-spacing: 3px;
+            line-height: 1;
+            margin-top: 4px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            text-align: center;
+            width: 100%;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        nav ul li a:hover {
+            color: var(--amber-orange);
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(12, 59, 102, 0.8), rgba(12, 59, 102, 0.9)), url('/api/placeholder/1200/600') center/cover;
+            color: var(--white);
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--flame-orange);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: var(--amber-orange);
+            transform: translateY(-2px);
+        }
+        
+        section {
+            padding: 80px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-header h2 {
+            font-size: 2.2rem;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-header h2::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--flame-orange);
+            margin: 15px auto 0;
+        }
+        
+        .section-header p {
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .legal-content {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        
+        .legal-content h3 {
+            color: var(--primary-blue);
+            margin: 30px 0 15px;
+            font-size: 1.5rem;
+        }
+        
+        .legal-content h4 {
+            color: var(--flame-orange);
+            margin: 20px 0 10px;
+            font-size: 1.2rem;
+        }
+        
+        .legal-content p, .legal-content ul, .legal-content ol {
+            margin-bottom: 15px;
+        }
+        
+        .legal-content ul, .legal-content ol {
+            padding-left: 20px;
+        }
+        
+        .legal-content li {
+            margin-bottom: 10px;
+        }
+        
+        .last-updated {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        footer {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .footer-logo h2 {
+            font-size: 1.5rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--flame-orange);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--flame-orange);
+        }
+        
+        .footer-column p {
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--white);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .social-link:hover {
+            background-color: var(--flame-orange);
+        }
+        
+        .social-link svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .nav-container {
+                position: relative;
+            }
+            
+            nav {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--primary-blue);
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                display: none;
+            }
+            
+            nav.show {
+                display: block;
+            }
+            
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav ul li {
+                margin: 0 0 15px 0;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: var(--white);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 400 260">
+                      <!-- 3D Emblem Logo for Areti Alliance -->
+                      <defs>
+                        <!-- Shield gradient -->
+                        <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#1E88E5" />
+                          <stop offset="90%" stop-color="#0C3B66" />
+                        </linearGradient>
+                        
+                        <!-- Inner shield gradient -->
+                        <linearGradient id="innerShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#ffffff" />
+                          <stop offset="100%" stop-color="#f0f8ff" />
+                        </linearGradient>
+                        
+                        <!-- Orange accent gradient -->
+                        <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#FF9800" />
+                          <stop offset="100%" stop-color="#FF5722" />
+                        </linearGradient>
+                        
+                        <!-- Enhanced shadow filter -->
+                        <filter id="emblemShadow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="3" dy="6" stdDeviation="4" flood-color="rgba(0,0,0,0.4)"/>
+                        </filter>
+                        
+                        <!-- Inner elements shadow -->
+                        <filter id="innerShadow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.3)"/>
+                        </filter>
+                      </defs>
+                      
+                      <!-- Background is transparent -->
+                      <rect width="400" height="260" fill="none"/>
+                      
+                      <g class="logo-emblem">
+                        <!-- 3D Shield - main shape with gradient and shadow -->
+                        <path d="M200,30 L300,70 L270,170 L200,200 L130,170 L100,70 Z" fill="url(#shieldGrad)" filter="url(#emblemShadow)"/>
+                        
+                        <!-- 3D inner shield - gives depth -->
+                        <path d="M200,45 L280,78 L255,160 L200,185 L145,160 L120,78 Z" fill="url(#innerShieldGrad)" filter="url(#innerShadow)"/>
+                        
+                        <!-- Central 3D letter A with depth shading -->
+                        <g filter="url(#innerShadow)">
+                          <path d="M180,150 L200,85 L220,150" fill="none" stroke="#0C3B66" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                          <line x1="185" y1="125" x2="215" y2="125" stroke="#0C3B66" stroke-width="10" stroke-linecap="round"/>
+                        </g>
+                        
+                        <!-- Curved route/path element -->
+                        <path d="M160,110 Q200,70 240,110" fill="none" stroke="#1E88E5" stroke-width="4" stroke-linecap="round" filter="url(#innerShadow)"/>
+                        
+                        <!-- Orange accent dot - destination -->
+                        <circle cx="240" cy="110" r="6" fill="url(#accentGrad)" filter="url(#innerShadow)"/>
+                        
+                        <!-- Orange accent at bottom of shield -->
+                        <path d="M180,180 L220,180" stroke="url(#accentGrad)" stroke-width="4" stroke-linecap="round" filter="url(#innerShadow)"/>
+                      </g>
+                    </svg>
+                    <div class="logo-text">
+                        <div class="logo-text-main">ARETI</div>
+                        <div class="logo-text-sub">ALLIANCE</div>
+                    </div>
+                </a>
+            </div>
+            <button class="hamburger" id="hamburger">☰</button>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="index.html#drivers">Driver Opportunities</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- TERMS OF SERVICE PAGE -->
+    <section class="hero" style="background: linear-gradient(rgba(12, 59, 102, 0.8), rgba(12, 59, 102, 0.9)), url('/api/placeholder/1200/600') center/cover;">
+        <div class="container">
+            <h2>Terms of Service</h2>
+            <p>Please read these terms carefully before using our services.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="legal-content">
+                <p class="last-updated">Last Updated: April 8, 2025</p>
+                
+                <h3>1. Acceptance of Terms</h3>
+                <p>By accessing and using the services provided by Areti Alliance ("Company", "we", "our", "us"), including our website, mobile applications, and delivery services (collectively, the "Services"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you should not use our Services.</p>
+                
+                <h3>2. Eligibility</h3>
+                <p>You must be at least 18 years old to use our Services. By using our Services, you represent and warrant that you meet this requirement and that you have the right, authority, and capacity to enter into these Terms.</p>
+                
+                <h3>3. Service Description</h3>
+                <p>Areti Alliance provides last-mile delivery solutions for businesses and individuals. Our services include but are not limited to:</p>
+                <ul>
+                    <li>Same-day delivery services</li>
+                    <li>Next-day delivery services</li>
+                    <li>Retail distribution</li>
+                    <li>E-commerce fulfillment</li>
+                    <li>Custom logistics solutions</li>
+                    <li>Route optimization</li>
+                </ul>
+                
+                <h3>4. Account Registration</h3>
+                <p>To use certain features of our Services, you may need to create an account. You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete. You are responsible for safeguarding your password and for all activities that occur under your account.</p>
+                
+                <h3>5. User Conduct</h3>
+                <p>You agree not to use our Services:</p>
+                <ul>
+                    <li>In any way that violates any applicable federal, state, local, or international law or regulation</li>
+                    <li>For the purpose of exploiting, harming, or attempting to exploit or harm minors in any way</li>
+                    <li>To transmit, or procure the sending of, any advertising or promotional material, including any "junk mail", "chain letter", "spam", or any other similar solicitation</li>
+                    <li>To impersonate or attempt to impersonate the Company, a Company employee, another user, or any other person or entity</li>
+                    <li>To engage in any other conduct that restricts or inhibits anyone's use or enjoyment of the Services, or which, as determined by us, may harm the Company or users of the Services</li>
+                </ul>
+                
+                <h3>6. Shipping and Delivery</h3>
+                
+                <h4>6.1 Packaging Requirements</h4>
+                <p>All items to be shipped must be properly packaged to prevent damage during transport. We reserve the right to refuse any package that is inadequately packed or appears damaged before pickup.</p>
+                
+                <h4>6.2 Prohibited Items</h4>
+                <p>You agree not to ship any of the following items:</p>
+                <ul>
+                    <li>Illegal substances or items</li>
+                    <li>Hazardous materials or dangerous goods</li>
+                    <li>Firearms, explosives, or weapons</li>
+                    <li>Live animals</li>
+                    <li>Perishable goods (unless specifically arranged in advance)</li>
+                    <li>Human remains</li>
+                    <li>Counterfeit goods</li>
+                    <li>Any items prohibited by federal, state, or local law</li>
+                </ul>
+                
+                <h4>6.3 Delivery Schedule and Delays</h4>
+                <p>While we strive to meet all delivery timeframes, we cannot guarantee delivery times in cases of unforeseen circumstances such as severe weather, traffic conditions, or other events beyond our control. We will make reasonable efforts to notify you of any significant delays.</p>
+                
+                <h3>7. Fees and Payment</h3>
+                
+                <h4>7.1 Service Fees</h4>
+                <p>Our fees for Services are as quoted on our website or as provided to you during the ordering process. All fees are in US dollars and are subject to change upon notice. Volume discounts and promotional pricing are applied at our discretion.</p>
+                
+                <h4>7.2 Payment Terms</h4>
+                <p>Payment is due at the time services are ordered unless other arrangements have been made in writing. For business accounts, we may offer terms of net-15 or net-30 days from invoice date, subject to credit approval.</p>
+                
+                <h4>7.3 Late Payments</h4>
+                <p>Late payments may be subject to a finance charge of 1.5% per month on the outstanding balance or the maximum rate permitted by applicable law, whichever is less.</p>
+                
+                <h3>8. Cancellation and Refunds</h3>
+                
+                <h4>8.1 Cancellation by Customer</h4>
+                <p>You may cancel a requested delivery at no charge if the cancellation is made at least 2 hours before the scheduled pickup time. Cancellations made less than 2 hours before pickup may be subject to a cancellation fee of 50% of the service charge.</p>
+                
+                <h4>8.2 Refunds</h4>
+                <p>Refunds may be issued in the following circumstances:</p>
+                <ul>
+                    <li>If a delivery is not completed due to our error</li>
+                    <li>If a delivery is significantly delayed (more than 2 hours beyond the promised delivery window) due to factors within our control</li>
+                    <li>If packages are damaged during transit due to our handling</li>
+                </ul>
+                <p>Refund requests must be submitted within 7 days of the scheduled delivery date.</p>
+                
+                <h3>9. Insurance and Liability</h3>
+                
+                <h4>9.1 Insurance Coverage</h4>
+                <p>Our standard service includes basic insurance coverage of up to $100 per package. Additional insurance may be purchased for items of greater value.</p>
+                
+                <h4>9.2 Limitations of Liability</h4>
+                <p>Our liability for lost or damaged packages is limited to the declared value of the shipment or $100, whichever is less, unless additional insurance has been purchased. We are not liable for:</p>
+                <ul>
+                    <li>Consequential, indirect, or punitive damages</li>
+                    <li>Loss or damage resulting from improper packaging</li>
+                    <li>Delays caused by circumstances beyond our control</li>
+                    <li>Loss or damage to prohibited items</li>
+                </ul>
+                
+                <h3>10. Intellectual Property</h3>
+                <p>The Service and its original content, features, and functionality are and will remain the exclusive property of Areti Alliance and its licensors. The Service is protected by copyright, trademark, and other laws of both the United States and foreign countries. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Areti Alliance.</p>
+                
+                <h3>11. Termination</h3>
+                <p>We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not limited to a breach of the Terms.</p>
+                
+                <h3>12. Indemnification</h3>
+                <p>You agree to defend, indemnify, and hold harmless Areti Alliance, its parent company, officers, directors, employees, and agents, from and against any claims, liabilities, damages, judgments, awards, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or relating to your violation of these Terms or your use of the Services.</p>
+                
+                <h3>13. Governing Law</h3>
+                <p>These Terms shall be governed by and construed in accordance with the laws of the State of Georgia, without regard to its conflict of law provisions. Any dispute arising from or relating to the subject matter of these Terms shall be subject to the exclusive jurisdiction of the state and federal courts in Fulton County, Georgia.</p>
+                
+                <h3>14. Changes to Terms</h3>
+                <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
+                
+                <h3>15. Contact Us</h3>
+                <p>If you have any questions about these Terms, please contact us at:</p>
+                <p>
+                Areti Alliance<br>
+                1201 West Peachtree St., NW Suite 2300<br>
+                Atlanta, GA 30309<br>
+                Email: info@aretialliance.com<br>
+                Phone: 1-(855)-818-FAST
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 400 260">
+                          <!-- 3D Emblem Logo for Areti Alliance -->
+                          <defs>
+                            <!-- Shield gradient -->
+                            <linearGradient id="shieldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stop-color="#1E88E5" />
+                              <stop offset="90%" stop-color="#0C3B66" />
+                            </linearGradient>
+                            
+                            <!-- Inner shield gradient -->
+                            <linearGradient id="innerShieldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stop-color="#ffffff" />
+                              <stop offset="100%" stop-color="#f0f8ff" />
+                            </linearGradient>
+                            
+                            <!-- Orange accent gradient -->
+                            <linearGradient id="accentGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stop-color="#FF9800" />
+                              <stop offset="100%" stop-color="#FF5722" />
+                            </linearGradient>
+                            
+                            <!-- Enhanced shadow filter -->
+                            <filter id="emblemShadow2" x="-20%" y="-20%" width="140%" height="140%">
+                              <feDropShadow dx="3" dy="6" stdDeviation="4" flood-color="rgba(0,0,0,0.4)"/>
+                            </filter>
+                            
+                            <!-- Inner elements shadow -->
+                            <filter id="innerShadow2" x="-20%" y="-20%" width="140%" height="140%">
+                              <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.3)"/>
+                            </filter>
+                          </defs>
+                          
+                          <!-- Background is transparent -->
+                          <rect width="400" height="260" fill="none"/>
+                          
+                          <g class="logo-emblem">
+                            <!-- 3D Shield - main shape with gradient and shadow -->
+                            <path d="M200,30 L300,70 L270,170 L200,200 L130,170 L100,70 Z" fill="url(#shieldGrad2)" filter="url(#emblemShadow2)"/>
+                            
+                            <!-- 3D inner shield - gives depth -->
+                            <path d="M200,45 L280,78 L255,160 L200,185 L145,160 L120,78 Z" fill="url(#innerShieldGrad2)" filter="url(#innerShadow2)"/>
+                            
+                            <!-- Central 3D letter A with depth shading -->
+                            <g filter="url(#innerShadow2)">
+                              <path d="M180,150 L200,85 L220,150" fill="none" stroke="#0C3B66" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                              <line x1="185" y1="125" x2="215" y2="125" stroke="#0C3B66" stroke-width="10" stroke-linecap="round"/>
+                            </g>
+                            
+                            <!-- Curved route/path element -->
+                            <path d="M160,110 Q200,70 240,110" fill="none" stroke="#1E88E5" stroke-width="4" stroke-linecap="round" filter="url(#innerShadow2)"/>
+                            
+                            <!-- Orange accent dot - destination -->
+                            <circle cx="240" cy="110" r="6" fill="url(#accentGrad2)" filter="url(#innerShadow2)"/>
+                            
+                            <!-- Orange accent at bottom of shield -->
+                            <path d="M180,180 L220,180" stroke="url(#accentGrad2)" stroke-width="4" stroke-linecap="round" filter="url(#innerShadow2)"/>
+                          </g>
+                        </svg>
+                        <div class="logo-text">
+                            <div class="logo-text-main">ARETI</div>
+                            <div class="logo-text-sub">ALLIANCE</div>
+                        </div>
+                    </div>
+                    <p>Areti Alliance provides reliable last-mile delivery solutions for businesses and individuals across the United States.</p>
+                    <div class="social-links">
+                        <a href="https://facebook.com/" target="_blank" class="social-link" title="Facebook">
+                            <svg viewBox="0 0 320 512" aria-hidden="true">
+                                <path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/>
+                            </svg>
+                        </a>
+                        <a href="https://twitter.com/" target="_blank" class="social-link" title="Twitter">
+                            <svg viewBox="0 0 512 512" aria-hidden="true">
+                                <path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/>
+                            </svg>
+                        </a>
+                        <a href="https://linkedin.com/" target="_blank" class="social-link" title="LinkedIn">
+                            <svg viewBox="0 0 448 512" aria-hidden="true">
+                                <path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/>
+                            </svg>
+                        </a>
+                        <a href="https://instagram.com/" target="_blank" class="social-link" title="Instagram">
+                            <svg viewBox="0 0 448 512" aria-hidden="true">
+                                <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#services">Services</a></li>
+                        <li><a href="index.html#drivers">Driver Opportunities</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="index.html#services">Same-Day Delivery</a></li>
+                        <li><a href="index.html#services">Next-Day Delivery</a></li>
+                        <li><a href="index.html#services">Retail Distribution</a></li>
+                        <li><a href="index.html#services">E-Commerce Fulfillment</a></li>
+                        <li><a href="index.html#services">Custom Logistics</a></li>
+                        <li><a href="index.html#services">Route Optimization</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <p>1201 West Peachtree St., NW Suite 2300</p>
+                    <p>Atlanta, GA 30309</p>
+                    <p>Phone: 1-(855)-818-FAST</p>
+                    <p>Email: info@aretialliance.com</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Areti Alliance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const nav = document.getElementById('nav');
+            
+            hamburger.addEventListener('click', function() {
+                nav.classList.toggle('show');
+            });
+        });
+    </script>
+</body>
+</html>
