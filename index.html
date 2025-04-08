@@ -1202,17 +1202,6 @@
                                 <input type="date" id="delivery-date" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="vehicle-type">Vehicle Type</label>
-                                <select id="vehicle-type" class="form-control" required>
-                                    <option value="">Select Vehicle Type</option>
-                                    <option value="car">Car</option>
-                                    <option value="suv">SUV</option>
-                                    <option value="cargo">Cargo Van</option>
-                                    <option value="sprinter">Sprinter Van</option>
-                                    <option value="truck">Box Truck</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
                                 <label for="delivery-speed">Delivery Speed</label>
                                 <select id="delivery-speed" class="form-control" required>
                                     <option value="">Select Delivery Speed</option>
@@ -1236,7 +1225,6 @@
                         <div class="quote-details">
                             <p><span>Base Rate:</span> <span id="base-rate">$0.00</span></p>
                             <p><span>Distance Fee:</span> <span id="distance-fee">$0.00</span></p>
-                            <p><span>Vehicle Fee:</span> <span id="vehicle-fee">$0.00</span></p>
                             <p><span>Expedited Fee:</span> <span id="expedited-fee">$0.00</span></p>
                         </div>
                         <div class="form-group" style="margin-top: 20px;">
@@ -1459,6 +1447,11 @@
                                 <input type="checkbox" id="driving-history" required>
                                 <label for="driving-history">I confirm that I have a relatively clean driving history with no major violations in the past 3 years.</label>
                             </div>
+
+                            <div class="checkbox-group" style="margin-bottom: 15px;">
+                                <input type="checkbox" id="sms-consent">
+                                <label for="sms-consent">I allow Areti Alliance to communicate with me via SMS messaging. Standard rates will apply.</label>
+                            </div>
                             
                             <div class="checkbox-group">
                                 <input type="checkbox" id="consent" required>
@@ -1537,7 +1530,7 @@
                     <div class="contact-item">
                         <div class="contact-icon">📱</div>
                         <h3>Call Us</h3>
-                        <p>(404) 555-1234</p>
+                        <p>1(855) 818-FAST</p>
                         <p>Mon-Fri: 8am-8pm</p>
                         <p>Sat-Sun: 9am-5pm</p>
                     </div>
@@ -1550,8 +1543,8 @@
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">📍</div>
-                        <h3>Visit Us</h3>
-                        <p>1234 Peachtree Street</p>
+                        <h3>Mail Us</h3>
+                        <p>1201 West Peachtree Street NW</p>
                         <p>Suite 500</p>
                         <p>Atlanta, GA 30309</p>
                     </div>
@@ -1604,6 +1597,11 @@
                             <input type="checkbox" id="contact-consent" required>
                             <label for="contact-consent">I consent to Areti Alliance collecting and storing the information provided above to respond to my inquiry.</label>
                         </div>
+
+                        <div class="checkbox-group" style="margin-bottom: 15px;">
+                                <input type="checkbox" id="sms-consent">
+                                <label for="sms-consent">I allow Areti Alliance to communicate with me via SMS messaging. Standard rates will apply.</label>
+                            </div>
                         
                         <div class="form-group" style="margin-top: 20px;">
                             <button type="submit" class="btn">Send Message</button>
@@ -1886,7 +1884,6 @@
             const quotePrice = document.getElementById('quote-price');
             const baseRate = document.getElementById('base-rate');
             const distanceFee = document.getElementById('distance-fee');
-            const vehicleFee = document.getElementById('vehicle-fee');
             const expeditedFee = document.getElementById('expedited-fee');
             const bookDeliveryBtn = document.getElementById('book-delivery-btn');
             
@@ -1897,7 +1894,6 @@
                     // Get form values
                     const pickupZip = document.getElementById('pickup-zip').value;
                     const deliveryZip = document.getElementById('delivery-zip').value;
-                    const vehicleType = document.getElementById('vehicle-type').value;
                     const deliverySpeed = document.getElementById('delivery-speed').value;
                     
                     // Get package quantities
@@ -1922,15 +1918,7 @@
                         'oversized': 89.99
                     };
                     
-                    // Vehicle fee multipliers
-                    const vehicleMultipliers = {
-                        'car': 1.0,
-                        'suv': 1.2,
-                        'cargo': 1.5,
-                        'sprinter': 1.8,
-                        'truck': 2.2
-                    };
-                    
+                                      
                     // Speed multipliers
                     const speedMultipliers = {
                         'next-day': 1.0,
@@ -1962,17 +1950,15 @@
                     // Calculate final pricing components
                     const baseCost = packageCost * volumeDiscount;
                     const distanceCost = baseCost * distanceFactor * 0.3;
-                    const vehicleCost = baseCost * (vehicleMultipliers[vehicleType] - 0.8);
                     const speedCost = baseCost * (speedMultipliers[deliverySpeed] - 0.8);
                     
                     // Calculate total
-                    const totalCost = baseCost + distanceCost + vehicleCost + speedCost;
+                    const totalCost = baseCost + distanceCost + speedCost;
                     
                     // Update the display
                     quotePrice.textContent = '$' + totalCost.toFixed(2);
                     baseRate.textContent = '$' + baseCost.toFixed(2);
                     distanceFee.textContent = '$' + distanceCost.toFixed(2);
-                    vehicleFee.textContent = '$' + vehicleCost.toFixed(2);
                     expeditedFee.textContent = '$' + speedCost.toFixed(2);
                     
                     // Show the result
