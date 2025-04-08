@@ -1877,151 +1877,96 @@
                 });
             }
             
-           // Find the quote form
-const quoteForm = document.getElementById('quote-form');
-const quoteResult = document.getElementById('quote-result');
-const quotePrice = document.getElementById('quote-price');
-const baseRate = document.getElementById('base-rate');
-const distanceFee = document.getElementById('distance-fee');
-const expeditedFee = document.getElementById('expedited-fee');
-
-if (quoteForm) {
-    quoteForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const pickupZip = document.getElementById('pickup-zip').value;
-        const deliveryZip = document.getElementById('delivery-zip').value;
-        const pickupDate = document.getElementById('pickup-date').value;
-        const deliveryDate = document.getElementById('delivery-date').value;
-        const deliverySpeed = document.getElementById('delivery-speed').value;
-        
-        // Get package quantities
-        const packageQuantities = {};
-        document.querySelectorAll('.package-quantity').forEach(input => {
-            const type = input.getAttribute('data-package-type');
-            const quantity = parseInt(input.value) || 0;
-            if (quantity > 0) {
-                packageQuantities[type] = quantity;
-            }
-        });
-        
-        // Calculate quote (simplified version for demonstration)
-        // Base rates per package type
-        const baseRates = {
-            'envelope': 12.99,
-            'small': 18.99,
-            'medium': 29.99,
-            'large': 49.99,
-            'oversized': 89.99
-        };
-        
-        // Speed multipliers
-        const speedMultipliers = {
-            'next-day': 1.0,
-            'same-day': 1.5,
-            'rush': 2.0,
-            'express': 2.5
-        };
-        
-        // Calculate base package cost
-        let packageCost = 0;
-        let totalItems = 0;
-        
-        Object.keys(packageQuantities).forEach(type => {
-            const quantity = packageQuantities[type];
-            totalItems += quantity;
-            packageCost += baseRates[type] * quantity;
-        });
-        
-        // Apply volume discount for multiple packages
-        const volumeDiscount = totalItems > 10 ? 0.85 : 
-                              totalItems > 5 ? 0.9 : 
-                              totalItems > 1 ? 0.95 : 1;
-        
-        // Calculate distance factor (simplified - would use API in real application)
-        // For demo, we'll just use the difference between zip codes as a proxy
-        const zipDiff = Math.abs(parseInt(pickupZip) - parseInt(deliveryZip)) || 100;
-        const distanceFactor = Math.min(Math.max(zipDiff / 1000, 0.5), 3);
-        
-        // Calculate final pricing components
-        const baseCost = packageCost * volumeDiscount;
-        const distanceCost = baseCost * distanceFactor * 0.3;
-        const speedCost = baseCost * (speedMultipliers[deliverySpeed] - 0.8);
-        
-        // Calculate total
-        const totalCost = baseCost + distanceCost + speedCost;
-        
-        // Update the display
-        quotePrice.textContent = '$' + totalCost.toFixed(2);
-        baseRate.textContent = '$' + baseCost.toFixed(2);
-        distanceFee.textContent = '$' + distanceCost.toFixed(2);
-        expeditedFee.textContent = '$' + speedCost.toFixed(2);
-        
-        // Show the result
-        quoteResult.style.display = 'block';
-        
-        // Scroll to result
-        quoteResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // Generate email content
-        const speedOptions = {
-            'same-day': 'Same Day (4-8 hours)',
-            'rush': 'Rush (2-4 hours)',
-            'express': 'Express (1-2 hours)',
-            'next-day': 'Next Day'
-        };
-        
-        // Format package details
-        let packageDetails = '';
-        for (const type in packageQuantities) {
-            const packageName = {
-                'envelope': 'Envelope/Small Package (< 5lbs)',
-                'small': 'Small Box (5-20lbs)',
-                'medium': 'Medium Box (20-50lbs)',
-                'large': 'Large Box (50-100lbs)',
-                'oversized': 'Oversized Item (100+ lbs)'
-            }[type];
+            // Quote calculator
+            const quoteForm = document.getElementById('quote-form');
+            const quoteResult = document.getElementById('quote-result');
+            const quotePrice = document.getElementById('quote-price');
+            const baseRate = document.getElementById('base-rate');
+            const distanceFee = document.getElementById('distance-fee');
+            const expeditedFee = document.getElementById('expedited-fee');
+            const bookDeliveryBtn = document.getElementById('book-delivery-btn');
             
-            packageDetails += `${packageName}: ${packageQuantities[type]} x $${baseRates[type]}\n`;
-        }
-        
-        // Generate email subject and body
-        const subject = `New Delivery Quote Request - $${totalCost.toFixed(2)}`;
-        const body = `
-New quote request from the Areti Alliance website:
-
-DELIVERY DETAILS:
-================
-Pickup ZIP Code: ${pickupZip}
-Delivery ZIP Code: ${deliveryZip}
-Pickup Date: ${pickupDate}
-Delivery Date: ${deliveryDate || 'Not specified'}
-Delivery Speed: ${speedOptions[deliverySpeed] || deliverySpeed}
-
-PACKAGE INFORMATION:
-=================
-${packageDetails}
-
-PRICING BREAKDOWN:
-================
-Base Rate: ${baseRate.textContent}
-Distance Fee: ${distanceFee.textContent}
-Expedited Fee: ${expeditedFee.textContent}
-Total Estimated Cost: ${quotePrice.textContent}
-
-Volume Discount Applied: ${((1 - volumeDiscount) * 100).toFixed(0)}%
-
-This quote was automatically generated on ${new Date().toLocaleString()}.
-Please contact the customer as soon as possible to confirm details.
-`;
-        
-        // Create the mailto link
-        const mailtoLink = `mailto:contracts@aretialliance.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        
-        // Open the email client
-        window.location.href = mailtoLink;
-    });
+            if (quoteForm) {
+                quoteForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get form values
+                    const pickupZip = document.getElementById('pickup-zip').value;
+                    const deliveryZip = document.getElementById('delivery-zip').value;
+                    const deliverySpeed = document.getElementById('delivery-speed').value;
+                    
+                    // Get package quantities
+                    const packageQuantities = {};
+                    document.querySelectorAll('.package-quantity').forEach(input => {
+                        const type = input.getAttribute('data-package-type');
+                        const quantity = parseInt(input.value) || 0;
+                        if (quantity > 0) {
+                            packageQuantities[type] = quantity;
+                        }
+                    });
+                    
+                    // Calculate quote (simplified version for demonstration)
+                    // In a real implementation, you would likely use distance API and more complex calculations
+                    
+                    // Base rates per package type
+                    const baseRates = {
+                        'envelope': 12.99,
+                        'small': 18.99,
+                        'medium': 29.99,
+                        'large': 49.99,
+                        'oversized': 89.99
+                    };
+                    
+                                      
+                    // Speed multipliers
+                    const speedMultipliers = {
+                        'next-day': 1.0,
+                        'same-day': 1.5,
+                        'rush': 2.0,
+                        'express': 2.5
+                    };
+                    
+                    // Calculate base package cost
+                    let packageCost = 0;
+                    let totalItems = 0;
+                    
+                    Object.keys(packageQuantities).forEach(type => {
+                        const quantity = packageQuantities[type];
+                        totalItems += quantity;
+                        packageCost += baseRates[type] * quantity;
+                    });
+                    
+                    // Apply volume discount for multiple packages
+                    const volumeDiscount = totalItems > 10 ? 0.85 : 
+                                          totalItems > 5 ? 0.9 : 
+                                          totalItems > 1 ? 0.95 : 1;
+                    
+                    // Calculate distance factor (simplified - would use API in real application)
+                    // For demo, we'll just use the difference between zip codes as a proxy
+                    const zipDiff = Math.abs(parseInt(pickupZip) - parseInt(deliveryZip)) || 100;
+                    const distanceFactor = Math.min(Math.max(zipDiff / 1000, 0.5), 3);
+                    
+                    // Calculate final pricing components
+                    const baseCost = packageCost * volumeDiscount;
+                    const distanceCost = baseCost * distanceFactor * 0.3;
+                    const speedCost = baseCost * (speedMultipliers[deliverySpeed] - 0.8);
+                    
+                    // Calculate total
+                    const totalCost = baseCost + distanceCost + speedCost;
+                    
+                    // Update the display
+                    quotePrice.textContent = '$' + totalCost.toFixed(2);
+                    baseRate.textContent = '$' + baseCost.toFixed(2);
+                    distanceFee.textContent = '$' + distanceCost.toFixed(2);
+                    expeditedFee.textContent = '$' + speedCost.toFixed(2);
+                    
+                    // Show the result
+                    quoteResult.style.display = 'block';
+                    
+                    // Scroll to result
+                    quoteResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+            }
             
             // Book delivery button
             if (bookDeliveryBtn) {
