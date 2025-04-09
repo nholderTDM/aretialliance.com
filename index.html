@@ -906,7 +906,7 @@
         <section class="testimonials">
             <div class="container">
                 <div class="section-header">
-                    <h2 data-i18n="hero.title"></h2>What Our Clients Say</h2>
+                    <h2></h2>What Our Clients Say</h2>
                     <p data-i18n="hero.subtitle">Don't just take our word for it - hear from businesses that rely on Areti Alliance every day.</p>
                 </div>
                 <div class="testimonial-container">
@@ -2174,94 +2174,170 @@ if (customQuoteBtn) {
 }
             
             // Driver application form
-            const driverForm = document.getElementById('driver-form');
-            if (driverForm) {
-                driverForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
-                    driverForm.reset();
-                });
+const driverForm = document.getElementById('driver-form');
+if (driverForm) {
+    driverForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const driverName = document.getElementById('driver-name').value;
+        const driverEmail = document.getElementById('driver-email').value;
+        const driverPhone = document.getElementById('driver-phone').value;
+        const contactPreference = document.getElementById('contact-preference').value;
+        const driverCity = document.getElementById('driver-city').value;
+        const driverState = document.getElementById('driver-state').value;
+        
+        // Get selected vehicle types
+        const vehicleTypes = Array.from(document.querySelectorAll('input[name="vehicle-types"]:checked'))
+            .map(checkbox => checkbox.value);
+        
+        // Get consent checkboxes
+        const backgroundCheck = document.getElementById('background-check').checked;
+        const drivingHistory = document.getElementById('driving-history').checked;
+        const smsConsent = document.getElementById('sms-consent').checked;
+        const generalConsent = document.getElementById('consent').checked;
+        
+        // Prepare data for Google Sheets
+        const formData = {
+            name: driverName,
+            email: driverEmail,
+            phone: driverPhone,
+            contactPreference: contactPreference,
+            city: driverCity,
+            state: driverState,
+            vehicleTypes: vehicleTypes,
+            backgroundCheck: backgroundCheck,
+            drivingHistory: drivingHistory,
+            smsConsent: smsConsent,
+            generalConsent: generalConsent
+        };
+        
+        console.log('Form data being sent:', formData);
+        
+        // Show loading state
+        const submitBtn = driverForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        
+        // Send to Google Sheet
+        fetch('https://script.google.com/macros/s/AKfycbz79D35pdPkSBHyT1Z3neHbQRJiuRKMcA3gOv4zZpZfHsQrcyHGAdZ3sc0ir4BZTzU/exec', {
+            method: 'POST', 
+            body: JSON.stringify(formData),
+            mode: 'no-cors', // Add this to handle CORS issues
+            headers: {
+                'Content-Type': 'application/json'
             }
-            
-            // Contact form
-            const contactForm = document.getElementById('contact-form');
-            if (contactForm) {
-                console.log('Contact form found, attaching event listener');
-                
-                contactForm.addEventListener('submit', function(e) {
-                    // Prevent the default form submission
-                    e.preventDefault();
-                    console.log('Form submitted by user, processing...');
-                    
-                    // Get form values
-                    const name = document.getElementById('name').value;
-                    const email = document.getElementById('email').value;
-                    const phone = document.getElementById('phone').value;
-                    const company = document.getElementById('company').value;
-                    const subject = document.getElementById('subject').value;
-                    const subjectText = subject ? document.getElementById('subject').options[document.getElementById('subject').selectedIndex].text : 'Not specified';
-                    const message = document.getElementById('message').value;
-                    const smsConsent = document.getElementById('sms-consent').checked;
-                    
-                    // Build the formatted message for email
-                    const formattedMessage = `
-    CONTACT FORM SUBMISSION
-    -----------------------
-    
-    CUSTOMER INFORMATION
-    -------------------
-    Name: ${name}
-    Email: ${email}
-    Phone: ${phone}
-    Company: ${company}
-    SMS Consent: ${smsConsent ? 'Yes' : 'No'}
-    
-    INQUIRY DETAILS
-    --------------
-    Subject: ${subjectText}
-    Message:
-    ${message}
-    
-    Generated: ${new Date().toLocaleString()}
-    `;
-                    
-                    // Prepare data for Formspree
-                    const formData = new FormData();
-                    formData.append('_subject', `Contact Form: ${name} - ${subjectText}`);
-                    formData.append('name', name);
-                    formData.append('email', email);
-                    formData.append('phone', phone);
-                    formData.append('company', company);
-                    formData.append('subject', subjectText);
-                    formData.append('message', formattedMessage);
-                    formData.append('sms_consent', smsConsent ? 'Yes' : 'No');
-                    
-                    // Send data to Formspree
-                    fetch('https://formspree.io/f/xnnplaay', {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.ok) {
-                            alert('Thank you for your message! We will get back to you as soon as possible.');
-                            contactForm.reset();
-                            console.log('Contact form data sent successfully');
-                        } else {
-                            alert('There was an issue sending your message. Please try again or contact us directly.');
-                            console.error('Formspree error:', data);
-                        }
-                    })
-                    .catch(error => {
-                        alert('There was an error sending your request. Please try again later.');
-                        console.error('Error:', error);
-                    });
-                });
+        })
+        .then(response => {
+            console.log('Response received:', response);
+            // Since we're using no-cors, we can't actually read the response JSON
+            // So we'll just check if the request was sent successfully
+            if (response.type === 'opaque') {
+                return { ok: true }; // Assume success since we can't check with no-cors
             }
+            return response.json();
+        })
+        .then(data => {
+            // Show success message
+            alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
+            driverForm.reset();
             
+            // Reset button
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('There was an error submitting your application. Please try again or contact us directly.');
+            
+            // Reset button
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        });
+    });
+}
+
+// Contact form
+const contactForm = document.getElementById('contact-form');
+if (contactForm) {
+    console.log('Contact form found, attaching event listener');
+    
+    contactForm.addEventListener('submit', function(e) {
+
+        // Prevent the default form submission
+        e.preventDefault();
+        console.log('Form submitted by user, processing...');
+        
+        // Get form values
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const company = document.getElementById('company').value;
+        const subject = document.getElementById('subject').value;
+        const subjectText = subject ? document.getElementById('subject').options[document.getElementById('subject').selectedIndex].text : 'Not specified';
+        const message = document.getElementById('message').value;
+        const smsConsent = document.getElementById('sms-consent').checked;
+        
+        // Build the formatted message for email
+        const formattedMessage = `
+CONTACT FORM SUBMISSION
+-----------------------
+
+CUSTOMER INFORMATION
+-------------------
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Company: ${company}
+SMS Consent: ${smsConsent ? 'Yes' : 'No'}
+
+INQUIRY DETAILS
+--------------
+Subject: ${subjectText}
+Message:
+${message}
+
+Generated: ${new Date().toLocaleString()}
+`;
+        
+        // Prepare data for Formspree
+        const formData = new FormData();
+        formData.append('_subject', `Contact Form: ${name} - ${subjectText}`);
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('phone', phone);
+        formData.append('company', company);
+        formData.append('subject', subjectText);
+        formData.append('message', formattedMessage);
+        formData.append('sms_consent', smsConsent ? 'Yes' : 'No');
+        
+        // Send data to Formspree
+        fetch('https://formspree.io/f/xnnplaay', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                alert('Thank you for your message! We will get back to you as soon as possible.');
+                contactForm.reset();
+                console.log('Contact form data sent successfully');
+            } else {
+                alert('There was an issue sending your message. Please try again or contact us directly.');
+                console.error('Formspree error:', data);
+            }
+        })
+        .catch(error => {
+            alert('There was an error sending your request. Please try again later.');
+            console.error('Error:', error);
+        });
+    });
+};
+        
             // Add animation on scroll
             const animateElements = document.querySelectorAll('.feature-card, .service-card, .testimonial-card, .contact-item');
             
@@ -2372,6 +2448,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
         });
+
     </script>
 </body>
 </html>
