@@ -2197,11 +2197,23 @@ if (driverForm) {
         const smsConsent = document.getElementById('sms-consent').checked;
         const generalConsent = document.getElementById('consent').checked;
         
+        // In your driver form submit handler, add this before creating the formData object
+let formattedPhone = driverPhone;
+if (driverPhone) {
+    // Remove any non-numeric characters
+    const digitsOnly = driverPhone.replace(/\D/g, '');
+    
+    // Format as XXX-XXX-XXXX if it has 10 digits
+    if (digitsOnly.length === 10) {
+        formattedPhone = `${digitsOnly.substring(0, 3)}-${digitsOnly.substring(3, 6)}-${digitsOnly.substring(6)}`;
+    }
+};
+
         // Prepare data for Google Sheets
         const formData = {
             name: driverName,
             email: driverEmail,
-            phone: driverPhone,
+            phone: formattedPhone,
             contactPreference: contactPreference,
             city: driverCity,
             state: driverState,
