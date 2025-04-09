@@ -2112,7 +2112,7 @@ Generated: ${new Date().toLocaleString()}
             }
             
             // Contact form
-            // Contact form
+        // Contact form
 const contactForm = document.getElementById('contact-form');
 if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
@@ -2161,7 +2161,7 @@ Generated: ${new Date().toLocaleString()}
         formData.append('message', formattedMessage);
         formData.append('sms_consent', smsConsent ? 'Yes' : 'No');
         
-        // Send data to Formspree - replace YOUR_NEW_FORM_ID with your actual form ID
+        // Send data to Formspree
         fetch('https://formspree.io/f/xnnplaay', {
             method: 'POST',
             body: formData,
@@ -2187,7 +2187,9 @@ Generated: ${new Date().toLocaleString()}
             console.error('Error:', error);
         });
     });
+} // Make sure this closing bracket is here
 
-    </script>
+</script>
 </body>
+
 </html>
