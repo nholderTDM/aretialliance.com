@@ -694,6 +694,49 @@
         .animate {
             animation: fadeIn 0.5s ease forwards;
         }
+        /* Language switcher */
+.language-switcher {
+  position: relative;
+  display: inline-block;
+  margin-left: 20px;
+}
+
+.language-switcher button {
+  background-color: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.language-dropdown {
+  display: none;
+  position: absolute;
+  background-color: var(--primary-blue);
+  min-width: 120px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 200;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.language-dropdown a {
+  color: var(--white);
+  padding: 10px 12px;
+  text-decoration: none;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.language-dropdown a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.language-switcher:hover .language-dropdown {
+  display: block;
+}
     </style>
 </head>
 <body>
@@ -775,15 +818,23 @@
                     <li><a href="#" data-tab="contact" class="tab-link">Contact</a></li>
                 </ul>
             </nav>
-        </div>
+            <div class="language-switcher">
+                <button id="current-lang">English</button>
+                <div class="language-dropdown">
+                  <a href="#" data-lang="en">English</a>
+                  <a href="#" data-lang="es">Español</a>
+                  <!-- Add more languages as needed -->
+                </div>
+              </div>
+            </div>
     </header>
 
     <!-- HOME PAGE -->
     <div id="home" class="tab-content active">
         <section class="hero">
             <div class="container">
-                <h2>On-Demand Last-Mile Delivery Solutions</h2>
-                <p>Areti Alliance delivers packages across Atlanta and nationwide with speed, reliability, and care. Our advanced technology ensures your deliveries arrive on time, every time.</p>
+                <h2 data-i18n="hero.title">On-Demand Last-Mile Delivery Solutions</h2>
+                <p data-i18n="here.subtitle">Areti Alliance delivers packages across Atlanta and nationwide with speed, reliability, and care. Our advanced technology ensures your deliveries arrive on time, every time.</p>
                 <a href="#" class="btn" id="get-quote-btn">Get a Quote</a>
             </div>
         </section>
@@ -791,8 +842,8 @@
         <section class="features-section">
             <div class="container">
                 <div class="section-header">
-                    <h2>Why Choose Areti Alliance</h2>
-                    <p>We combine technology, reliability, and exceptional service to deliver the best last-mile logistics solution for your business.</p>
+                    <h2 data-i18n="hero.title">Why Choose Areti Alliance</h2>
+                    <p data-i18n="hero.subtitle">We combine technology, reliability, and exceptional service to deliver the best last-mile logistics solution for your business.</p>
                 </div>
                 <div class="features">
                     <div class="feature-card">
@@ -843,8 +894,8 @@
 
         <section class="cta-banner">
             <div class="container">
-                <h2>Ready to Simplify Your Delivery Process?</h2>
-                <p>Join hundreds of businesses that trust Areti Alliance for their last-mile delivery needs.</p>
+                <h2 data-i18n="hero.title">Ready to Simplify Your Delivery Process?</h2>
+                <p data-i18n="hero.subtitle">Join hundreds of businesses that trust Areti Alliance for their last-mile delivery needs.</p>
                 <div class="cta-buttons">
                     <a href="#" class="btn" id="services-cta">Explore Services</a>
                     <a href="#" class="btn secondary" id="driver-cta">Become a Driver</a>
@@ -855,8 +906,8 @@
         <section class="testimonials">
             <div class="container">
                 <div class="section-header">
-                    <h2>What Our Clients Say</h2>
-                    <p>Don't just take our word for it - hear from businesses that rely on Areti Alliance every day.</p>
+                    <h2 data-i18n="hero.title"></h2>What Our Clients Say</h2>
+                    <p data-i18n="hero.subtitle">Don't just take our word for it - hear from businesses that rely on Areti Alliance every day.</p>
                 </div>
                 <div class="testimonial-container">
                     <div class="testimonial-card">
@@ -904,16 +955,16 @@
     <div id="about" class="tab-content">
         <section class="hero" style="background: linear-gradient(rgba(12, 59, 102, 0.8), rgba(12, 59, 102, 0.9)), url('/api/placeholder/1200/600') center/cover;">
             <div class="container">
-                <h2>About Areti Alliance</h2>
-                <p>Learn about our journey to become a leader in last-mile delivery logistics.</p>
+                <h2 data-i18n="hero.title">About Areti Alliance</h2>
+                <p data-i18n="hero.subtitle">Learn about our journey to become a leader in last-mile delivery logistics.</p>
             </div>
         </section>
 
         <section>
             <div class="container">
                 <div class="section-header">
-                    <h2>Our Story</h2>
-                    <p>From our humble beginnings to building a nationwide logistics network.</p>
+                    <h2 data-i18n="hero.title">Our Story</h2>
+                    <p data-i18n="hero.subtitle">From our humble beginnings to building a nationwide logistics network.</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 60px; align-items: center;">
@@ -947,13 +998,13 @@
                 </div>
 
                 <div class="section-header">
-                    <h2>Our Mission & Values</h2>
-                    <p>What drives us every day and shapes how we serve our clients.</p>
+                    <h2 data-i18n="hero.title">Our Mission & Values</h2>
+                    <p data-i18n="hero.subtitle">What drives us every day and shapes how we serve our clients.</p>
                 </div>
 
                 <div style="background-color: var(--primary-blue); color: white; padding: 40px; border-radius: 8px; text-align: center; margin-bottom: 60px;">
-                    <h3 style="font-size: 1.8rem; margin-bottom: 20px;">Our Mission</h3>
-                    <p style="font-size: 1.3rem; font-style: italic; max-width: 800px; margin: 0 auto;">To transform last-mile logistics through reliable, technology-driven delivery solutions that empower businesses to thrive in the modern economy.</p>
+                    <h3 data-i18n="hero.title"="font-size: 1.8rem; margin-bottom: 20px;">Our Mission</h3>
+                    <p data-i18n="hero.subtitle" style="font-size: 1.3rem; font-style: italic; max-width: 800px; margin: 0 auto;">To transform last-mile logistics through reliable, technology-driven delivery solutions that empower businesses to thrive in the modern economy.</p>
                 </div>
 
                 <div class="features" style="margin-bottom: 60px;">
@@ -1002,8 +1053,8 @@
                 </div>
 
                 <div class="section-header">
-                    <h2>Leadership Team</h2>
-                    <p>Meet the experienced professionals who guide our company.</p>
+                    <h2 data-i18n="hero.title">Leadership Team</h2>
+                    <p data-i18n="hero.subtitle">Meet the experienced professionals who guide our company.</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px;">
@@ -1011,16 +1062,16 @@
                         <div style="height: 200px; background-color: var(--light-gray); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--primary-blue);">👨‍💼</div>
                         <div style="padding: 25px;">
                             <h3 style="color: var(--primary-blue); margin-bottom: 5px;">Michael Johnson</h3>
-                            <p style="color: var(--flame-orange); font-weight: 600; margin-bottom: 15px;">Chief Executive Officer</p>
-                            <p>With 20+ years in logistics and transportation management, Michael leads our strategic vision and overall business operations.</p>
+                            <p data-i18n="hero.subtitle" style="color: var(--flame-orange); font-weight: 600; margin-bottom: 15px;">Chief Executive Officer</p>
+                            <p data-i18n="hero.text-main">With 20+ years in logistics and transportation management, Michael leads our strategic vision and overall business operations.</p>
                         </div>
                     </div>
                     <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
                         <div style="height: 200px; background-color: var(--light-gray); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--primary-blue);">👩‍💼</div>
                         <div style="padding: 25px;">
                             <h3 style="color: var(--primary-blue); margin-bottom: 5px;">Sophia Rodriguez</h3>
-                            <p style="color: var(--flame-orange); font-weight: 600; margin-bottom: 15px;">Chief Operations Officer</p>
-                            <p>Sophia oversees our day-to-day operations, ensuring every package is delivered on time with the highest level of service.</p>
+                            <p data-i18n="hero.subtitle" style="color: var(--flame-orange); font-weight: 600; margin-bottom: 15px;">Chief Operations Officer</p>
+                            <p data-i18n="hero.text-main">Sophia oversees our day-to-day operations, ensuring every package is delivered on time with the highest level of service.</p>
                         </div>
                     </div>
                     <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
@@ -1034,39 +1085,39 @@
                 </div>
 
                 <div class="section-header">
-                    <h2>Why Choose Areti Alliance</h2>
-                    <p>What sets us apart from other delivery service providers.</p>
+                    <h2 data-i18n="hero.title">Why Choose Areti Alliance</h2>
+                    <p data-i18n="hero.subtitle">What sets us apart from other delivery service providers.</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px;">
                     <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
-                        <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Industry Expertise</h3>
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Industry Expertise</h3>
                         <p>Our team brings decades of logistics experience across various industries, allowing us to provide tailored solutions for any delivery challenge.</p>
                     </div>
                     <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
-                        <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Nationwide Coverage</h3>
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Nationwide Coverage</h3>
                         <p>With our extensive network of drivers and strategic partnerships, we can deliver anywhere in the country with the same level of service and reliability.</p>
                     </div>
                     <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
-                        <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Advanced Technology</h3>
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Advanced Technology</h3>
                         <p>Our proprietary delivery management platform provides real-time tracking, automated notifications, and detailed analytics for complete visibility.</p>
                     </div>
                     <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
-                        <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Customizable Solutions</h3>
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Customizable Solutions</h3>
                         <p>We understand that every business has unique needs, which is why we offer flexible, customizable delivery options rather than one-size-fits-all services.</p>
                     </div>
                     <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
-                        <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Exceptional Service</h3>
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Exceptional Service</h3>
                         <p>Our commitment to customer satisfaction isn't just talk—it's reflected in our high retention rate and the long-term relationships we build with clients.</p>
                     </div>
                     <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
-                        <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Dedicated Support</h3>
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Dedicated Support</h3>
                         <p>You'll never be left wondering about your delivery—our support team is available to answer questions and resolve issues quickly and professionally.</p>
                     </div>
                 </div>
 
                 <div style="text-align: center; margin: 60px 0;">
-                    <h3 style="color: var(--primary-blue); margin-bottom: 20px; font-size: 1.8rem;">Ready to experience the Areti Alliance difference?</h3>
+                    <h3 data-i18n="hero.subtitle"="color: var(--primary-blue); margin-bottom: 20px; font-size: 1.8rem;">Ready to experience the Areti Alliance difference?</h3>
                     <a href="#" class="btn" id="about-cta">Get Started Today</a>
                 </div>
             </div>
@@ -2225,6 +2276,83 @@
                     }
                 });
             });
+            // Language switcher functionality
+let currentLang = 'en';
+const translations = {};
+
+// Function to load language file
+async function loadLanguage(lang) {
+  if (translations[lang]) {
+    return translations[lang];
+  }
+  
+  try {
+    const response = await fetch(`/lang/${lang}.json`);
+    if (!response.ok) throw new Error('Language file not found');
+    translations[lang] = await response.json();
+    return translations[lang];
+  } catch (error) {
+    console.error('Error loading language file:', error);
+    return null;
+  }
+}
+
+// Function to update all text elements with translations
+async function setLanguage(lang) {
+  const translation = await loadLanguage(lang);
+  if (!translation) return;
+  
+  currentLang = lang;
+  document.getElementById('current-lang').textContent = {
+    'en': 'English',
+    'es': 'Español',
+    'fr': 'Français'
+  }[lang] || lang;
+  
+  // Update navigation items
+  document.querySelectorAll('nav ul li a').forEach((item, index) => {
+    const key = ['home', 'services', 'drivers', 'about', 'contact'][index];
+    if (translation.nav && translation.nav[key]) {
+      item.textContent = translation.nav[key];
+    }
+  });
+  
+  // Update hero section
+  const heroSection = document.querySelector('.hero');
+  if (heroSection && translation.hero) {
+    const heroTitle = heroSection.querySelector('h2');
+    const heroSubtitle = heroSection.querySelector('p');
+    const heroCta = heroSection.querySelector('.btn');
+    
+    if (heroTitle && translation.hero.title) heroTitle.textContent = translation.hero.title;
+    if (heroSubtitle && translation.hero.subtitle) heroSubtitle.textContent = translation.hero.subtitle;
+    if (heroCta && translation.hero.cta) heroCta.textContent = translation.hero.cta;
+  }
+  
+  // Add more elements to translate as needed
+  
+  // Store language preference
+  localStorage.setItem('preferredLanguage', lang);
+}
+
+// Add event listeners to language switcher
+document.addEventListener('DOMContentLoaded', function() {
+  // Set initial language from localStorage or browser preference
+  const savedLang = localStorage.getItem('preferredLanguage');
+  const browserLang = navigator.language.split('-')[0];
+  const initialLang = savedLang || (browserLang in translations ? browserLang : 'en');
+  
+  setLanguage(initialLang);
+  
+  // Add click handlers for language options
+  document.querySelectorAll('.language-dropdown a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const lang = this.getAttribute('data-lang');
+      setLanguage(lang);
+    });
+  });
+});
         });
     </script>
 </body>
