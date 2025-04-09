@@ -2213,7 +2213,7 @@ if (driverForm) {
     const smsConsentLabel = document.querySelector('label[for="sms-consent"]');
     
     if (contactPreferenceDropdown && smsConsentCheckbox && smsConsentLabel) {
-        // Add asterisk to label when required
+        // Store the original label text
         const originalLabelText = smsConsentLabel.textContent;
         
         // Update SMS consent checkbox status when contact preference changes
@@ -2298,23 +2298,16 @@ if (driverForm) {
         fetch('https://script.google.com/macros/s/AKfycbz79D35pdPkSBHyT1Z3neHbQRJiuRKMcA3gOv4zZpZfHsQrcyHGAdZ3sc0ir4BZTzU/exec', {
             method: 'POST', 
             body: JSON.stringify(formData),
-            mode: 'no-cors', // Add this to handle CORS issues
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            mode: 'no-cors' // Using no-cors mode means we can't read the response
         })
-        .then(response => {
-            console.log('Response received:', response);
-            // Since we're using no-cors, we can't actually read the response JSON
-            // So we'll just check if the request was sent successfully
-            if (response.type === 'opaque') {
-                return { ok: true }; // Assume success since we can't check with no-cors
-            }
-            return response.json();
-        })
-        .then(data => {
+        .then(() => {
+            // Since we're using no-cors, we can't check the response status
+            // We'll just assume success since the request completed
+            
             // Show success message
             alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
+            
+            // Reset the form
             driverForm.reset();
             
             // Reset button
