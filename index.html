@@ -1820,6 +1820,8 @@
     <script>
         // Tab navigation
         document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM fully loaded");
+            
             const tabLinks = document.querySelectorAll('.tab-link');
             const tabContents = document.querySelectorAll('.tab-content');
             const hamburger = document.getElementById('hamburger');
@@ -1898,168 +1900,169 @@
             }
             
             // Quote calculator
-const quoteForm = document.getElementById('quote-form');
-const quoteResult = document.getElementById('quote-result');
-const quotePrice = document.getElementById('quote-price');
-const baseRate = document.getElementById('base-rate');
-const distanceFee = document.getElementById('distance-fee');
-const expeditedFee = document.getElementById('expedited-fee');
-const bookDeliveryBtn = document.getElementById('book-delivery-btn');
-
-if (quoteForm) {
-    quoteForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const quoteName = document.getElementById('quote-name').value;
-        const quoteEmail = document.getElementById('quote-email').value;
-        const quotePhone = document.getElementById('quote-phone').value;
-        const quoteCompany = document.getElementById('quote-company').value;
-        const pickupZip = document.getElementById('pickup-zip').value;
-        const deliveryZip = document.getElementById('delivery-zip').value;
-        const pickupDate = document.getElementById('pickup-date').value;
-        const deliveryDate = document.getElementById('delivery-date').value || 'Not specified';
-        const deliverySpeed = document.getElementById('delivery-speed').value;
-        const speedText = deliverySpeed ? document.getElementById('delivery-speed').options[document.getElementById('delivery-speed').selectedIndex].text : 'Not specified';
-        
-        // Get package quantities
-        const packageQuantities = {};
-        let packageDetails = '';
-        document.querySelectorAll('.package-quantity').forEach(input => {
-            const type = input.getAttribute('data-package-type');
-            const quantity = parseInt(input.value) || 0;
-            if (quantity > 0) {
-                packageQuantities[type] = quantity;
-                const typeFormatted = type.charAt(0).toUpperCase() + type.slice(1);
-                packageDetails += `${typeFormatted}: ${quantity}, `;
+            const quoteForm = document.getElementById('quote-form');
+            const quoteResult = document.getElementById('quote-result');
+            const quotePrice = document.getElementById('quote-price');
+            const baseRate = document.getElementById('base-rate');
+            const distanceFee = document.getElementById('distance-fee');
+            const expeditedFee = document.getElementById('expedited-fee');
+            const bookDeliveryBtn = document.getElementById('book-delivery-btn');
+    
+            if (quoteForm) {
+                quoteForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get form values
+                    const quoteName = document.getElementById('quote-name').value;
+                    const quoteEmail = document.getElementById('quote-email').value;
+                    const quotePhone = document.getElementById('quote-phone').value;
+                    const quoteCompany = document.getElementById('quote-company').value;
+                    const pickupZip = document.getElementById('pickup-zip').value;
+                    const deliveryZip = document.getElementById('delivery-zip').value;
+                    const pickupDate = document.getElementById('pickup-date').value;
+                    const deliveryDate = document.getElementById('delivery-date').value || 'Not specified';
+                    const deliverySpeed = document.getElementById('delivery-speed').value;
+                    const speedText = deliverySpeed ? document.getElementById('delivery-speed').options[document.getElementById('delivery-speed').selectedIndex].text : 'Not specified';
+                    
+                    // Get package quantities
+                    const packageQuantities = {};
+                    let packageDetails = '';
+                    document.querySelectorAll('.package-quantity').forEach(input => {
+                        const type = input.getAttribute('data-package-type');
+                        const quantity = parseInt(input.value) || 0;
+                        if (quantity > 0) {
+                            packageQuantities[type] = quantity;
+                            const typeFormatted = type.charAt(0).toUpperCase() + type.slice(1);
+                            packageDetails += `${typeFormatted}: ${quantity}, `;
+                        }
+                    });
+                    
+                    if (packageDetails) {
+                        packageDetails = packageDetails.slice(0, -2); // Remove trailing comma and space
+                    } else {
+                        packageDetails = 'None specified';
+                    }
+                    
+                    // Calculate quote (same as your existing code)
+                    const baseRates = {
+                        'envelope': 12.99,
+                        'small': 18.99,
+                        'medium': 29.99,
+                        'large': 49.99,
+                        'oversized': 89.99
+                    };
+                    
+                    const speedMultipliers = {
+                        'next-day': 1.0,
+                        'same-day': 1.5,
+                        'rush': 2.0,
+                        'express': 2.5
+                    };
+                    
+                    // Calculate base package cost
+                    let packageCost = 0;
+                    let totalItems = 0;
+                    
+                    Object.keys(packageQuantities).forEach(type => {
+                        const quantity = packageQuantities[type];
+                        totalItems += quantity;
+                        packageCost += baseRates[type] * quantity;
+                    });
+                    
+                    // Apply volume discount for multiple packages
+                    const volumeDiscount = totalItems > 10 ? 0.85 : 
+                                        totalItems > 5 ? 0.9 : 
+                                        totalItems > 1 ? 0.95 : 1;
+                    
+                    // Calculate distance factor (simplified)
+                    const zipDiff = Math.abs(parseInt(pickupZip) - parseInt(deliveryZip)) || 100;
+                    const distanceFactor = Math.min(Math.max(zipDiff / 1000, 0.5), 3);
+                    
+                    // Calculate final pricing components
+                    const baseCost = packageCost * volumeDiscount;
+                    const distanceCost = baseCost * distanceFactor * 0.3;
+                    const speedCost = baseCost * (speedMultipliers[deliverySpeed] - 0.8);
+                    
+                    // Calculate total
+                    const totalCost = baseCost + distanceCost + speedCost;
+                    
+                    // Update the display
+                    quotePrice.textContent = '$' + totalCost.toFixed(2);
+                    baseRate.textContent = '$' + baseCost.toFixed(2);
+                    distanceFee.textContent = '$' + distanceCost.toFixed(2);
+                    expeditedFee.textContent = '$' + speedCost.toFixed(2);
+                    
+                    // Show the result
+                    quoteResult.style.display = 'block';
+                    
+                    // Scroll to result
+                    quoteResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Build the formatted message for email
+                    const formattedMessage = `
+    CUSTOMER INFORMATION
+    -------------------
+    Name: ${quoteName}
+    Email: ${quoteEmail}
+    Phone: ${quotePhone}
+    Company: ${quoteCompany}
+    
+    QUOTE DETAILS
+    -------------
+    Pickup Date: ${pickupDate}
+    Delivery Date: ${deliveryDate}
+    Pickup ZIP: ${pickupZip}
+    Delivery ZIP: ${deliveryZip}
+    Delivery Speed: ${speedText}
+    Package Types: ${packageDetails}
+    
+    PRICE BREAKDOWN
+    --------------
+    Base Rate: $${baseCost.toFixed(2)}
+    Distance Fee: $${distanceCost.toFixed(2)}
+    Expedited Fee: $${speedCost.toFixed(2)}
+    TOTAL ESTIMATE: $${totalCost.toFixed(2)}
+    
+    Generated: ${new Date().toLocaleString()}
+    `;
+                    
+                    // Prepare data for Formspree
+                    const formData = new FormData();
+                    formData.append('_subject', `Quote Request: ${quoteName} - ${quoteCompany}`);
+                    formData.append('name', quoteName);
+                    formData.append('email', quoteEmail);
+                    formData.append('phone', quotePhone);
+                    formData.append('company', quoteCompany);
+                    formData.append('message', formattedMessage);
+                    formData.append('total_cost', totalCost.toFixed(2));
+                    
+                    // Send data to Formspree
+                    fetch('https://formspree.io/f/mnnpoebe', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok) {
+                            // Success message
+                            alert('Your quote request has been sent! Our team will contact you shortly with more details.');
+                            console.log('Quote data sent successfully');
+                        } else {
+                            // Error message
+                            alert('There was an issue sending your quote request. Please try again or contact us directly.');
+                            console.error('Formspree error:', data);
+                        }
+                    })
+                    .catch(error => {
+                        alert('There was an error sending your request. Please try again later.');
+                        console.error('Error:', error);
+                    });
+                });
             }
-        });
-        
-        if (packageDetails) {
-            packageDetails = packageDetails.slice(0, -2); // Remove trailing comma and space
-        } else {
-            packageDetails = 'None specified';
-        }
-        
-        // Calculate quote (same as your existing code)
-        const baseRates = {
-            'envelope': 12.99,
-            'small': 18.99,
-            'medium': 29.99,
-            'large': 49.99,
-            'oversized': 89.99
-        };
-        
-        const speedMultipliers = {
-            'next-day': 1.0,
-            'same-day': 1.5,
-            'rush': 2.0,
-            'express': 2.5
-        };
-        
-        // Calculate base package cost
-        let packageCost = 0;
-        let totalItems = 0;
-        
-        Object.keys(packageQuantities).forEach(type => {
-            const quantity = packageQuantities[type];
-            totalItems += quantity;
-            packageCost += baseRates[type] * quantity;
-        });
-        
-        // Apply volume discount for multiple packages
-        const volumeDiscount = totalItems > 10 ? 0.85 : 
-                              totalItems > 5 ? 0.9 : 
-                              totalItems > 1 ? 0.95 : 1;
-        
-        // Calculate distance factor (simplified)
-        const zipDiff = Math.abs(parseInt(pickupZip) - parseInt(deliveryZip)) || 100;
-        const distanceFactor = Math.min(Math.max(zipDiff / 1000, 0.5), 3);
-        
-        // Calculate final pricing components
-        const baseCost = packageCost * volumeDiscount;
-        const distanceCost = baseCost * distanceFactor * 0.3;
-        const speedCost = baseCost * (speedMultipliers[deliverySpeed] - 0.8);
-        
-        // Calculate total
-        const totalCost = baseCost + distanceCost + speedCost;
-        
-        // Update the display
-        quotePrice.textContent = '$' + totalCost.toFixed(2);
-        baseRate.textContent = '$' + baseCost.toFixed(2);
-        distanceFee.textContent = '$' + distanceCost.toFixed(2);
-        expeditedFee.textContent = '$' + speedCost.toFixed(2);
-        
-        // Show the result
-        quoteResult.style.display = 'block';
-        
-        // Scroll to result
-        quoteResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // Build the formatted message for email
-        const formattedMessage = `
-CUSTOMER INFORMATION
--------------------
-Name: ${quoteName}
-Email: ${quoteEmail}
-Phone: ${quotePhone}
-Company: ${quoteCompany}
-
-QUOTE DETAILS
--------------
-Pickup Date: ${pickupDate}
-Delivery Date: ${deliveryDate}
-Pickup ZIP: ${pickupZip}
-Delivery ZIP: ${deliveryZip}
-Delivery Speed: ${speedText}
-Package Types: ${packageDetails}
-
-PRICE BREAKDOWN
---------------
-Base Rate: $${baseCost.toFixed(2)}
-Distance Fee: $${distanceCost.toFixed(2)}
-Expedited Fee: $${speedCost.toFixed(2)}
-TOTAL ESTIMATE: $${totalCost.toFixed(2)}
-
-Generated: ${new Date().toLocaleString()}
-`;
-        
-        // Prepare data for Formspree
-        const formData = new FormData();
-        formData.append('_subject', `Quote Request: ${quoteName} - ${quoteCompany}`);
-        formData.append('name', quoteName);
-        formData.append('email', quoteEmail);
-        formData.append('phone', quotePhone);
-        formData.append('company', quoteCompany);
-        formData.append('message', formattedMessage);
-        formData.append('total_cost', totalCost.toFixed(2));
-        
-        // Send data to Formspree
-        fetch('https://formspree.io/f/mnnpoebe', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.ok) {
-                // Success message
-                alert('Your quote request has been sent! Our team will contact you shortly with more details.');
-                console.log('Quote data sent successfully');
-            } else {
-                // Error message
-                alert('There was an issue sending your quote request. Please try again or contact us directly.');
-                console.error('Formspree error:', data);
-            }
-        })
-        .catch(error => {
-            alert('There was an error sending your request. Please try again later.');
-            console.error('Error:', error);
-        });
-    });
-}
+    
             // Book delivery button
             if (bookDeliveryBtn) {
                 bookDeliveryBtn.addEventListener('click', function(e) {
@@ -2112,83 +2115,117 @@ Generated: ${new Date().toLocaleString()}
             }
             
             // Contact form
-        const contactForm = document.getElementById('contact-form');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-    });
-};
-        
-        // Get form values
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const company = document.getElementById('company').value;
-        const subject = document.getElementById('subject').value;
-        const subjectText = subject ? document.getElementById('subject').options[document.getElementById('subject').selectedIndex].text : 'Not specified';
-        const message = document.getElementById('message').value;
-        const smsConsent = document.getElementById('sms-consent').checked;
-        
-        // Build the formatted message for email
-        const formattedMessage = `
-CONTACT FORM SUBMISSION
------------------------
-
-CUSTOMER INFORMATION
--------------------
-Name: ${name}
-Email: ${email}
-Phone: ${phone}
-Company: ${company}
-SMS Consent: ${smsConsent ? 'Yes' : 'No'}
-
-INQUIRY DETAILS
---------------
-Subject: ${subjectText}
-Message:
-${message}
-
-Generated: ${new Date().toLocaleString()}
-`;
-        
-        // Prepare data for Formspree
-        const formData = new FormData();
-        formData.append('_subject', `Contact Form: ${name} - ${subjectText}`);
-        formData.append('name', name);
-        formData.append('email', email);
-        formData.append('phone', phone);
-        formData.append('company', company);
-        formData.append('subject', subjectText);
-        formData.append('message', formattedMessage);
-        formData.append('sms_consent', smsConsent ? 'Yes' : 'No');
-        
-        // Send data to Formspree
-        fetch('https://formspree.io/f/xnnplaay', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                console.log('Contact form found, attaching event listener');
+                
+                contactForm.addEventListener('submit', function(e) {
+                    // Prevent the default form submission
+                    e.preventDefault();
+                    console.log('Form submitted by user, processing...');
+                    
+                    // Get form values
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const phone = document.getElementById('phone').value;
+                    const company = document.getElementById('company').value;
+                    const subject = document.getElementById('subject').value;
+                    const subjectText = subject ? document.getElementById('subject').options[document.getElementById('subject').selectedIndex].text : 'Not specified';
+                    const message = document.getElementById('message').value;
+                    const smsConsent = document.getElementById('sms-consent').checked;
+                    
+                    // Build the formatted message for email
+                    const formattedMessage = `
+    CONTACT FORM SUBMISSION
+    -----------------------
+    
+    CUSTOMER INFORMATION
+    -------------------
+    Name: ${name}
+    Email: ${email}
+    Phone: ${phone}
+    Company: ${company}
+    SMS Consent: ${smsConsent ? 'Yes' : 'No'}
+    
+    INQUIRY DETAILS
+    --------------
+    Subject: ${subjectText}
+    Message:
+    ${message}
+    
+    Generated: ${new Date().toLocaleString()}
+    `;
+                    
+                    // Prepare data for Formspree
+                    const formData = new FormData();
+                    formData.append('_subject', `Contact Form: ${name} - ${subjectText}`);
+                    formData.append('name', name);
+                    formData.append('email', email);
+                    formData.append('phone', phone);
+                    formData.append('company', company);
+                    formData.append('subject', subjectText);
+                    formData.append('message', formattedMessage);
+                    formData.append('sms_consent', smsConsent ? 'Yes' : 'No');
+                    
+                    // Send data to Formspree
+                    fetch('https://formspree.io/f/xnnplaay', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok) {
+                            alert('Thank you for your message! We will get back to you as soon as possible.');
+                            contactForm.reset();
+                            console.log('Contact form data sent successfully');
+                        } else {
+                            alert('There was an issue sending your message. Please try again or contact us directly.');
+                            console.error('Formspree error:', data);
+                        }
+                    })
+                    .catch(error => {
+                        alert('There was an error sending your request. Please try again later.');
+                        console.error('Error:', error);
+                    });
+                });
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.ok) {
-                // Success message
-                alert('Thank you for your message! We will get back to you as soon as possible.');
-                contactForm.reset();
-                console.log('Contact form data sent successfully');
-            } else {
-                // Error message
-                alert('There was an issue sending your message. Please try again or contact us directly.');
-                console.error('Formspree error:', data);
+            
+            // Add animation on scroll
+            const animateElements = document.querySelectorAll('.feature-card, .service-card, .testimonial-card, .contact-item');
+            
+            function checkScroll() {
+                animateElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+                    
+                    if (elementTop < windowHeight - 100) {
+                        element.classList.add('animate');
+                    }
+                });
             }
-        })
-        .catch(error => {
-            alert('There was an error sending your request. Please try again later.');
-            console.error('Error:', error);
+            
+            // Initial check
+            checkScroll();
+            
+            // Add scroll listener
+            window.addEventListener('scroll', checkScroll);
+            
+            // Add scroll-to functionality for in-page links
+            const scrollLinks = document.querySelectorAll('.scroll-to');
+            scrollLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
         });
-    });   
-
-</script>
+    </script>
 </body>
 </html>
