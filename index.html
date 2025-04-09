@@ -2173,8 +2173,7 @@ if (customQuoteBtn) {
     });
 }
             
-            // Driver application form
-// Driver application form
+ // Driver application form with conditional SMS consent validation
 const driverForm = document.getElementById('driver-form');
 if (driverForm) {
     // Add input validation for phone number field
@@ -2207,6 +2206,31 @@ if (driverForm) {
             }
         });
     }
+    
+    // Add event listener for preferred contact method dropdown
+    const contactPreferenceDropdown = document.getElementById('contact-preference');
+    const smsConsentCheckbox = document.getElementById('sms-consent');
+    const smsConsentLabel = document.querySelector('label[for="sms-consent"]');
+    
+    if (contactPreferenceDropdown && smsConsentCheckbox && smsConsentLabel) {
+        // Add asterisk to label when required
+        const originalLabelText = smsConsentLabel.textContent;
+        
+        // Update SMS consent checkbox status when contact preference changes
+        contactPreferenceDropdown.addEventListener('change', function() {
+            if (this.value === 'text') {
+                // Add required indicator to label
+                smsConsentLabel.textContent = originalLabelText + ' *';
+                smsConsentLabel.style.color = 'var(--primary-blue)';
+                smsConsentLabel.style.fontWeight = '600';
+            } else {
+                // Remove required indicator from label
+                smsConsentLabel.textContent = originalLabelText;
+                smsConsentLabel.style.color = '';
+                smsConsentLabel.style.fontWeight = '';
+            }
+        });
+    }
 
     driverForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -2218,12 +2242,20 @@ if (driverForm) {
         const contactPreference = document.getElementById('contact-preference').value;
         const driverCity = document.getElementById('driver-city').value;
         const driverState = document.getElementById('driver-state').value;
+        const smsConsent = document.getElementById('sms-consent').checked;
         
         // Validate phone number has exactly 10 digits
         const phoneDigits = driverPhone.replace(/\D/g, '');
         if (phoneDigits.length !== 10) {
             alert('Please enter a valid 10-digit phone number.');
             document.getElementById('driver-phone').focus();
+            return false;
+        }
+        
+        // Check if SMS consent is required but not checked
+        if (contactPreference === 'text' && !smsConsent) {
+            alert('SMS consent is required when selecting Text Message as your preferred contact method.');
+            document.getElementById('sms-consent').focus();
             return false;
         }
         
@@ -2237,7 +2269,6 @@ if (driverForm) {
         // Get consent checkboxes
         const backgroundCheck = document.getElementById('background-check').checked;
         const drivingHistory = document.getElementById('driving-history').checked;
-        const smsConsent = document.getElementById('sms-consent').checked;
         const generalConsent = document.getElementById('consent').checked;
         
         // Prepare data for Google Sheets
@@ -2289,6 +2320,13 @@ if (driverForm) {
             // Reset button
             submitBtn.disabled = false;
             submitBtn.textContent = originalBtnText;
+            
+            // Reset SMS consent label if it was modified
+            if (smsConsentLabel) {
+                smsConsentLabel.textContent = originalLabelText;
+                smsConsentLabel.style.color = '';
+                smsConsentLabel.style.fontWeight = '';
+            }
         })
         .catch(error => {
             console.error('Error:', error);
