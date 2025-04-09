@@ -1897,21 +1897,29 @@
             }
             
             // Quote calculator
-            if (quoteForm) {
+const quoteForm = document.getElementById('quote-form');
+const quoteResult = document.getElementById('quote-result');
+const quotePrice = document.getElementById('quote-price');
+const baseRate = document.getElementById('base-rate');
+const distanceFee = document.getElementById('distance-fee');
+const expeditedFee = document.getElementById('expedited-fee');
+const bookDeliveryBtn = document.getElementById('book-delivery-btn');
+
+if (quoteForm) {
     quoteForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
         // Get form values
-        const quotename = document.getElementById('quote-name').value;
-        const quoteemail = document.getElementById('quote-email').value;
-        const quotephone = document.getElementById('quote-phone').value;
-        const quotecompany = document.getElementById('quote-company').value;
+        const quoteName = document.getElementById('quote-name').value;
+        const quoteEmail = document.getElementById('quote-email').value;
+        const quotePhone = document.getElementById('quote-phone').value;
+        const quoteCompany = document.getElementById('quote-company').value;
         const pickupZip = document.getElementById('pickup-zip').value;
         const deliveryZip = document.getElementById('delivery-zip').value;
         const pickupDate = document.getElementById('pickup-date').value;
         const deliveryDate = document.getElementById('delivery-date').value || 'Not specified';
         const deliverySpeed = document.getElementById('delivery-speed').value;
-        const speedText = document.getElementById('delivery-speed').options[document.getElementById('delivery-speed').selectedIndex].text;
+        const speedText = deliverySpeed ? document.getElementById('delivery-speed').options[document.getElementById('delivery-speed').selectedIndex].text : 'Not specified';
         
         // Get package quantities
         const packageQuantities = {};
@@ -1925,7 +1933,12 @@
                 packageDetails += `${typeFormatted}: ${quantity}, `;
             }
         });
-        packageDetails = packageDetails.slice(0, -2); // Remove trailing comma and space
+        
+        if (packageDetails) {
+            packageDetails = packageDetails.slice(0, -2); // Remove trailing comma and space
+        } else {
+            packageDetails = 'None specified';
+        }
         
         // Calculate quote (same as your existing code)
         const baseRates = {
@@ -1970,7 +1983,7 @@
         // Calculate total
         const totalCost = baseCost + distanceCost + speedCost;
         
-        // Update the display (same as your existing code)
+        // Update the display
         quotePrice.textContent = '$' + totalCost.toFixed(2);
         baseRate.textContent = '$' + baseCost.toFixed(2);
         distanceFee.textContent = '$' + distanceCost.toFixed(2);
@@ -1984,6 +1997,13 @@
         
         // Build the formatted message for email
         const formattedMessage = `
+CUSTOMER INFORMATION
+-------------------
+Name: ${quoteName}
+Email: ${quoteEmail}
+Phone: ${quotePhone}
+Company: ${quoteCompany}
+
 QUOTE DETAILS
 -------------
 Pickup Date: ${pickupDate}
@@ -2000,24 +2020,18 @@ Distance Fee: $${distanceCost.toFixed(2)}
 Expedited Fee: $${speedCost.toFixed(2)}
 TOTAL ESTIMATE: $${totalCost.toFixed(2)}
 
-This quote was generated on ${new Date().toLocaleString()}.
-        `;
+Generated: ${new Date().toLocaleString()}
+`;
         
-        // Prepare the data to send
+        // Prepare data for Formspree
         const formData = new FormData();
-        formData.append('email', 'contracts@aretialliance.com','natholder1@gmail.com');
+        formData.append('_subject', `Quote Request: ${quoteName} - ${quoteCompany}`);
+        formData.append('name', quoteName);
+        formData.append('email', quoteEmail);
+        formData.append('phone', quotePhone);
+        formData.append('company', quoteCompany);
         formData.append('message', formattedMessage);
-        formData.append('quotename', quotename);
-        formData.append('quotephone', quotephone);
-        formData.append('quotecompany', quotecompany);
-        formData.append('quoteemail', quoteemail);
-        formData.append('pickupZip', pickupZip);
-        formData.append('deliveryZip', deliveryZip);
-        formData.append('pickupDate', pickupDate);
-        formData.append('deliveryDate', deliveryDate);
-        formData.append('deliverySpeed', speedText);
-        formData.append('packageDetails', packageDetails);
-        formData.append('totalCost', '$' + totalCost.toFixed(2));
+        formData.append('total_cost', totalCost.toFixed(2));
         
         // Send data to Formspree
         fetch('https://formspree.io/f/mnnpoebe', {
@@ -2027,21 +2041,24 @@ This quote was generated on ${new Date().toLocaleString()}.
                 'Accept': 'application/json'
             }
         })
-        .then(response => {
-            if (response.ok) {
-                // Optional: Show success message to user
-                alert('Your quote request has been sent. Our team will contact you shortly with more details.');
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                // Success message
+                alert('Your quote request has been sent! Our team will contact you shortly with more details.');
                 console.log('Quote data sent successfully');
             } else {
-                // Optional: Show error message
-                console.error('Failed to send quote data');
+                // Error message
+                alert('There was an issue sending your quote request. Please try again or contact us directly.');
+                console.error('Formspree error:', data);
             }
         })
         .catch(error => {
+            alert('There was an error sending your request. Please try again later.');
             console.error('Error:', error);
         });
     });
-} 
+}
             // Book delivery button
             if (bookDeliveryBtn) {
                 bookDeliveryBtn.addEventListener('click', function(e) {
