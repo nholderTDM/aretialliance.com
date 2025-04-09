@@ -2135,25 +2135,43 @@
             }
             
             // Custom quote button
-            const customQuoteBtn = document.getElementById('custom-quote-btn');
-            if (customQuoteBtn) {
-                customQuoteBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector('[data-tab="contact"]').click();
-                    
-                    // Pre-select the subject in the contact form
-                    const subjectField = document.getElementById('subject');
-                    if (subjectField) {
-                        subjectField.value = 'quote';
-                    }
-                    
-                    // Append custom quote info to message
-                    const messageField = document.getElementById('message');
-                    if (messageField) {
-                        messageField.value = 'I would like to request a custom quote for bulk shipments / special handling requirements.';
-                    }
-                });
+const customQuoteBtn = document.getElementById('custom-quote-btn');
+if (customQuoteBtn) {
+    customQuoteBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Switch to contact tab
+        document.querySelector('[data-tab="contact"]').click();
+        
+        // Wait for tab transition
+        setTimeout(() => {
+            // Scroll to the contact form
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.scrollIntoView({ behavior: 'smooth' });
+                
+                // Pre-select the subject as "quote"
+                const subjectField = document.getElementById('subject');
+                if (subjectField) {
+                    subjectField.value = 'quote';
+                }
+                
+                // Pre-fill message with custom quote request
+                const messageField = document.getElementById('message');
+                if (messageField) {
+                    messageField.value = 'I would like to request a custom quote for bulk shipments / special handling requirements.';
+                }
+                
+                // Focus on the first empty required field
+                const firstEmptyField = Array.from(contactForm.querySelectorAll('input[required]'))
+                    .find(input => !input.value);
+                if (firstEmptyField) {
+                    firstEmptyField.focus();
+                }
             }
+        }, 300); // Give time for the tab switch to complete
+    });
+}
             
             // Driver application form
             const driverForm = document.getElementById('driver-form');
