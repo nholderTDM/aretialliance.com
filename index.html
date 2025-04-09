@@ -2183,20 +2183,6 @@ if (driverForm) {
         const driverName = document.getElementById('driver-name').value;
         const driverEmail = document.getElementById('driver-email').value;
         const driverPhone = document.getElementById('driver-phone').value;
-
-        // Format the phone number
-
-        // Remove any non-numeric characters first
-const digitsOnly = driverPhone.replace(/\D/g, '');
-    
-// Format as XXX-XXX-XXXX if it has 10 digits
-if (digitsOnly.length === 10) {
-    formattedPhone = digitsOnly.substring(0, 3) + '-' + digitsOnly.substring(3, 6) + '-' + digitsOnly.substring(6);
-    console.log('Formatted phone number:', formattedPhone); // Debug log
-} else {
-    console.log('Phone number does not have exactly 10 digits:', digitsOnly.length); // Debug log
-}
-
         const contactPreference = document.getElementById('contact-preference').value;
         const driverCity = document.getElementById('driver-city').value;
         const driverState = document.getElementById('driver-state').value;
