@@ -2174,8 +2174,40 @@ if (customQuoteBtn) {
 }
             
             // Driver application form
+// Driver application form
 const driverForm = document.getElementById('driver-form');
 if (driverForm) {
+    // Add input validation for phone number field
+    const phoneInput = document.getElementById('driver-phone');
+    if (phoneInput) {
+        // Add event listener to validate as user types
+        phoneInput.addEventListener('input', function(e) {
+            // Remove any non-numeric characters
+            let value = this.value.replace(/\D/g, '');
+            
+            // Limit to 10 digits
+            if (value.length > 10) {
+                value = value.slice(0, 10);
+            }
+            
+            // Apply formatting as XXX-XXX-XXXX as user types
+            if (value.length > 0) {
+                if (value.length <= 3) {
+                    // Just the area code
+                    this.value = value;
+                } else if (value.length <= 6) {
+                    // Area code and prefix
+                    this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
+                } else {
+                    // Complete number
+                    this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
+                }
+            } else {
+                this.value = value;
+            }
+        });
+    }
+
     driverForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -2187,6 +2219,17 @@ if (driverForm) {
         const driverCity = document.getElementById('driver-city').value;
         const driverState = document.getElementById('driver-state').value;
         
+        // Validate phone number has exactly 10 digits
+        const phoneDigits = driverPhone.replace(/\D/g, '');
+        if (phoneDigits.length !== 10) {
+            alert('Please enter a valid 10-digit phone number.');
+            document.getElementById('driver-phone').focus();
+            return false;
+        }
+        
+        // Format phone number consistently as XXX-XXX-XXXX
+        const formattedPhone = `${phoneDigits.substring(0, 3)}-${phoneDigits.substring(3, 6)}-${phoneDigits.substring(6)}`;
+        
         // Get selected vehicle types
         const vehicleTypes = Array.from(document.querySelectorAll('input[name="vehicle-types"]:checked'))
             .map(checkbox => checkbox.value);
@@ -2197,18 +2240,6 @@ if (driverForm) {
         const smsConsent = document.getElementById('sms-consent').checked;
         const generalConsent = document.getElementById('consent').checked;
         
-        // In your driver form submit handler, add this before creating the formData object
-let formattedPhone = driverPhone;
-if (driverPhone) {
-    // Remove any non-numeric characters
-    const digitsOnly = driverPhone.replace(/\D/g, '');
-    
-    // Format as XXX-XXX-XXXX if it has 10 digits
-    if (digitsOnly.length === 10) {
-        formattedPhone = `${digitsOnly.substring(0, 3)}-${digitsOnly.substring(3, 6)}-${digitsOnly.substring(6)}`;
-    }
-};
-
         // Prepare data for Google Sheets
         const formData = {
             name: driverName,
