@@ -1,0 +1,19 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "drivers": "Driver Opportunities",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "On-Demand Last-Mile Delivery Solutions",
+    "subtitle": "Areti Alliance delivers packages across Atlanta and nationwide with speed, reliability, and care. Our advanced technology ensures your deliveries arrive on time, every time.",
+    "cta": "Get a Quote"
+  },
+  "contact": {
+    "title": "Get in Touch With Us",
+    "subtitle": "Have questions or need a custom solution? Our team is ready to help you with all your delivery needs."
+  }
+  // Add more translations as needed
+}
