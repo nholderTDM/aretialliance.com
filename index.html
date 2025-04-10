@@ -2010,7 +2010,7 @@
             const baseRate = document.getElementById('base-rate');
             const distanceFee = document.getElementById('distance-fee');
             const expeditedFee = document.getElementById('expedited-fee');
-            const bookDeliveryBtn = document.getElementById('book-delivery-btn');
+         //   const bookDeliveryBtn = document.getElementById('book-delivery-btn');
     
             if (quoteForm) {
                 quoteForm.addEventListener('submit', function(e) {
@@ -2171,24 +2171,181 @@ function displayQuoteResult(totalCost, baseCost, distanceCost, speedCost) {
             }
     
             // Book delivery button
-            if (bookDeliveryBtn) {
-                bookDeliveryBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector('[data-tab="contact"]').click();
-                    
-                    // Pre-select the subject in the contact form
-                    const subjectField = document.getElementById('subject');
-                    if (subjectField) {
-                        subjectField.value = 'quote';
-                    }
-                    
-                    // Append quote info to message
-                    const messageField = document.getElementById('message');
-                    if (messageField) {
-                        messageField.value = 'I would like to book a delivery based on the quote I received. The estimated cost was ' + quotePrice.textContent + '.';
-                    }
-                });
+            // Handle the booking process
+const bookDeliveryBtn = document.getElementById('book-delivery-btn');
+const bookingModal = document.getElementById('booking-modal');
+const closeModal = document.querySelector('.close-modal');
+const bookingForm = document.getElementById('booking-form');
+const summaryTotal = document.getElementById('summary-total');
+
+if (bookDeliveryBtn) {
+    bookDeliveryBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Get the current quote information
+        const quoteAmount = quotePrice.textContent;
+        
+        // Update the booking modal with quote information
+        summaryTotal.textContent = quoteAmount;
+        
+        // Show the booking modal
+        bookingModal.style.display = 'block';
+        
+        // Pre-fill any information we already have
+        const pickupZip = document.getElementById('pickup-zip').value;
+        const deliveryZip = document.getElementById('delivery-zip').value;
+        
+        // If we have pre-filled information, you could use an address lookup service
+        // to suggest full addresses based on ZIP codes
+    });
+}
+
+// Close the modal when clicking the X
+if (closeModal) {
+    closeModal.addEventListener('click', function() {
+        bookingModal.style.display = 'none';
+    });
+}
+
+// Close the modal when clicking outside of it
+window.addEventListener('click', function(e) {
+    if (e.target === bookingModal) {
+        bookingModal.style.display = 'none';
+    }
+});
+
+// Handle the booking form submission
+if (bookingForm) {
+    bookingForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get all the form values
+        const pickupAddress = document.getElementById('booking-pickup-address').value;
+        const deliveryAddress = document.getElementById('booking-delivery-address').value;
+        const instructions = document.getElementById('booking-instructions').value;
+        const paymentMethod = document.getElementById('booking-payment').value;
+        const termsAgreed = document.getElementById('terms-agree').checked;
+        
+        // Get the original quote details
+        const quoteName = document.getElementById('quote-name').value;
+        const quoteEmail = document.getElementById('quote-email').value;
+        const quotePhone = document.getElementById('quote-phone').value;
+        const quoteCompany = document.getElementById('quote-company').value;
+        const quoteAmount = quotePrice.textContent;
+        
+        // Combine all details for submission
+        const bookingDetails = {
+            customer: {
+                name: quoteName,
+                email: quoteEmail,
+                phone: quotePhone,
+                company: quoteCompany
+            },
+            delivery: {
+                pickupAddress: pickupAddress,
+                deliveryAddress: deliveryAddress,
+                instructions: instructions
+            },
+            quote: {
+                amount: quoteAmount,
+                baseRate: baseRate.textContent,
+                distanceFee: distanceFee.textContent,
+                expeditedFee: expeditedFee.textContent
+            },
+            payment: paymentMethod,
+            termsAgreed: termsAgreed
+        };
+        
+        // Show loading state
+        const submitBtn = bookingForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Processing...';
+        
+        // Option 1: Send to a booking API if you have one
+        // This would be your backend system that processes bookings
+        
+        // Option 2: For now, just send an email notification with the booking details
+        const formattedMessage = `
+BOOKING REQUEST
+--------------
+
+CUSTOMER INFORMATION
+------------------
+Name: ${quoteName}
+Email: ${quoteEmail}
+Phone: ${quotePhone}
+Company: ${quoteCompany}
+
+DELIVERY DETAILS
+--------------
+Pickup Address: ${pickupAddress}
+Delivery Address: ${deliveryAddress}
+Special Instructions: ${instructions || 'None provided'}
+
+QUOTE DETAILS
+-----------
+Total Amount: ${quoteAmount}
+Base Rate: ${baseRate.textContent}
+Distance Fee: ${distanceFee.textContent}
+Expedited Fee: ${expeditedFee.textContent}
+
+PAYMENT
+------
+Payment Method: ${paymentMethod === 'credit' ? 'Credit Card' : paymentMethod === 'invoice' ? 'Invoice' : 'PayPal'}
+Terms Agreed: Yes
+
+Generated: ${new Date().toLocaleString()}
+`;
+        
+        // Prepare email data
+        const formData = new FormData();
+        formData.append('_subject', `Booking Request: ${quoteName} - ${quoteCompany}`);
+        formData.append('name', quoteName);
+        formData.append('email', quoteEmail);
+        formData.append('message', formattedMessage);
+        
+        // Send to Formspree (you can replace with your actual booking system API later)
+        fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', { // Replace with your Formspree ID
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
             }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                // Hide modal
+                bookingModal.style.display = 'none';
+                
+                // Show success message
+                alert('Your booking request has been submitted! Our team will confirm the details shortly.');
+                
+                // Reset form
+                bookingForm.reset();
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                
+                // You could redirect to a thank you page
+                // window.location.href = 'booking-confirmation.html';
+            } else {
+                alert('There was an issue processing your booking. Please try again or contact us directly.');
+                console.error('Formspree error:', data);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        })
+        .catch(error => {
+            alert('There was an error submitting your booking. Please try again later or contact us directly.');
+            console.error('Error:', error);
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        });
+    });
+}
             
             // Custom quote button
 const customQuoteBtn = document.getElementById('custom-quote-btn');
