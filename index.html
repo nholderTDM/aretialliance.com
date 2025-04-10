@@ -1926,6 +1926,30 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log("DOM fully loaded");
             
+            // Add phone formatting to quote form
+const quotePhoneInput = document.getElementById('quote-phone');
+if (quotePhoneInput) {
+    quotePhoneInput.addEventListener('input', function() {
+        // Remove any non-numeric characters
+        let value = this.value.replace(/\D/g, '');
+        
+        // Limit to 10 digits
+        if (value.length > 10) {
+            value = value.slice(0, 10);
+        }
+        
+        // Apply formatting as XXX-XXX-XXXX as user types
+        if (value.length > 0) {
+            if (value.length <= 3) {
+                this.value = value;
+            } else if (value.length <= 6) {
+                this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
+            } else {
+                this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
+            }
+        }
+    });
+}
             const tabLinks = document.querySelectorAll('.tab-link');
             const tabContents = document.querySelectorAll('.tab-content');
             const hamburger = document.getElementById('hamburger');
@@ -2015,6 +2039,15 @@
             if (quoteForm) {
                 quoteForm.addEventListener('submit', function(e) {
                     e.preventDefault();
+
+                    // Validate phone number has exactly 10 digits
+        const phoneInput = document.getElementById('quote-phone');
+        const phoneDigits = phoneInput.value.replace(/\D/g, '');
+        if (phoneDigits.length !== 10) {
+            alert('Please enter a valid 10-digit phone number.');
+            phoneInput.focus();
+            return false;
+        }
                     
                     // Get form values
                     const quoteName = document.getElementById('quote-name').value;
