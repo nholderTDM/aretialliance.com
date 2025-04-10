@@ -2212,10 +2212,10 @@ if (driverForm) {
     const smsConsentCheckbox = document.getElementById('sms-consent');
     const smsConsentLabel = document.querySelector('label[for="sms-consent"]');
     
+    // Store the original label text at the global level
+    const originalLabelText = smsConsentLabel ? smsConsentLabel.textContent : "I allow Areti Alliance to communicate with me via SMS messaging. Standard rates will apply.";
+    
     if (contactPreferenceDropdown && smsConsentCheckbox && smsConsentLabel) {
-        // Store the original label text
-        const originalLabelText = smsConsentLabel.textContent;
-        
         // Update SMS consent checkbox status when contact preference changes
         contactPreferenceDropdown.addEventListener('change', function() {
             if (this.value === 'text') {
@@ -2294,41 +2294,52 @@ if (driverForm) {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
         
-        // Send to Google Sheet
-        fetch('https://script.google.com/macros/s/AKfycbz79D35pdPkSBHyT1Z3neHbQRJiuRKMcA3gOv4zZpZfHsQrcyHGAdZ3sc0ir4BZTzU/exec', {
-            method: 'POST', 
-            body: JSON.stringify(formData),
-            mode: 'no-cors' // Using no-cors mode means we can't read the response
-        })
-        .then(() => {
-            // Since we're using no-cors, we can't check the response status
-            // We'll just assume success since the request completed
-            
-            // Show success message
-            alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
-            
-            // Reset the form
-            driverForm.reset();
+        // Handle form submission using no-cors mode with proper error handling
+        try {
+            // Using no-cors mode means we can't read the response, so we need a different approach
+            fetch('https://script.google.com/macros/s/AKfycbz79D35pdPkSBHyT1Z3neHbQRJiuRKMcA3gOv4zZpZfHsQrcyHGAdZ3sc0ir4BZTzU/exec', {
+                method: 'POST', 
+                body: JSON.stringify(formData),
+                mode: 'no-cors' // Using no-cors mode
+            })
+            .then(() => {
+                // Since we can't actually read the response with no-cors, we'll just assume success
+                // Show success message
+                alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
+                
+                // Reset the form
+                driverForm.reset();
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                
+                // Reset SMS consent label if it was modified
+                if (smsConsentLabel) {
+                    smsConsentLabel.textContent = originalLabelText;
+                    smsConsentLabel.style.color = '';
+                    smsConsentLabel.style.fontWeight = '';
+                }
+            })
+            .catch(() => {
+                // This catch should never be reached with no-cors mode,
+                // but we'll leave it as a safeguard
+                console.error('Network error occurred');
+                alert('There was an error submitting your application. Please try again or contact us directly.');
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            });
+        } catch (err) {
+            // This would only happen if there's a syntax error or similar
+            console.error('Error:', err);
+            alert('There was an unexpected error submitting your application. Please try again later.');
             
             // Reset button
             submitBtn.disabled = false;
             submitBtn.textContent = originalBtnText;
-            
-            // Reset SMS consent label if it was modified
-            if (smsConsentLabel) {
-                smsConsentLabel.textContent = originalLabelText;
-                smsConsentLabel.style.color = '';
-                smsConsentLabel.style.fontWeight = '';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('There was an error submitting your application. Please try again or contact us directly.');
-            
-            // Reset button
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalBtnText;
-        });
+        }
     });
 }
 
