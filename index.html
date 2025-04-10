@@ -2538,5 +2538,53 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
     </script>
+<!-- Add this to your HTML, just before the closing body tag -->
+<div id="booking-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Book Your Delivery</h2>
+        <p>Complete your booking details below:</p>
+        
+        <form id="booking-form">
+            <div class="form-group">
+                <label for="booking-pickup-address">Pickup Address</label>
+                <input type="text" id="booking-pickup-address" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="booking-delivery-address">Delivery Address</label>
+                <input type="text" id="booking-delivery-address" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="booking-instructions">Special Instructions</label>
+                <textarea id="booking-instructions" class="form-control" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="booking-payment">Payment Method</label>
+                <select id="booking-payment" class="form-control" required>
+                    <option value="">Select Payment Method</option>
+                    <option value="credit">Credit Card</option>
+                    <option value="invoice">Invoice (Business Only)</option>
+                    <option value="paypal">PayPal</option>
+                </select>
+            </div>
+            
+            <div id="quote-summary" class="summary-box">
+                <h3>Quote Summary</h3>
+                <p><span>Total Cost:</span> <span id="summary-total">$0.00</span></p>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms-agree" required>
+                    <label for="terms-agree">I agree to the <a href="terms.html" target="_blank">Terms and Conditions</a></label>
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 20px;">
+                <button type="submit" class="btn">Confirm Booking</button>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>
