@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en, es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2037,17 +2037,20 @@
                     // Calculate total
                     const totalCost = baseCost + distanceCost + speedCost;
                     
-                    // Update the display
-                    quotePrice.textContent = '$' + totalCost.toFixed(2);
-                    baseRate.textContent = '$' + baseCost.toFixed(2);
-                    distanceFee.textContent = '$' + distanceCost.toFixed(2);
-                    expeditedFee.textContent = '$' + speedCost.toFixed(2);
-                    
-                    // Show the result
-                    quoteResult.style.display = 'block';
-                    
-                    // Scroll to result
-                    quoteResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // When displaying the quote result, include more detailed booking options
+function displayQuoteResult(totalCost, baseCost, distanceCost, speedCost) {
+    // Update existing price displays
+    quotePrice.textContent = '$' + totalCost.toFixed(2);
+    baseRate.textContent = '$' + baseCost.toFixed(2);
+    distanceFee.textContent = '$' + distanceCost.toFixed(2);
+    expeditedFee.textContent = '$' + speedCost.toFixed(2);
+    
+    // Show the result section
+    quoteResult.style.display = 'block';
+    
+    // Scroll to result
+    quoteResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
                     
                     // Build the formatted message for email
                     const formattedMessage = `
