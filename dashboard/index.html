@@ -63,7 +63,8 @@
         
         // AuthService implementation
         const AuthService = (() => {
-            // Configuration
+            // Get Configuration from environment
+            // Use window.location.origin to make sure paths are relative to where the app is hosted
             const KEYCLOAK_URL = 'https://auth.aretialliance.com';
             const KEYCLOAK_REALM = 'areti-alliance';
             const KEYCLOAK_CLIENT_ID = 'areti-crm-client';
@@ -85,11 +86,22 @@
                 init: () => {
                     debugLog('Initializing Keycloak');
                     return new Promise((resolve, reject) => {
+                        // Make sure we have the exact path for silent-check-sso.html
+                        const currentPath = window.location.pathname;
+                        const basePath = currentPath.endsWith('/') 
+                            ? currentPath.slice(0, -1) 
+                            : currentPath.substring(0, currentPath.lastIndexOf('/'));
+                        
+                        const silentCheckSsoUri = window.location.origin + basePath + '/silent-check-sso.html';
+                        
+                        debugLog('Using silentCheckSsoUri:', silentCheckSsoUri);
+                        
                         keycloak.init({
                             onLoad: 'check-sso',
-                            silentCheckSsoRedirectUri: window.location.origin + '/dashboard/silent-check-sso.html',
+                            silentCheckSsoRedirectUri: silentCheckSsoUri,
                             pkceMethod: 'S256',
-                            checkLoginIframe: false
+                            checkLoginIframe: false,
+                            enableLogging: true // Enable Keycloak logging for debugging
                         })
                         .then(authenticated => {
                             debugLog('Keycloak initialized, authenticated:', authenticated);
@@ -103,6 +115,7 @@
                                     email: keycloak.tokenParsed.email || keycloak.tokenParsed.preferred_username,
                                     role: AuthService.getUserRole(keycloak.tokenParsed),
                                     token: keycloak.token,
+                                    refreshToken: keycloak.refreshToken, // Store refresh token
                                     timestamp: new Date().getTime()
                                 };
                                 
@@ -139,27 +152,57 @@
                 
                 // Setup automatic token refresh
                 setupTokenRefresh: () => {
+                    // Set minimum validity to 70 seconds
+                    const minValidity = 70;
+                    
+                    // Setup token expiration handler
                     keycloak.onTokenExpired = () => {
                         debugLog('Token expired, refreshing...');
-                        keycloak.updateToken(30).then((refreshed) => {
-                            if (refreshed) {
-                                debugLog('Token refreshed');
-                                // Update stored user info with new token
-                                const user = AuthService.getUserProfile();
-                                if (user) {
-                                    user.token = keycloak.token;
-                                    user.timestamp = new Date().getTime();
-                                    localStorage.setItem('aretiUser', JSON.stringify(user));
+                        keycloak.updateToken(minValidity)
+                            .then((refreshed) => {
+                                if (refreshed) {
+                                    debugLog('Token refreshed successfully');
+                                    // Update stored user info with new token
+                                    const user = AuthService.getUserProfile();
+                                    if (user) {
+                                        user.token = keycloak.token;
+                                        user.refreshToken = keycloak.refreshToken;
+                                        user.timestamp = new Date().getTime();
+                                        localStorage.setItem('aretiUser', JSON.stringify(user));
+                                    }
+                                } else {
+                                    debugLog('Token not refreshed, still valid');
                                 }
-                            } else {
-                                debugLog('Token not refreshed, still valid');
-                            }
-                        }).catch(error => {
-                            debugLog('Failed to refresh token:', error);
-                            // Force re-login on refresh failure
-                            AuthService.login();
-                        });
+                            })
+                            .catch(error => {
+                                debugLog('Failed to refresh token:', error);
+                                // Clear local data and force re-login
+                                localStorage.removeItem('aretiUser');
+                                AuthService.login();
+                            });
                     };
+                    
+                    // Set up periodic token check
+                    setInterval(() => {
+                        keycloak.updateToken(minValidity)
+                            .then((refreshed) => {
+                                if (refreshed) {
+                                    debugLog('Token refreshed during periodic check');
+                                    // Update stored user info with new token
+                                    const user = AuthService.getUserProfile();
+                                    if (user) {
+                                        user.token = keycloak.token;
+                                        user.refreshToken = keycloak.refreshToken;
+                                        user.timestamp = new Date().getTime();
+                                        localStorage.setItem('aretiUser', JSON.stringify(user));
+                                    }
+                                }
+                            })
+                            .catch(() => {
+                                debugLog('Token refresh failed during periodic check');
+                                // Don't force logout here - let the normal token expiration handler handle it
+                            });
+                    }, 60000); // Check every minute
                 },
                 
                 // Log in
