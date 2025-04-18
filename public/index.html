@@ -1,0 +1,2997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Areti Alliance | On-Demand Last-Mile Delivery</title>
+    <style>
+        :root {
+            --primary-blue: #0C3B66;
+            --bright-blue: #1E88E5;
+            --flame-orange: #FF5722;
+            --amber-orange: #FF9800;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333333;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: var(--white);
+    margin: 5% auto;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 80%;
+    max-width: 800px;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {opacity: 0; transform: translateY(-20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: var(--primary-blue);
+}
+
+.summary-box {
+    background-color: var(--light-gray);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.summary-box p {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+        /* Logo animation */
+        @keyframes rotateY {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+        
+        .logo svg, .footer-logo svg {
+            perspective: 800px;
+            transform-style: preserve-3d;
+        }
+        
+        .logo-emblem {
+            animation: rotateY 15s linear infinite;
+            transform-origin: center;
+        }
+        
+        .footer-logo .logo-emblem {
+            animation: rotateY 15s linear infinite;
+            transform-origin: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            height: 70px;
+            margin-right: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .logo svg {
+            margin-right: 0;
+            width: 120px;
+            height: 120px;
+        }
+        
+        .footer-logo svg {
+            width: 90px;
+            height: 90px;
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .logo-text-main {
+            font-family: Impact, 'Arial Black', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--white);
+            letter-spacing: 1px;
+            line-height: 1;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        
+        .logo-text-sub {
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--white);
+            letter-spacing: 3px;
+            line-height: 1;
+            margin-top: 4px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            text-align: center;
+            width: 100%;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        nav ul li a:hover {
+            color: var(--amber-orange);
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(12, 59, 102, 0.8), rgba(12, 59, 102, 0.9)), url('/api/placeholder/1200/600') center/cover;
+            color: var(--white);
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--flame-orange);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: var(--amber-orange);
+            transform: translateY(-2px);
+        }
+        
+        .btn.secondary {
+            background-color: var(--bright-blue);
+        }
+        
+        .btn.secondary:hover {
+            background-color: #2196F3;
+        }
+        
+        section {
+            padding: 80px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-header h2 {
+            font-size: 2.2rem;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-header h2::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--flame-orange);
+            margin: 15px auto 0;
+        }
+        
+        .section-header p {
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .feature-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            font-size: 2rem;
+        }
+        
+        .feature-content {
+            padding: 25px;
+            flex: 1;
+        }
+        
+        .feature-content h3 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .cta-banner {
+            background-color: var(--flame-orange);
+            color: var(--white);
+            text-align: center;
+            padding: 60px 0;
+        }
+        
+        .cta-banner h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .cta-banner p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .service-img {
+            height: 200px;
+            background-color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+        }
+        
+        .service-content {
+            padding: 25px;
+        }
+        
+        .service-content h3 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .quote-calculator {
+            background-color: var(--light-gray);
+            padding: 40px;
+            border-radius: 8px;
+            margin-top: 50px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .quote-result {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .quote-price {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .quote-details {
+            margin-top: 20px;
+        }
+        
+        .quote-details p {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .testimonials {
+            background-color: var(--light-gray);
+        }
+        
+        .testimonial-container {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 30px;
+            padding: 20px 0;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+        }
+        
+        .testimonial-container::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+        }
+        
+        .testimonial-card {
+            scroll-snap-align: center;
+            flex: 0 0 auto;
+            width: 350px;
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            font-size: 5rem;
+            color: var(--flame-orange);
+            opacity: 0.2;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            line-height: 1;
+        }
+        
+        .testimonial-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--light-gray);
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+        
+        .testimonial-info h4 {
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+        
+        .testimonial-info p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 30px 20px;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .contact-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .contact-icon {
+            font-size: 2rem;
+            color: var(--flame-orange);
+            margin-bottom: 20px;
+        }
+        
+        .contact-item h3 {
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+        
+        .contact-form {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-group input {
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+        
+        footer {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .footer-logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .footer-logo h2 {
+            font-size: 1.5rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--flame-orange);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--flame-orange);
+        }
+        
+        .footer-column p {
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--white);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .social-link:hover {
+            background-color: var(--flame-orange);
+        }
+        
+        .social-link svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Tab content */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .nav-container {
+                position: relative;
+            }
+            
+            nav {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--primary-blue);
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                display: none;
+            }
+            
+            nav.show {
+                display: block;
+            }
+            
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav ul li {
+                margin: 0 0 15px 0;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        /* Language switcher */
+.language-switcher {
+  position: relative;
+  display: inline-block;
+  margin-left: 20px;
+}
+
+.language-switcher button {
+  background-color: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.language-dropdown {
+  display: none;
+  position: absolute;
+  background-color: var(--primary-blue);
+  min-width: 120px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 200;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.language-dropdown a {
+  color: var(--white);
+  padding: 10px 12px;
+  text-decoration: none;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.language-dropdown a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.language-switcher:hover .language-dropdown {
+  display: block;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="#" data-tab="home" class="tab-link" style="display: flex; align-items: center; text-decoration: none; color: var(--white);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 400 260">
+                      <!-- 3D Emblem Logo for Areti Alliance -->
+                      <defs>
+                        <!-- Shield gradient -->
+                        <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#1E88E5" />
+                          <stop offset="90%" stop-color="#0C3B66" />
+                        </linearGradient>
+                        
+                        <!-- Inner shield gradient -->
+                        <linearGradient id="innerShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#ffffff" />
+                          <stop offset="100%" stop-color="#f0f8ff" />
+                        </linearGradient>
+                        
+                        <!-- Orange accent gradient -->
+                        <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#FF9800" />
+                          <stop offset="100%" stop-color="#FF5722" />
+                        </linearGradient>
+                        
+                        <!-- Enhanced shadow filter -->
+                        <filter id="emblemShadow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="3" dy="6" stdDeviation="4" flood-color="rgba(0,0,0,0.4)"/>
+                        </filter>
+                        
+                        <!-- Inner elements shadow -->
+                        <filter id="innerShadow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.3)"/>
+                        </filter>
+                      </defs>
+                      
+                      <!-- Background is transparent -->
+                      <rect width="400" height="260" fill="none"/>
+                      
+                      <g class="logo-emblem">
+                        <!-- 3D Shield - main shape with gradient and shadow -->
+                        <path d="M200,30 L300,70 L270,170 L200,200 L130,170 L100,70 Z" fill="url(#shieldGrad)" filter="url(#emblemShadow)"/>
+                        
+                        <!-- 3D inner shield - gives depth -->
+                        <path d="M200,45 L280,78 L255,160 L200,185 L145,160 L120,78 Z" fill="url(#innerShieldGrad)" filter="url(#innerShadow)"/>
+                        
+                        <!-- Central 3D letter A with depth shading -->
+                        <g filter="url(#innerShadow)">
+                          <path d="M180,150 L200,85 L220,150" fill="none" stroke="#0C3B66" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                          <line x1="185" y1="125" x2="215" y2="125" stroke="#0C3B66" stroke-width="10" stroke-linecap="round"/>
+                        </g>
+                        
+                        <!-- Curved route/path element -->
+                        <path d="M160,110 Q200,70 240,110" fill="none" stroke="#1E88E5" stroke-width="4" stroke-linecap="round" filter="url(#innerShadow)"/>
+                        
+                        <!-- Orange accent dot - destination -->
+                        <circle cx="240" cy="110" r="6" fill="url(#accentGrad)" filter="url(#innerShadow)"/>
+                        
+                        <!-- Orange accent at bottom of shield -->
+                        <path d="M180,180 L220,180" stroke="url(#accentGrad)" stroke-width="4" stroke-linecap="round" filter="url(#innerShadow)"/>
+                      </g>
+                    </svg>
+                    <div class="logo-text">
+                        <div class="logo-text-main">ARETI</div>
+                        <div class="logo-text-sub">ALLIANCE</div>
+                    </div>
+                </a>
+            </div>
+            <button class="hamburger" id="hamburger">☰</button>
+            <nav id="nav">
+                <ul>
+                    <li><a href="#" data-tab="home" class="tab-link active">Home</a></li>
+                    <li><a href="#" data-tab="services" class="tab-link">Services</a></li>
+                    <li><a href="#" data-tab="drivers" class="tab-link">Driver Opportunities</a></li>
+                    <li><a href="#" data-tab="about" class="tab-link">About</a></li>
+                    <li><a href="#" data-tab="contact" class="tab-link">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="language-switcher">
+                <button id="current-lang">English</button>
+                <div class="language-dropdown">
+                  <a href="#" data-lang="en">English</a>
+                  <a href="#" data-lang="es">Español</a>
+                  <!-- Add more languages as needed -->
+                </div>
+              </div>
+            </div>
+    </header>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="tab-content active">
+        <section class="hero">
+            <div class="container">
+                <h2 data-i18n="hero.title">On-Demand Last-Mile Delivery Solutions</h2>
+                <p data-i18n="here.subtitle">Areti Alliance delivers packages across Atlanta and nationwide with speed, reliability, and care. Our advanced technology ensures your deliveries arrive on time, every time.</p>
+                <a href="#" class="btn" id="get-quote-btn">Get a Quote</a>
+            </div>
+        </section>
+
+        <section class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 data-i18n="hero.title">Why Choose Areti Alliance</h2>
+                    <p data-i18n="hero.subtitle">We combine technology, reliability, and exceptional service to deliver the best last-mile logistics solution for your business.</p>
+                </div>
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <div class="feature-content">
+                            <h3>Real-Time Tracking</h3>
+                            <p>Track your deliveries in real-time with our advanced GPS technology. Know exactly where your package is at every moment.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <div class="feature-content">
+                            <h3>Same-Day Delivery</h3>
+                            <p>Need it there today? Our fleet of drivers can deliver your package within hours of pickup in most metropolitan areas.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <div class="feature-content">
+                            <h3>Flexible Scheduling</h3>
+                            <p>Schedule deliveries in advance or request on-demand service. We adapt to your business needs.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌐</div>
+                        <div class="feature-content">
+                            <h3>Nationwide Coverage</h3>
+                            <p>Based in Atlanta, GA but operating across all states and territories to meet your logistics needs.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💼</div>
+                        <div class="feature-content">
+                            <h3>Business Solutions</h3>
+                            <p>Custom logistics solutions for businesses of all sizes. API integration available for seamless order fulfillment.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <div class="feature-content">
+                            <h3>Safe & Secure</h3>
+                            <p>Your packages are handled with care and delivered securely. All deliveries are insured for your peace of mind.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-banner">
+            <div class="container">
+                <h2 data-i18n="hero.title">Ready to Simplify Your Delivery Process?</h2>
+                <p data-i18n="hero.subtitle">Join hundreds of businesses that trust Areti Alliance for their last-mile delivery needs.</p>
+                <div class="cta-buttons">
+                    <a href="#" class="btn" id="services-cta">Explore Services</a>
+                    <a href="#" class="btn secondary" id="driver-cta">Become a Driver</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <h2></h2>What Our Clients Say</h2>
+                    <p data-i18n="hero.subtitle">Don't just take our word for it - hear from businesses that rely on Areti Alliance every day.</p>
+                </div>
+                <div class="testimonial-container">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"Areti Alliance has completely transformed our last-mile delivery process. Their reliability and tracking system have reduced our customer service calls by 35%."</p>
+                            <div class="testimonial-author">
+                                <div class="testimonial-avatar">JR</div>
+                                <div class="testimonial-info">
+                                    <h4>James Reynolds</h4>
+                                    <p>E-commerce Manager, AtlantaFresh</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"As a small business owner, I need affordable delivery solutions that don't compromise on quality. Areti Alliance delivers on both fronts consistently."</p>
+                            <div class="testimonial-author">
+                                <div class="testimonial-avatar">SJ</div>
+                                <div class="testimonial-info">
+                                    <h4>Sarah Johnson</h4>
+                                    <p>Owner, Peachtree Boutique</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"The ability to get real-time quotes and schedule deliveries instantly has saved us countless hours. Their drivers are professional and always on time."</p>
+                            <div class="testimonial-author">
+                                <div class="testimonial-avatar">DM</div>
+                                <div class="testimonial-info">
+                                    <h4>David Martinez</h4>
+                                    <p>Logistics Director, TechSupply Inc.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ABOUT US PAGE -->
+    <div id="about" class="tab-content">
+        <section class="hero" style="background: linear-gradient(rgba(12, 59, 102, 0.8), rgba(12, 59, 102, 0.9)), url('/api/placeholder/1200/600') center/cover;">
+            <div class="container">
+                <h2 data-i18n="hero.title">About Areti Alliance</h2>
+                <p data-i18n="hero.subtitle">Learn about our journey to become a leader in last-mile delivery logistics.</p>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="section-header">
+                    <h2 data-i18n="hero.title">Our Story</h2>
+                    <p data-i18n="hero.subtitle">From our humble beginnings to building a nationwide logistics network.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 60px; align-items: center;">
+                    <div>
+                        <h3 style="color: var(--primary-blue); margin-bottom: 20px; font-size: 1.8rem;">A Vision for Better Logistics</h3>
+                        <p style="margin-bottom: 15px;">Areti Alliance was founded in 2019 by logistics experts who recognized a critical gap in the last-mile delivery market. With decades of combined experience in transportation and supply chain management, our founders set out to create a delivery service that would truly meet the needs of modern businesses.</p>
+                        <p>Our name "Areti" comes from the Greek word for "excellence" and "virtue" – qualities that have guided our business from day one. We started with a small fleet of vehicles serving the Atlanta area, and quickly expanded to become a trusted nationwide logistics partner for businesses of all sizes.</p>
+                    </div>
+                    <div style="background: var(--light-gray); padding: 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <h4 style="color: var(--flame-orange); margin-bottom: 20px; text-align: center;">Our Growth Journey</h4>
+                        <div style="display: grid; grid-template-columns: auto 1fr; gap: 15px; align-items: start;">
+                            <div style="font-weight: bold; color: var(--primary-blue);">2019</div>
+                            <div style="padding-bottom: 15px; border-bottom: 1px solid #ddd;">Founded in Atlanta with a focus on same-day local deliveries</div>
+                            
+                            <div style="font-weight: bold; color: var(--primary-blue);">2020</div>
+                            <div style="padding-bottom: 15px; border-bottom: 1px solid #ddd;">Expanded to serve the entire Southeast region</div>
+                            
+                            <div style="font-weight: bold; color: var(--primary-blue);">2021</div>
+                            <div style="padding-bottom: 15px; border-bottom: 1px solid #ddd;">Launched our proprietary delivery management platform</div>
+                            
+                            <div style="font-weight: bold; color: var(--primary-blue);">2022</div>
+                            <div style="padding-bottom: 15px; border-bottom: 1px solid #ddd;">Reached nationwide coverage through strategic partnerships</div>
+                            
+                            <div style="font-weight: bold; color: var(--primary-blue);">2023</div>
+                            <div style="padding-bottom: 15px; border-bottom: 1px solid #ddd;">Introduced specialized fulfillment services for e-commerce clients</div>
+                            
+                            <div style="font-weight: bold; color: var(--primary-blue);">2024</div>
+                            <div>Rebranded as Areti Alliance to reflect our expanded service offerings and partnerships</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 data-i18n="hero.title">Our Mission & Values</h2>
+                    <p data-i18n="hero.subtitle">What drives us every day and shapes how we serve our clients.</p>
+                </div>
+
+                <div style="background-color: var(--primary-blue); color: white; padding: 40px; border-radius: 8px; text-align: center; margin-bottom: 60px;">
+                    <h3 data-i18n="hero.title"="font-size: 1.8rem; margin-bottom: 20px;">Our Mission</h3>
+                    <p data-i18n="hero.subtitle" style="font-size: 1.3rem; font-style: italic; max-width: 800px; margin: 0 auto;">To transform last-mile logistics through reliable, technology-driven delivery solutions that empower businesses to thrive in the modern economy.</p>
+                </div>
+
+                <div class="features" style="margin-bottom: 60px;">
+                    <div class="feature-card">
+                        <div class="feature-icon">⭐</div>
+                        <div class="feature-content">
+                            <h3>Excellence</h3>
+                            <p>We strive for excellence in every delivery, every interaction, and every business decision. Good enough is never enough.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤝</div>
+                        <div class="feature-content">
+                            <h3>Partnership</h3>
+                            <p>We view ourselves as an extension of our clients' businesses, working collaboratively to achieve shared success.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💡</div>
+                        <div class="feature-content">
+                            <h3>Innovation</h3>
+                            <p>We continuously seek new and better ways to solve logistics challenges through technology and creative thinking.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌱</div>
+                        <div class="feature-content">
+                            <h3>Sustainability</h3>
+                            <p>We're committed to reducing our environmental impact through route optimization and eco-friendly practices.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚖️</div>
+                        <div class="feature-content">
+                            <h3>Integrity</h3>
+                            <p>We operate with honesty, transparency, and fairness in all our business dealings and relationships.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🚀</div>
+                        <div class="feature-content">
+                            <h3>Reliability</h3>
+                            <p>We deliver on our promises consistently, building trust with every successful delivery and client interaction.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 data-i18n="hero.title">Leadership Team</h2>
+                    <p data-i18n="hero.subtitle">Meet the experienced professionals who guide our company.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px;">
+                    <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <div style="height: 200px; background-color: var(--light-gray); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--primary-blue);">👨‍💼</div>
+                        <div style="padding: 25px;">
+                            <h3 style="color: var(--primary-blue); margin-bottom: 5px;">Michael Johnson</h3>
+                            <p data-i18n="hero.subtitle" style="color: var(--flame-orange); font-weight: 600; margin-bottom: 15px;">Chief Executive Officer</p>
+                            <p data-i18n="hero.text-main">With 20+ years in logistics and transportation management, Michael leads our strategic vision and overall business operations.</p>
+                        </div>
+                    </div>
+                    <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <div style="height: 200px; background-color: var(--light-gray); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--primary-blue);">👩‍💼</div>
+                        <div style="padding: 25px;">
+                            <h3 style="color: var(--primary-blue); margin-bottom: 5px;">Sophia Rodriguez</h3>
+                            <p data-i18n="hero.subtitle" style="color: var(--flame-orange); font-weight: 600; margin-bottom: 15px;">Chief Operations Officer</p>
+                            <p data-i18n="hero.text-main">Sophia oversees our day-to-day operations, ensuring every package is delivered on time with the highest level of service.</p>
+                        </div>
+                    </div>
+                    <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <div style="height: 200px; background-color: var(--light-gray); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--primary-blue);">👨‍💻</div>
+                        <div style="padding: 25px;">
+                            <h3 style="color: var(--primary-blue); margin-bottom: 5px;">David Chen</h3>
+                            <p style="color: var(--flame-orange); font-weight: 600; margin-bottom: 15px;">Chief Technology Officer</p>
+                            <p>David leads our tech initiatives, developing the innovative solutions that give our clients unparalleled visibility and control.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 data-i18n="hero.title">Why Choose Areti Alliance</h2>
+                    <p data-i18n="hero.subtitle">What sets us apart from other delivery service providers.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px;">
+                    <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Industry Expertise</h3>
+                        <p>Our team brings decades of logistics experience across various industries, allowing us to provide tailored solutions for any delivery challenge.</p>
+                    </div>
+                    <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Nationwide Coverage</h3>
+                        <p>With our extensive network of drivers and strategic partnerships, we can deliver anywhere in the country with the same level of service and reliability.</p>
+                    </div>
+                    <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Advanced Technology</h3>
+                        <p>Our proprietary delivery management platform provides real-time tracking, automated notifications, and detailed analytics for complete visibility.</p>
+                    </div>
+                    <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Customizable Solutions</h3>
+                        <p>We understand that every business has unique needs, which is why we offer flexible, customizable delivery options rather than one-size-fits-all services.</p>
+                    </div>
+                    <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Exceptional Service</h3>
+                        <p>Our commitment to customer satisfaction isn't just talk—it's reflected in our high retention rate and the long-term relationships we build with clients.</p>
+                    </div>
+                    <div style="padding: 30px; border-left: 4px solid var(--flame-orange); background: var(--light-gray); border-radius: 0 8px 8px 0;">
+                        <h3 data-i18n="hero.title" style="color: var(--primary-blue); margin-bottom: 15px;">Dedicated Support</h3>
+                        <p>You'll never be left wondering about your delivery—our support team is available to answer questions and resolve issues quickly and professionally.</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin: 60px 0;">
+                    <h3 data-i18n="hero.subtitle"="color: var(--primary-blue); margin-bottom: 20px; font-size: 1.8rem;">Ready to experience the Areti Alliance difference?</h3>
+                    <a href="#" class="btn" id="about-cta">Get Started Today</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- SERVICES PAGE -->
+    <div id="services" class="tab-content">
+        <section class="services-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Our Delivery Services</h2>
+                    <p>From small parcels to large freight, we offer a wide range of delivery services to meet your logistics needs.</p>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-img">🚚</div>
+                        <div class="service-content">
+                            <h3>Same-Day Delivery</h3>
+                            <p>Get your packages delivered within hours. Ideal for urgent documents, medical supplies, and time-sensitive items.</p>
+                            <p><strong>Starting at $15.99</strong></p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-img">📦</div>
+                        <div class="service-content">
+                            <h3>Next-Day Delivery</h3>
+                            <p>Scheduled deliveries with guaranteed next-day arrival. Perfect for e-commerce and business shipments.</p>
+                            <p><strong>Starting at $12.99</strong></p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-img">🏪</div>
+                        <div class="service-content">
+                            <h3>Retail Distribution</h3>
+                            <p>Regular scheduled deliveries to retail locations. Ensure your stores are always stocked on time.</p>
+                            <p><strong>Custom pricing</strong></p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-img">🛒</div>
+                        <div class="service-content">
+                            <h3>E-Commerce Fulfillment</h3>
+                            <p>Complete end-to-end solution for online stores. We pick, pack, and deliver your products to customers.</p>
+                            <p><strong>Custom pricing</strong></p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-img">📋</div>
+                        <div class="service-content">
+                            <h3>Custom Logistics</h3>
+                            <p>Tailored solutions for businesses with specific needs. Contact us to discuss your requirements.</p>
+                            <p><strong>Custom pricing</strong></p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-img">🔄</div>
+                        <div class="service-content">
+                            <h3>Route Optimization</h3>
+                            <p>Optimize your delivery routes for maximum efficiency. Reduce costs and improve delivery times.</p>
+                            <p><strong>Starting at $199/month</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quote-calculator">
+                    <div class="section-header">
+                        <h2>Get an Instant Quote</h2>
+                        <p>Enter your delivery details below to receive an instant price estimate.</p>
+                    </div>
+                    <form id="quote-form">
+                        <input type="hidden" name="_subject" value="New Quote Request from Areti Alliance">
+                        <input type="hidden" name="_replyto" value="no-reply@aretialliance.com">
+
+                        <div class="form-group" style="margin-bottom: 30px;">
+                            <label>Package Types and Quantities</label>
+                            <div style="background-color: white; padding: 20px; border-radius: 8px; margin-top: 10px;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                                    <div>
+                                        <label for="envelope-quantity">Envelope/Small Package (< 5lbs)</label>
+                                        <div style="display: flex; align-items: center; margin-top: 5px;">
+                                            <input type="number" id="envelope-quantity" class="form-control package-quantity" data-package-type="envelope" min="0" value="0" style="width: 80px;">
+                                            <span style="margin-left: 10px;">× $12.99 each</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="small-quantity">Small Box (5-20lbs)</label>
+                                        <div style="display: flex; align-items: center; margin-top: 5px;">
+                                            <input type="number" id="small-quantity" class="form-control package-quantity" data-package-type="small" min="0" value="0" style="width: 80px;">
+                                            <span style="margin-left: 10px;">× $18.99 each</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="medium-quantity">Medium Box (20-50lbs)</label>
+                                        <div style="display: flex; align-items: center; margin-top: 5px;">
+                                            <input type="number" id="medium-quantity" class="form-control package-quantity" data-package-type="medium" min="0" value="0" style="width: 80px;">
+                                            <span style="margin-left: 10px;">× $29.99 each</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="large-quantity">Large Box (50-100lbs)</label>
+                                        <div style="display: flex; align-items: center; margin-top: 5px;">
+                                            <input type="number" id="large-quantity" class="form-control package-quantity" data-package-type="large" min="0" value="0" style="width: 80px;">
+                                            <span style="margin-left: 10px;">× $49.99 each</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="oversized-quantity">Oversized Item (100+ lbs)</label>
+                                        <div style="display: flex; align-items: center; margin-top: 5px;">
+                                            <input type="number" id="oversized-quantity" class="form-control package-quantity" data-package-type="oversized" min="0" value="0" style="width: 80px;">
+                                            <span style="margin-left: 10px;">× $89.99 each</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 15px; color: var(--primary-blue); font-size: 0.9rem;">
+                                    <strong>Volume Discounts:</strong> 2-5 packages: 5% off | 6-10 packages: 10% off | 11+ packages: 15% off
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="quote-name">Full Name</label>
+                                <input type="text" id="quote-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quote-email">Email Address</label>
+                                <input type="email" id="quote-email" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quote-phone">Phone Number</label>
+                                <input type="tel" id="quote-phone" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quote-company">Company Name</label>
+                                <input type="text" id="quote-company" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="pickup-zip">Pickup Zip Code</label>
+                                <input type="text" id="pickup-zip" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="delivery-zip">Delivery Zip Code</label>
+                                <input type="text" id="delivery-zip" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="pickup-date">Pickup Date</label>
+                                <input type="date" id="pickup-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="delivery-date">Delivery Date</label>
+                                <input type="date" id="delivery-date" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="delivery-speed">Delivery Speed</label>
+                                <select id="delivery-speed" class="form-control" required>
+                                    <option value="">Select Delivery Speed</option>
+                                    <option value="same-day">Same Day (4-8 hours)</option>
+                                    <option value="rush">Rush (2-4 hours)</option>
+                                    <option value="express">Express (1-2 hours)</option>
+                                    <option value="next-day">Next Day</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <button type="submit" class="btn">Calculate Quote</button>
+                        </div>
+                    </form>
+                    
+                    <div id="quote-result" class="quote-result">
+                        <h3>Estimated Delivery Cost</h3>
+                        <div class="quote-price" id="quote-price">$0.00</div>
+                        <p>This is an estimated price based on standard rates. Final price may vary based on specific requirements.</p>
+                        <div class="quote-details">
+                            <p><span>Base Rate:</span> <span id="base-rate">$0.00</span></p>
+                            <p><span>Distance Fee:</span> <span id="distance-fee">$0.00</span></p>
+                            <p><span>Expedited Fee:</span> <span id="expedited-fee">$0.00</span></p>
+                        </div>
+                        <div class="form-group" style="margin-top: 20px;">
+                            <a href="#" class="btn" id="book-delivery-btn">Book This Delivery</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <div class="section-header">
+                    <h2>Request a Custom Quote</h2>
+                    <p>For bulk shipments, special handling requirements, or custom delivery needs, get in touch with our team for a personalized quote.</p>
+                </div>
+                <div style="display: flex; justify-content: center; margin-top: 30px;">
+                    <a href="#" class="btn" id="custom-quote-btn">Contact for Custom Quote</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- DRIVERS PAGE -->
+    <div id="drivers" class="tab-content">
+        <section class="hero" style="background: linear-gradient(rgba(12, 59, 102, 0.8), rgba(12, 59, 102, 0.9)), url('/api/placeholder/1200/600') center/cover;">
+            <div class="container">
+                <h2>Join Our Driver Network</h2>
+                <p>Become part of Atlanta's fastest-growing delivery network. Enjoy flexible hours, competitive pay, and the freedom to be your own boss.</p>
+                <a href="#driver-signup" class="btn scroll-to">Apply Now</a>
+            </div>
+        </section>
+        
+        <section class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Why Drive With Areti Alliance</h2>
+                    <p>Join hundreds of drivers who enjoy the flexibility and earning potential of being an Areti Alliance delivery partner.</p>
+                </div>
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">💰</div>
+                        <div class="feature-content">
+                            <h3>Competitive Earnings</h3>
+                            <p>Earn competitive rates per delivery with opportunities for bonuses during peak times.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⏰</div>
+                        <div class="feature-content">
+                            <h3>Flexible Schedule</h3>
+                            <p>Work when you want. Set your own hours and days. No minimum hour requirements.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <div class="feature-content">
+                            <h3>User-Friendly App</h3>
+                            <p>Our driver app makes it easy to accept deliveries, navigate routes, and track earnings.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🚀</div>
+                        <div class="feature-content">
+                            <h3>Quick Payments</h3>
+                            <p>Get paid weekly with direct deposit. Same-day payment options available.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <div class="feature-content">
+                            <h3>Consistent Work</h3>
+                            <p>With our growing client base, there's always deliveries available across Atlanta and beyond.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌱</div>
+                        <div class="feature-content">
+                            <h3>Growth Opportunities</h3>
+                            <p>Start with a single vehicle and grow to managing your own fleet with our support.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="driver-signup">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Driver Application</h2>
+                    <p>Fill out the form below to join our team of professional drivers. We'll contact you within 48 hours.</p>
+                </div>
+                <div class="contact-form">
+                    <form id="driver-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="driver-name">Full Name</label>
+                                <input type="text" id="driver-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="driver-email">Email Address</label>
+                                <input type="email" id="driver-email" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="driver-phone">Phone Number</label>
+                                <input type="tel" id="driver-phone" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-preference">Preferred Contact Method</label>
+                                <select id="contact-preference" class="form-control" required>
+                                    <option value="">Select Preference</option>
+                                    <option value="email">Email</option>
+                                    <option value="phone">Phone Call</option>
+                                    <option value="text">Text Message</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="driver-city">City</label>
+                                <input type="text" id="driver-city" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="driver-state">State or Territory</label>
+                                <select id="driver-state" class="form-control" required>
+                                    <option value="">Select State or Territory</option>
+                                    <option value="AL">Alabama</option>
+                                    <option value="AK">Alaska</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="CA">California</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="DC">District of Columbia</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="NY">New York</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="WV">West Virginia</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="WY">Wyoming</option>
+                                    <option value="AS">American Samoa</option>
+                                    <option value="GU">Guam</option>
+                                    <option value="MP">Northern Mariana Islands</option>
+                                    <option value="PR">Puerto Rico</option>
+                                    <option value="VI">U.S. Virgin Islands</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label>Vehicle Type(s) Available</label>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 10px;">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="vehicle-car" name="vehicle-types" value="car">
+                                    <label for="vehicle-car">Car</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="vehicle-suv" name="vehicle-types" value="suv">
+                                    <label for="vehicle-suv">SUV</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="vehicle-cargo" name="vehicle-types" value="cargo">
+                                    <label for="vehicle-cargo">Cargo Van</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="vehicle-sprinter" name="vehicle-types" value="sprinter">
+                                    <label for="vehicle-sprinter">Sprinter</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="vehicle-truck" name="vehicle-types" value="truck">
+                                    <label for="vehicle-truck">Truck</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <h4 style="margin-bottom: 15px; color: var(--primary-blue);">Requirements & Consent</h4>
+                            
+                            <div class="checkbox-group" style="margin-bottom: 15px;">
+                                <input type="checkbox" id="background-check" required>
+                                <label for="background-check">I am willing to submit to a background check as part of the application process.</label>
+                            </div>
+                            
+                            <div class="checkbox-group" style="margin-bottom: 15px;">
+                                <input type="checkbox" id="driving-history" required>
+                                <label for="driving-history">I confirm that I have a relatively clean driving history with no major violations in the past 3 years.</label>
+                            </div>
+
+                            <div class="checkbox-group" style="margin-bottom: 15px;">
+                                <input type="checkbox" id="sms-consent">
+                                <label for="sms-consent">I allow Areti Alliance to communicate with me via SMS messaging. Standard rates will apply.</label>
+                            </div>
+                            
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="consent" required>
+                                <label for="consent">I consent to Areti Alliance collecting and storing the information provided above to contact me regarding driver opportunities.</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <button type="submit" class="btn">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <section class="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Driver Success Stories</h2>
+                    <p>Hear from drivers who have found success with Areti Alliance.</p>
+                </div>
+                <div class="testimonial-container">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"I started driving for Areti Alliance part-time and now I manage my own small fleet of 3 vehicles. The flexibility and income potential are unmatched."</p>
+                            <div class="testimonial-author">
+                                <div class="testimonial-avatar">MT</div>
+                                <div class="testimonial-info">
+                                    <h4>Marcus Thompson</h4>
+                                    <p>Driving since 2022</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"As a college student, Areti Alliance gives me the perfect flexibility to earn good money while still focusing on my studies. The app makes it super easy to pick up deliveries."</p>
+                            <div class="testimonial-author">
+                                <div class="testimonial-avatar">LW</div>
+                                <div class="testimonial-info">
+                                    <h4>Layla Washington</h4>
+                                    <p>Driving since 2023</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <p>"I was looking for a career change and found Areti Alliance. The onboarding was simple, and I was making deliveries and earning within a week. Best career move I've made."</p>
+                            <div class="testimonial-author">
+                                <div class="testimonial-avatar">RP</div>
+                                <div class="testimonial-info">
+                                    <h4>Robert Patterson</h4>
+                                    <p>Driving since 2021</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- CONTACT PAGE -->
+    <div id="contact" class="tab-content">
+        <section class="hero" style="background: linear-gradient(rgba(12, 59, 102, 0.8), rgba(12, 59, 102, 0.9)), url('/api/placeholder/1200/600') center/cover;">
+            <div class="container">
+                <h2>Get in Touch With Us</h2>
+                <p>Have questions or need a custom solution? Our team is ready to help you with all your delivery needs.</p>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <h3>Call Us</h3>
+                        <p>1(855) 818-FAST</p>
+                        <p>Mon-Fri: 8am-8pm</p>
+                        <p>Sat-Sun: 9am-5pm</p>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">✉️</div>
+                        <h3>Email Us</h3>
+                        <p>info@aretialliance.com</p>
+                        <p>contracts@aretialliance.com</p>
+                        </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <h3>Mail Us</h3>
+                        <p>1201 West Peachtree Street NW</p>
+                        <p>Suite 2300</p>
+                        <p>Atlanta, GA 30309</p>
+                    </div>
+                </div>
+                
+                <div class="section-header">
+                    <h2>Send Us a Message</h2>
+                    <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+                </div>
+                
+                <div class="contact-form">
+                    <form id="contact-form">
+                        <input type="hidden" name="_subject" value="New Contact Form Submission">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="company">Company Name</label>
+                                <input type="text" id="company" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <select id="subject" class="form-control" required>
+                                <option value="">Select Subject</option>
+                                <option value="quote">Request a Quote</option>
+                                <option value="info">General Information</option>
+                                <option value="support">Customer Support</option>
+                                <option value="partnership">Business Partnership</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" class="form-control" rows="5" required></textarea>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="contact-consent" required>
+                            <label for="contact-consent">I consent to Areti Alliance collecting and storing the information provided above to respond to my inquiry.</label>
+                        </div>
+
+                        <div class="checkbox-group" style="margin-bottom: 15px;">
+                                <input type="checkbox" id="sms-consent">
+                                <label for="sms-consent">I allow Areti Alliance to communicate with me via SMS messaging. Standard rates will apply.</label>
+                            </div>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <button type="submit" class="btn">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <section style="padding-bottom: 0;">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Service Areas</h2>
+                    <p>Headquartered in Atlanta, GA but serving clients nationwide with local dispatch in major cities.</p>
+                </div>
+                <div style="background-color: var(--light-gray); padding: 40px; border-radius: 8px; margin-bottom: 50px;">
+                    <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Our Primary Service Regions:</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                        <div>
+                            <h4 style="margin-bottom: 10px; color: var(--flame-orange);">Southeast</h4>
+                            <ul style="list-style: none; padding-left: 10px;">
+                                <li>Atlanta Metropolitan Area</li>
+                                <li>Charlotte, NC</li>
+                                <li>Nashville, TN</li>
+                                <li>Miami, FL</li>
+                                <li>Orlando, FL</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 10px; color: var(--flame-orange);">Northeast</h4>
+                            <ul style="list-style: none; padding-left: 10px;">
+                                <li>New York City</li>
+                                <li>Boston, MA</li>
+                                <li>Philadelphia, PA</li>
+                                <li>Washington DC</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 10px; color: var(--flame-orange);">Midwest</h4>
+                            <ul style="list-style: none; padding-left: 10px;">
+                                <li>Chicago, IL</li>
+                                <li>Detroit, MI</li>
+                                <li>Indianapolis, IN</li>
+                                <li>Columbus, OH</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 10px; color: var(--flame-orange);">West Coast</h4>
+                            <ul style="list-style: none; padding-left: 10px;">
+                                <li>Los Angeles, CA</li>
+                                <li>San Francisco, CA</li>
+                                <li>Seattle, WA</li>
+                                <li>Portland, OR</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p style="margin-top: 20px;">Don't see your area? Contact us - we can likely accommodate your needs through our partner network.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <a href="#" data-tab="home" class="tab-link" style="display: flex; align-items: center; text-decoration: none; color: var(--white);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 400 260">
+                              <!-- 3D Emblem Logo for Areti Alliance -->
+                              <defs>
+                                <!-- Shield gradient -->
+                                <linearGradient id="shieldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" stop-color="#1E88E5" />
+                                  <stop offset="90%" stop-color="#0C3B66" />
+                                </linearGradient>
+                                
+                                <!-- Inner shield gradient -->
+                                <linearGradient id="innerShieldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" stop-color="#ffffff" />
+                                  <stop offset="100%" stop-color="#f0f8ff" />
+                                </linearGradient>
+                                
+                                <!-- Orange accent gradient -->
+                                <linearGradient id="accentGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" stop-color="#FF9800" />
+                                  <stop offset="100%" stop-color="#FF5722" />
+                                </linearGradient>
+                                
+                                <!-- Enhanced shadow filter -->
+                                <filter id="emblemShadow2" x="-20%" y="-20%" width="140%" height="140%">
+                                  <feDropShadow dx="3" dy="6" stdDeviation="4" flood-color="rgba(0,0,0,0.4)"/>
+                                </filter>
+                                
+                                <!-- Inner elements shadow -->
+                                <filter id="innerShadow2" x="-20%" y="-20%" width="140%" height="140%">
+                                  <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.3)"/>
+                                </filter>
+                              </defs>
+                              
+                              <!-- Background is transparent -->
+                              <rect width="400" height="260" fill="none"/>
+                              
+                              <g class="logo-emblem">
+                                <!-- 3D Shield - main shape with gradient and shadow -->
+                                <path d="M200,30 L300,70 L270,170 L200,200 L130,170 L100,70 Z" fill="url(#shieldGrad2)" filter="url(#emblemShadow2)"/>
+                                
+                                <!-- 3D inner shield - gives depth -->
+                                <path d="M200,45 L280,78 L255,160 L200,185 L145,160 L120,78 Z" fill="url(#innerShieldGrad2)" filter="url(#innerShadow2)"/>
+                                
+                                <!-- Central 3D letter A with depth shading -->
+                                <g filter="url(#innerShadow2)">
+                                  <path d="M180,150 L200,85 L220,150" fill="none" stroke="#0C3B66" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <line x1="185" y1="125" x2="215" y2="125" stroke="#0C3B66" stroke-width="10" stroke-linecap="round"/>
+                                </g>
+                                
+                                <!-- Curved route/path element -->
+                                <path d="M160,110 Q200,70 240,110" fill="none" stroke="#1E88E5" stroke-width="4" stroke-linecap="round" filter="url(#innerShadow2)"/>
+                                
+                                <!-- Orange accent dot - destination -->
+                                <circle cx="240" cy="110" r="6" fill="url(#accentGrad2)" filter="url(#innerShadow2)"/>
+                                
+                                <!-- Orange accent at bottom of shield -->
+                                <path d="M180,180 L220,180" stroke="url(#accentGrad2)" stroke-width="4" stroke-linecap="round" filter="url(#innerShadow2)"/>
+                              </g>
+                            </svg>
+                            <div class="logo-text">
+                                <div class="logo-text-main">ARETI</div>
+                                <div class="logo-text-sub">ALLIANCE</div>
+                            </div>
+                        </a>
+                    </div>
+                    <p>Areti Alliance provides reliable last-mile delivery solutions for businesses and individuals across the United States.</p>
+                    <div class="social-links">
+                        <a href="https://facebook.com/" target="_blank" class="social-link" title="Facebook">
+                            <svg viewBox="0 0 320 512" aria-hidden="true">
+                                <path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/>
+                            </svg>
+                        </a>
+                        <a href="https://twitter.com/" target="_blank" class="social-link" title="Twitter">
+                            <svg viewBox="0 0 512 512" aria-hidden="true">
+                                <path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/>
+                            </svg>
+                        </a>
+                        <a href="https://linkedin.com/" target="_blank" class="social-link" title="LinkedIn">
+                            <svg viewBox="0 0 448 512" aria-hidden="true">
+                                <path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/>
+                            </svg>
+                        </a>
+                        <a href="https://instagram.com/" target="_blank" class="social-link" title="Instagram">
+                            <svg viewBox="0 0 448 512" aria-hidden="true">
+                                <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" data-tab="home" class="tab-link">Home</a></li>
+                        <li><a href="#" data-tab="services" class="tab-link">Services</a></li>
+                        <li><a href="#" data-tab="drivers" class="tab-link">Driver Opportunities</a></li>
+                        <li><a href="#" data-tab="contact" class="tab-link">Contact</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="#" data-tab="services" class="tab-link">Same-Day Delivery</a></li>
+                        <li><a href="#" data-tab="services" class="tab-link">Next-Day Delivery</a></li>
+                        <li><a href="#" data-tab="services" class="tab-link">Retail Distribution</a></li>
+                        <li><a href="#" data-tab="services" class="tab-link">E-Commerce Fulfillment</a></li>
+                        <li><a href="#" data-tab="services" class="tab-link">Custom Logistics</a></li>
+                        <li><a href="#" data-tab="services" class="tab-link">Route Optimization</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <p>1201 West Peachtree St., NW Ste. 2300</p>
+                    <p>Atlanta, GA 30309</p>
+                    <p>Phone: 1(855) 818-FAST</p>
+                    <p>Email: info@aretialliance.com</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Areti Alliance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM fully loaded");
+            
+            // Add phone formatting to contact form
+const contactPhoneInput = document.getElementById('phone');
+if (contactPhoneInput) {
+    contactPhoneInput.addEventListener('input', function() {
+        // Remove any non-numeric characters
+        let value = this.value.replace(/\D/g, '');
+        
+        // Limit to 10 digits
+        if (value.length > 10) {
+            value = value.slice(0, 10);
+        }
+        
+        // Apply formatting as XXX-XXX-XXXX as user types
+        if (value.length > 0) {
+            if (value.length <= 3) {
+                this.value = value;
+            } else if (value.length <= 6) {
+                this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
+            } else {
+                this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
+            }
+        }
+    });
+}
+            // Add phone formatting to quote form
+const quotePhoneInput = document.getElementById('quote-phone');
+if (quotePhoneInput) {
+    quotePhoneInput.addEventListener('input', function() {
+        // Remove any non-numeric characters
+        let value = this.value.replace(/\D/g, '');
+        
+        // Limit to 10 digits
+        if (value.length > 10) {
+            value = value.slice(0, 10);
+        }
+        
+        // Apply formatting as XXX-XXX-XXXX as user types
+        if (value.length > 0) {
+            if (value.length <= 3) {
+                this.value = value;
+            } else if (value.length <= 6) {
+                this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
+            } else {
+                this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
+            }
+        }
+    });
+}
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const hamburger = document.getElementById('hamburger');
+            const nav = document.getElementById('nav');
+            
+            // Tab switching
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all tabs and content
+                    tabLinks.forEach(tab => tab.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to current tab and content
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Close mobile menu after clicking
+                    nav.classList.remove('show');
+                    
+                    // Scroll to top
+                    window.scrollTo(0, 0);
+                });
+            });
+            
+            // Mobile menu toggle
+            hamburger.addEventListener('click', function() {
+                nav.classList.toggle('show');
+            });
+            
+            // CTA buttons
+            const getQuoteBtn = document.getElementById('get-quote-btn');
+            const servicesCta = document.getElementById('services-cta');
+            const driverCta = document.getElementById('driver-cta');
+            const contactCta = document.getElementById('contact-cta');
+            const aboutCta = document.getElementById('about-cta');
+            
+            if (getQuoteBtn) {
+                getQuoteBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector('[data-tab="services"]').click();
+                    setTimeout(() => {
+                        document.querySelector('.quote-calculator').scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                });
+            }
+            
+            if (servicesCta) {
+                servicesCta.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector('[data-tab="services"]').click();
+                });
+            }
+            
+            if (driverCta) {
+                driverCta.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector('[data-tab="drivers"]').click();
+                });
+            }
+            
+            if (contactCta) {
+                contactCta.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector('[data-tab="contact"]').click();
+                });
+            }
+            
+            if (aboutCta) {
+                aboutCta.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector('[data-tab="services"]').click();
+                });
+            }
+            
+            // Quote calculator
+            const quoteForm = document.getElementById('quote-form');
+            const quoteResult = document.getElementById('quote-result');
+            const quotePrice = document.getElementById('quote-price');
+            const baseRate = document.getElementById('base-rate');
+            const distanceFee = document.getElementById('distance-fee');
+            const expeditedFee = document.getElementById('expedited-fee');
+         //   const bookDeliveryBtn = document.getElementById('book-delivery-btn');
+    
+            if (quoteForm) {
+                quoteForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    // Validate phone number has exactly 10 digits
+        const phoneInput = document.getElementById('quote-phone');
+        const phoneDigits = phoneInput.value.replace(/\D/g, '');
+        if (phoneDigits.length !== 10) {
+            alert('Please enter a valid 10-digit phone number.');
+            phoneInput.focus();
+            return false;
+        }
+                    
+                    // Get form values
+                    const quoteName = document.getElementById('quote-name').value;
+                    const quoteEmail = document.getElementById('quote-email').value;
+                    const quotePhone = document.getElementById('quote-phone').value;
+                    const quoteCompany = document.getElementById('quote-company').value;
+                    const pickupZip = document.getElementById('pickup-zip').value;
+                    const deliveryZip = document.getElementById('delivery-zip').value;
+                    const pickupDate = document.getElementById('pickup-date').value;
+                    const deliveryDate = document.getElementById('delivery-date').value || 'Not specified';
+                    const deliverySpeed = document.getElementById('delivery-speed').value;
+                    const speedText = deliverySpeed ? document.getElementById('delivery-speed').options[document.getElementById('delivery-speed').selectedIndex].text : 'Not specified';
+                    // Apply phone number formatting to quote calculator
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the phone input field from quote form
+    const quotePhoneInput = document.getElementById('quote-phone');
+    
+    if (quotePhoneInput) {
+        // Add event listener to validate and format as the user types
+        quotePhoneInput.addEventListener('input', function(e) {
+            // Remove any non-numeric characters
+            let value = this.value.replace(/\D/g, '');
+            
+            // Limit to 10 digits
+            if (value.length > 10) {
+                value = value.slice(0, 10);
+            }
+            
+            // Apply formatting as XXX-XXX-XXXX as user types
+            if (value.length > 0) {
+                if (value.length <= 3) {
+                    // Just the area code
+                    this.value = value;
+                } else if (value.length <= 6) {
+                    // Area code and prefix
+                    this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
+                } else {
+                    // Complete number
+                    this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
+                }
+            } else {
+                this.value = value;
+            }
+        });
+    }
+    
+    // Add validation to the quote form submission
+    const quoteForm = document.getElementById('quote-form');
+    if (quoteForm) {
+        // Store the original submit event handler
+        const originalSubmitHandler = quoteForm.onsubmit;
+        
+        // Override the submit event
+        quoteForm.addEventListener('submit', function(e) {
+            // Get the phone number value
+            const quotePhone = document.getElementById('quote-phone').value;
+            
+            // Validate phone number has exactly 10 digits
+            const phoneDigits = quotePhone.replace(/\D/g, '');
+            if (phoneDigits.length !== 10) {
+                e.preventDefault(); // Prevent form submission
+                alert('Please enter a valid 10-digit phone number.');
+                document.getElementById('quote-phone').focus();
+                return false;
+            }
+            
+            // Continue with the original form submission if phone is valid
+            // The rest of your existing quote form submission code will run
+        }, true); // Use capturing to run this before the original handler
+    }
+});
+                    // Add this to your main JavaScript section, outside of any other functions
+// This should go around line 2091, inside the main DOMContentLoaded event listener
+// but not nested inside any other functions
+
+// Phone number formatting and validation for all phone fields
+document.addEventListener('DOMContentLoaded', function() {
+    // Format and validate phone numbers across the site
+    const phoneInputs = [
+        document.getElementById('quote-phone'),
+        document.getElementById('driver-phone'),
+        document.getElementById('phone')
+    ];
+    
+    phoneInputs.forEach(input => {
+        if (input) {
+            // Add event listener to validate and format as the user types
+            input.addEventListener('input', function(e) {
+                // Remove any non-numeric characters
+                let value = this.value.replace(/\D/g, '');
+                
+                // Limit to 10 digits
+                if (value.length > 10) {
+                    value = value.slice(0, 10);
+                }
+                
+                // Apply formatting as XXX-XXX-XXXX as user types
+                if (value.length > 0) {
+                    if (value.length <= 3) {
+                        // Just the area code
+                        this.value = value;
+                    } else if (value.length <= 6) {
+                        // Area code and prefix
+                        this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
+                    } else {
+                        // Complete number
+                        this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
+                    }
+                } else {
+                    this.value = value;
+                }
+            });
+        }
+    });
+    
+    // Add validation to all forms with phone numbers
+    const forms = [
+        document.getElementById('quote-form'),
+        document.getElementById('driver-form'),
+        document.getElementById('contact-form')
+    ];
+    
+    forms.forEach(form => {
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // Find the phone input in this form
+                const phoneInput = this.querySelector('input[type="tel"]');
+                if (phoneInput) {
+                    // Validate phone number has exactly 10 digits
+                    const phoneDigits = phoneInput.value.replace(/\D/g, '');
+                    if (phoneDigits.length !== 10) {
+                        e.preventDefault(); // Prevent form submission
+                        alert('Please enter a valid 10-digit phone number.');
+                        phoneInput.focus();
+                        return false;
+                    }
+                }
+                // If we get here, the phone number is valid
+            }, true); // Using capturing to run this before other handlers
+        }
+    });
+});
+
+// Remove the duplicate phone validation code that's currently inside the quote form handler
+// (around line 2300-2328 in your code)
+                    // Get package quantities
+                    const packageQuantities = {};
+                    let packageDetails = '';
+                    document.querySelectorAll('.package-quantity').forEach(input => {
+                        const type = input.getAttribute('data-package-type');
+                        const quantity = parseInt(input.value) || 0;
+                        if (quantity > 0) {
+                            packageQuantities[type] = quantity;
+                            const typeFormatted = type.charAt(0).toUpperCase() + type.slice(1);
+                            packageDetails += `${typeFormatted}: ${quantity}, `;
+                        }
+                    });
+                    
+                    if (packageDetails) {
+                        packageDetails = packageDetails.slice(0, -2); // Remove trailing comma and space
+                    } else {
+                        packageDetails = 'None specified';
+                    }
+                    
+                    // Calculate quote (same as your existing code)
+                    const baseRates = {
+                        'envelope': 12.99,
+                        'small': 18.99,
+                        'medium': 29.99,
+                        'large': 49.99,
+                        'oversized': 89.99
+                    };
+                    
+                    const speedMultipliers = {
+                        'next-day': 1.0,
+                        'same-day': 1.5,
+                        'rush': 2.0,
+                        'express': 2.5
+                    };
+                    
+                    // Calculate base package cost
+                    let packageCost = 0;
+                    let totalItems = 0;
+                    
+                    Object.keys(packageQuantities).forEach(type => {
+                        const quantity = packageQuantities[type];
+                        totalItems += quantity;
+                        packageCost += baseRates[type] * quantity;
+                    });
+                    
+                    // Apply volume discount for multiple packages
+                    const volumeDiscount = totalItems > 10 ? 0.85 : 
+                                        totalItems > 5 ? 0.9 : 
+                                        totalItems > 1 ? 0.95 : 1;
+                    
+                    // Calculate distance factor (simplified)
+                    const zipDiff = Math.abs(parseInt(pickupZip) - parseInt(deliveryZip)) || 100;
+                    const distanceFactor = Math.min(Math.max(zipDiff / 1000, 0.5), 3);
+                    
+                    // Calculate final pricing components
+                    const baseCost = packageCost * volumeDiscount;
+                    const distanceCost = baseCost * distanceFactor * 0.3;
+                    const speedCost = baseCost * (speedMultipliers[deliverySpeed] - 0.8);
+                    
+                    // Calculate total
+                    const totalCost = baseCost + distanceCost + speedCost;
+                    
+                    // When displaying the quote result, include more detailed booking options
+function displayQuoteResult(totalCost, baseCost, distanceCost, speedCost) {
+    // Update existing price displays
+    quotePrice.textContent = '$' + totalCost.toFixed(2);
+    baseRate.textContent = '$' + baseCost.toFixed(2);
+    distanceFee.textContent = '$' + distanceCost.toFixed(2);
+    expeditedFee.textContent = '$' + speedCost.toFixed(2);
+    
+    // Show the result section
+    quoteResult.style.display = 'block';
+    
+    // Scroll to result
+    quoteResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+                    
+                    // Build the formatted message for email
+                    const formattedMessage = `
+    CUSTOMER INFORMATION
+    -------------------
+    Name: ${quoteName}
+    Email: ${quoteEmail}
+    Phone: ${quotePhone}
+    Company: ${quoteCompany}
+    
+    QUOTE DETAILS
+    -------------
+    Pickup Date: ${pickupDate}
+    Delivery Date: ${deliveryDate}
+    Pickup ZIP: ${pickupZip}
+    Delivery ZIP: ${deliveryZip}
+    Delivery Speed: ${speedText}
+    Package Types: ${packageDetails}
+    
+    PRICE BREAKDOWN
+    --------------
+    Base Rate: $${baseCost.toFixed(2)}
+    Distance Fee: $${distanceCost.toFixed(2)}
+    Expedited Fee: $${speedCost.toFixed(2)}
+    TOTAL ESTIMATE: $${totalCost.toFixed(2)}
+    
+    Generated: ${new Date().toLocaleString()}
+    `;
+                    
+                    // Prepare data for Formspree
+                    const formData = new FormData();
+                    formData.append('_subject', `Quote Request: ${quoteName} - ${quoteCompany}`);
+                    formData.append('name', quoteName);
+                    formData.append('email', quoteEmail);
+                    formData.append('phone', quotePhone);
+                    formData.append('company', quoteCompany);
+                    formData.append('message', formattedMessage);
+                    formData.append('total_cost', totalCost.toFixed(2));
+                    
+                    // Send data to Formspree
+                    fetch('https://formspree.io/f/mnnpoebe', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok) {
+                            // Success message
+                            alert('Your quote request has been sent! Our team will contact you shortly with more details.');
+                            console.log('Quote data sent successfully');
+                        } else {
+                            // Error message
+                            alert('There was an issue sending your quote request. Please try again or contact us directly.');
+                            console.error('Formspree error:', data);
+                        }
+                    })
+                    .catch(error => {
+                        alert('There was an error sending your request. Please try again later.');
+                        console.error('Error:', error);
+                    });
+                });
+            }
+    
+            // Book delivery button
+            // Handle the booking process
+const bookDeliveryBtn = document.getElementById('book-delivery-btn');
+const bookingModal = document.getElementById('booking-modal');
+const closeModal = document.querySelector('.close-modal');
+const bookingForm = document.getElementById('booking-form');
+const summaryTotal = document.getElementById('summary-total');
+
+if (bookDeliveryBtn) {
+    bookDeliveryBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Get the current quote information
+        const quoteAmount = quotePrice.textContent;
+        
+        // Update the booking modal with quote information
+        summaryTotal.textContent = quoteAmount;
+        
+        // Show the booking modal
+        bookingModal.style.display = 'block';
+        
+        // Pre-fill any information we already have
+        const pickupZip = document.getElementById('pickup-zip').value;
+        const deliveryZip = document.getElementById('delivery-zip').value;
+        
+        // If we have pre-filled information, you could use an address lookup service
+        // to suggest full addresses based on ZIP codes
+    });
+}
+
+// Close the modal when clicking the X
+if (closeModal) {
+    closeModal.addEventListener('click', function() {
+        bookingModal.style.display = 'none';
+    });
+}
+
+// Close the modal when clicking outside of it
+window.addEventListener('click', function(e) {
+    if (e.target === bookingModal) {
+        bookingModal.style.display = 'none';
+    }
+});
+
+// Handle the booking form submission
+if (bookingForm) {
+    bookingForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get all the form values
+        const pickupAddress = document.getElementById('booking-pickup-address').value;
+        const deliveryAddress = document.getElementById('booking-delivery-address').value;
+        const instructions = document.getElementById('booking-instructions').value;
+        const paymentMethod = document.getElementById('booking-payment').value;
+        const termsAgreed = document.getElementById('terms-agree').checked;
+        
+        // Get the original quote details
+        const quoteName = document.getElementById('quote-name').value;
+        const quoteEmail = document.getElementById('quote-email').value;
+        const quotePhone = document.getElementById('quote-phone').value;
+        const quoteCompany = document.getElementById('quote-company').value;
+        const quoteAmount = quotePrice.textContent;
+        
+        // Combine all details for submission
+        const bookingDetails = {
+            customer: {
+                name: quoteName,
+                email: quoteEmail,
+                phone: quotePhone,
+                company: quoteCompany
+            },
+            delivery: {
+                pickupAddress: pickupAddress,
+                deliveryAddress: deliveryAddress,
+                instructions: instructions
+            },
+            quote: {
+                amount: quoteAmount,
+                baseRate: baseRate.textContent,
+                distanceFee: distanceFee.textContent,
+                expeditedFee: expeditedFee.textContent
+            },
+            payment: paymentMethod,
+            termsAgreed: termsAgreed
+        };
+        
+        // Show loading state
+        const submitBtn = bookingForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Processing...';
+        
+        // Option 1: Send to a booking API if you have one
+        // This would be your backend system that processes bookings
+        
+        // Option 2: For now, just send an email notification with the booking details
+        const formattedMessage = `
+BOOKING REQUEST
+--------------
+
+CUSTOMER INFORMATION
+------------------
+Name: ${quoteName}
+Email: ${quoteEmail}
+Phone: ${quotePhone}
+Company: ${quoteCompany}
+
+DELIVERY DETAILS
+--------------
+Pickup Address: ${pickupAddress}
+Delivery Address: ${deliveryAddress}
+Special Instructions: ${instructions || 'None provided'}
+
+QUOTE DETAILS
+-----------
+Total Amount: ${quoteAmount}
+Base Rate: ${baseRate.textContent}
+Distance Fee: ${distanceFee.textContent}
+Expedited Fee: ${expeditedFee.textContent}
+
+PAYMENT
+------
+Payment Method: ${paymentMethod === 'credit' ? 'Credit Card' : paymentMethod === 'invoice' ? 'Invoice' : 'PayPal'}
+Terms Agreed: Yes
+
+Generated: ${new Date().toLocaleString()}
+`;
+        
+        // Prepare email data
+        const formData = new FormData();
+        formData.append('_subject', `Booking Request: ${quoteName} - ${quoteCompany}`);
+        formData.append('name', quoteName);
+        formData.append('email', quoteEmail);
+        formData.append('message', formattedMessage);
+        
+        // Send to Formspree (you can replace with your actual booking system API later)
+        fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', { // Replace with your Formspree ID
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                // Hide modal
+                bookingModal.style.display = 'none';
+                
+                // Show success message
+                alert('Your booking request has been submitted! Our team will confirm the details shortly.');
+                
+                // Reset form
+                bookingForm.reset();
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                
+                // You could redirect to a thank you page
+                // window.location.href = 'booking-confirmation.html';
+            } else {
+                alert('There was an issue processing your booking. Please try again or contact us directly.');
+                console.error('Formspree error:', data);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        })
+        .catch(error => {
+            alert('There was an error submitting your booking. Please try again later or contact us directly.');
+            console.error('Error:', error);
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        });
+    });
+}
+            
+            // Custom quote button
+const customQuoteBtn = document.getElementById('custom-quote-btn');
+if (customQuoteBtn) {
+    customQuoteBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Switch to contact tab
+        document.querySelector('[data-tab="contact"]').click();
+        
+        // Wait for tab transition
+        setTimeout(() => {
+            // Scroll to the contact form
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.scrollIntoView({ behavior: 'smooth' });
+                
+                // Pre-select the subject as "quote"
+                const subjectField = document.getElementById('subject');
+                if (subjectField) {
+                    subjectField.value = 'quote';
+                }
+                
+                // Pre-fill message with custom quote request
+                const messageField = document.getElementById('message');
+                if (messageField) {
+                    messageField.value = 'I would like to request a custom quote for bulk shipments / special handling requirements.';
+                }
+                
+                // Focus on the first empty required field
+                const firstEmptyField = Array.from(contactForm.querySelectorAll('input[required]'))
+                    .find(input => !input.value);
+                if (firstEmptyField) {
+                    firstEmptyField.focus();
+                }
+            }
+        }, 300); // Give time for the tab switch to complete
+    });
+}
+            
+ // Driver application form with conditional SMS consent validation
+const driverForm = document.getElementById('driver-form');
+if (driverForm) {
+    // Add input validation for phone number field
+    const phoneInput = document.getElementById('driver-phone');
+    if (phoneInput) {
+        // Add event listener to validate as user types
+        phoneInput.addEventListener('input', function(e) {
+            // Remove any non-numeric characters
+            let value = this.value.replace(/\D/g, '');
+            
+            // Limit to 10 digits
+            if (value.length > 10) {
+                value = value.slice(0, 10);
+            }
+            
+            // Apply formatting as XXX-XXX-XXXX as user types
+            if (value.length > 0) {
+                if (value.length <= 3) {
+                    // Just the area code
+                    this.value = value;
+                } else if (value.length <= 6) {
+                    // Area code and prefix
+                    this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
+                } else {
+                    // Complete number
+                    this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
+                }
+            } else {
+                this.value = value;
+            }
+        });
+    }
+    
+    // Add event listener for preferred contact method dropdown
+    const contactPreferenceDropdown = document.getElementById('contact-preference');
+    const smsConsentCheckbox = document.getElementById('sms-consent');
+    const smsConsentLabel = document.querySelector('label[for="sms-consent"]');
+    
+    // Store the original label text at the global level
+    const originalLabelText = smsConsentLabel ? smsConsentLabel.textContent : "I allow Areti Alliance to communicate with me via SMS messaging. Standard rates will apply.";
+    
+    if (contactPreferenceDropdown && smsConsentCheckbox && smsConsentLabel) {
+        // Update SMS consent checkbox status when contact preference changes
+        contactPreferenceDropdown.addEventListener('change', function() {
+            if (this.value === 'text') {
+                // Add required indicator to label
+                smsConsentLabel.textContent = originalLabelText + ' *';
+                smsConsentLabel.style.color = 'var(--primary-blue)';
+                smsConsentLabel.style.fontWeight = '600';
+            } else {
+                // Remove required indicator from label
+                smsConsentLabel.textContent = originalLabelText;
+                smsConsentLabel.style.color = '';
+                smsConsentLabel.style.fontWeight = '';
+            }
+        });
+    }
+
+    driverForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const driverName = document.getElementById('driver-name').value;
+        const driverEmail = document.getElementById('driver-email').value;
+        const driverPhone = document.getElementById('driver-phone').value;
+        const contactPreference = document.getElementById('contact-preference').value;
+        const driverCity = document.getElementById('driver-city').value;
+        const driverState = document.getElementById('driver-state').value;
+        const smsConsent = document.getElementById('sms-consent').checked;
+        
+        // Validate phone number has exactly 10 digits
+        const phoneDigits = driverPhone.replace(/\D/g, '');
+        if (phoneDigits.length !== 10) {
+            alert('Please enter a valid 10-digit phone number.');
+            document.getElementById('driver-phone').focus();
+            return false;
+        }
+        
+        // Check if SMS consent is required but not checked
+        if (contactPreference === 'text' && !smsConsent) {
+            alert('SMS consent is required when selecting Text Message as your preferred contact method.');
+            document.getElementById('sms-consent').focus();
+            return false;
+        }
+        
+        // Format phone number consistently as XXX-XXX-XXXX
+        const formattedPhone = `${phoneDigits.substring(0, 3)}-${phoneDigits.substring(3, 6)}-${phoneDigits.substring(6)}`;
+        
+        // Get selected vehicle types
+        const vehicleTypes = Array.from(document.querySelectorAll('input[name="vehicle-types"]:checked'))
+            .map(checkbox => checkbox.value);
+        
+        // Get consent checkboxes
+        const backgroundCheck = document.getElementById('background-check').checked;
+        const drivingHistory = document.getElementById('driving-history').checked;
+        const generalConsent = document.getElementById('consent').checked;
+        
+        // Prepare data for Google Sheets
+        const formData = {
+            name: driverName,
+            email: driverEmail,
+            phone: formattedPhone,
+            contactPreference: contactPreference,
+            city: driverCity,
+            state: driverState,
+            vehicleTypes: vehicleTypes,
+            backgroundCheck: backgroundCheck,
+            drivingHistory: drivingHistory,
+            smsConsent: smsConsent,
+            generalConsent: generalConsent
+        };
+        
+        console.log('Form data being sent:', formData);
+        
+        // Show loading state
+        const submitBtn = driverForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        
+        // Handle form submission using no-cors mode with proper error handling
+        try {
+            // Using no-cors mode means we can't read the response, so we need a different approach
+            fetch('https://script.google.com/macros/s/AKfycbz79D35pdPkSBHyT1Z3neHbQRJiuRKMcA3gOv4zZpZfHsQrcyHGAdZ3sc0ir4BZTzU/exec', {
+                method: 'POST', 
+                body: JSON.stringify(formData),
+                mode: 'no-cors' // Using no-cors mode
+            })
+            .then(() => {
+                // Since we can't actually read the response with no-cors, we'll just assume success
+                // Show success message
+                alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
+                
+                // Reset the form
+                driverForm.reset();
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                
+                // Reset SMS consent label if it was modified
+                if (smsConsentLabel) {
+                    smsConsentLabel.textContent = originalLabelText;
+                    smsConsentLabel.style.color = '';
+                    smsConsentLabel.style.fontWeight = '';
+                }
+            })
+            .catch(() => {
+                // This catch should never be reached with no-cors mode,
+                // but we'll leave it as a safeguard
+                console.error('Network error occurred');
+                alert('There was an error submitting your application. Please try again or contact us directly.');
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            });
+        } catch (err) {
+            // This would only happen if there's a syntax error or similar
+            console.error('Error:', err);
+            alert('There was an unexpected error submitting your application. Please try again later.');
+            
+            // Reset button
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        }
+    });
+}
+
+// Contact form
+const contactForm = document.getElementById('contact-form');
+if (contactForm) {
+    console.log('Contact form found, attaching event listener');
+    
+    contactForm.addEventListener('submit', function(e) {
+
+        // Prevent the default form submission
+        e.preventDefault();
+        // Validate phone number has exactly 10 digits
+        const phoneInput = document.getElementById('phone');
+        const phoneDigits = phoneInput.value.replace(/\D/g, '');
+        if (phoneDigits.length !== 10) {
+            alert('Please enter a valid 10-digit phone number.');
+            phoneInput.focus();
+            return false;
+        }
+        console.log('Form submitted by user, processing...');
+        
+        // Get form values
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const company = document.getElementById('company').value;
+        const subject = document.getElementById('subject').value;
+        const subjectText = subject ? document.getElementById('subject').options[document.getElementById('subject').selectedIndex].text : 'Not specified';
+        const message = document.getElementById('message').value;
+        const smsConsent = document.getElementById('sms-consent').checked;
+        
+        // Build the formatted message for email
+        const formattedMessage = `
+CONTACT FORM SUBMISSION
+-----------------------
+
+CUSTOMER INFORMATION
+-------------------
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Company: ${company}
+SMS Consent: ${smsConsent ? 'Yes' : 'No'}
+
+INQUIRY DETAILS
+--------------
+Subject: ${subjectText}
+Message:
+${message}
+
+Generated: ${new Date().toLocaleString()}
+`;
+        
+        // Prepare data for Formspree
+        const formData = new FormData();
+        formData.append('_subject', `Contact Form: ${name} - ${subjectText}`);
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('phone', phone);
+        formData.append('company', company);
+        formData.append('subject', subjectText);
+        formData.append('message', formattedMessage);
+        formData.append('sms_consent', smsConsent ? 'Yes' : 'No');
+        
+        // Send data to Formspree
+        fetch('https://formspree.io/f/xnnplaay', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                alert('Thank you for your message! We will get back to you as soon as possible.');
+                contactForm.reset();
+                console.log('Contact form data sent successfully');
+            } else {
+                alert('There was an issue sending your message. Please try again or contact us directly.');
+                console.error('Formspree error:', data);
+            }
+        })
+        .catch(error => {
+            alert('There was an error sending your request. Please try again later.');
+            console.error('Error:', error);
+        });
+    });
+};
+        
+            // Add animation on scroll
+            const animateElements = document.querySelectorAll('.feature-card, .service-card, .testimonial-card, .contact-item');
+            
+            function checkScroll() {
+                animateElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+                    
+                    if (elementTop < windowHeight - 100) {
+                        element.classList.add('animate');
+                    }
+                });
+            }
+            
+            // Initial check
+            checkScroll();
+            
+            // Add scroll listener
+            window.addEventListener('scroll', checkScroll);
+            
+            // Add scroll-to functionality for in-page links
+            const scrollLinks = document.querySelectorAll('.scroll-to');
+            scrollLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+            // Language switcher functionality
+let currentLang = 'en';
+const translations = {};
+
+// Function to load language file
+async function loadLanguage(lang) {
+  if (translations[lang]) {
+    return translations[lang];
+  }
+  
+  try {
+    const response = await fetch(`/lang/${lang}.json`);
+    if (!response.ok) throw new Error('Language file not found');
+    translations[lang] = await response.json();
+    return translations[lang];
+  } catch (error) {
+    console.error('Error loading language file:', error);
+    return null;
+  }
+}
+
+// Function to update all text elements with translations
+async function setLanguage(lang) {
+  const translation = await loadLanguage(lang);
+  if (!translation) return;
+  
+  currentLang = lang;
+  document.getElementById('current-lang').textContent = {
+    'en': 'English',
+    'es': 'Español',
+    'fr': 'Français'
+  }[lang] || lang;
+  
+  // Update navigation items
+  document.querySelectorAll('nav ul li a').forEach((item, index) => {
+    const key = ['home', 'services', 'drivers', 'about', 'contact'][index];
+    if (translation.nav && translation.nav[key]) {
+      item.textContent = translation.nav[key];
+    }
+  });
+  
+  // Update hero section
+  const heroSection = document.querySelector('.hero');
+  if (heroSection && translation.hero) {
+    const heroTitle = heroSection.querySelector('h2');
+    const heroSubtitle = heroSection.querySelector('p');
+    const heroCta = heroSection.querySelector('.btn');
+    
+    if (heroTitle && translation.hero.title) heroTitle.textContent = translation.hero.title;
+    if (heroSubtitle && translation.hero.subtitle) heroSubtitle.textContent = translation.hero.subtitle;
+    if (heroCta && translation.hero.cta) heroCta.textContent = translation.hero.cta;
+  }
+  
+  // Add more elements to translate as needed
+  
+  // Store language preference
+  localStorage.setItem('preferredLanguage', lang);
+}
+
+// Add event listeners to language switcher
+document.addEventListener('DOMContentLoaded', function() {
+  // Set initial language from localStorage or browser preference
+  const savedLang = localStorage.getItem('preferredLanguage');
+  const browserLang = navigator.language.split('-')[0];
+  const initialLang = savedLang || (browserLang in translations ? browserLang : 'en');
+  
+  setLanguage(initialLang);
+  
+  // Add click handlers for language options
+  document.querySelectorAll('.language-dropdown a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const lang = this.getAttribute('data-lang');
+      setLanguage(lang);
+    });
+  });
+});
+        });
+
+    </script>
+<!-- Add this to your HTML, just before the closing body tag -->
+<div id="booking-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Book Your Delivery</h2>
+        <p>Complete your booking details below:</p>
+        
+        <form id="booking-form">
+            <div class="form-group">
+                <label for="booking-pickup-address">Pickup Address</label>
+                <input type="text" id="booking-pickup-address" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="booking-delivery-address">Delivery Address</label>
+                <input type="text" id="booking-delivery-address" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="booking-instructions">Special Instructions</label>
+                <textarea id="booking-instructions" class="form-control" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="booking-payment">Payment Method</label>
+                <select id="booking-payment" class="form-control" required>
+                    <option value="">Select Payment Method</option>
+                    <option value="credit">Credit Card</option>
+                    <option value="invoice">Invoice (Business Only)</option>
+                    <option value="paypal">PayPal</option>
+                </select>
+            </div>
+            
+            <div id="quote-summary" class="summary-box">
+                <h3>Quote Summary</h3>
+                <p><span>Total Cost:</span> <span id="summary-total">$0.00</span></p>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms-agree" required>
+                    <label for="terms-agree">I agree to the <a href="terms.html" target="_blank">Terms and Conditions</a></label>
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 20px;">
+                <button type="submit" class="btn">Confirm Booking</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

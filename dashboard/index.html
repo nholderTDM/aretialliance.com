@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Areti Alliance Dashboard</title>
+    <!-- Import Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Import Keycloak -->
+    <script src="https://cdn.jsdelivr.net/npm/keycloak-js@21.1.2/dist/keycloak.min.js"></script>
+    <!-- Import React -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Import Lucide icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* Additional custom styles can go here */
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #1e40af;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="root">
+        <!-- Loading state until React initializes -->
+        <div class="min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <div class="loading-spinner mx-auto mb-4"></div>
+                <p class="text-gray-600">Loading dashboard...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- App scripts -->
+    <script type="module">
+        // Import required dependencies from CDN
+        import { createRoot } from 'https://esm.sh/react-dom@18/client';
+        import { useState, useEffect } from 'https://esm.sh/react@18';
+        import { 
+            Layers, Users, Settings, LogOut, 
+            Menu, X, Moon, Sun 
+        } from 'https://esm.sh/lucide-react@0.263.1';
+        
+        // AuthService implementation
+        const AuthService = (() => {
+            // Configuration
+            const KEYCLOAK_URL = 'https://auth.aretialliance.com';
+            const KEYCLOAK_REALM = 'areti-alliance';
+            const KEYCLOAK_CLIENT_ID = 'areti-crm-client';
+            
+            // Initialize Keycloak
+            const keycloak = new Keycloak({
+                url: KEYCLOAK_URL,
+                realm: KEYCLOAK_REALM,
+                clientId: KEYCLOAK_CLIENT_ID
+            });
+            
+            // Debug logging helper
+            const debugLog = (...args) => {
+                console.log('[Auth]', ...args);
+            };
+            
+            return {
+                // Initialize Keycloak
+                init: () => {
+                    debugLog('Initializing Keycloak');
+                    return new Promise((resolve, reject) => {
+                        keycloak.init({
+                            onLoad: 'check-sso',
+                            silentCheckSsoRedirectUri: window.location.origin + '/dashboard/silent-check-sso.html',
+                            pkceMethod: 'S256',
+                            checkLoginIframe: false
+                        })
+                        .then(authenticated => {
+                            debugLog('Keycloak initialized, authenticated:', authenticated);
+                            
+                            if (authenticated) {
+                                debugLog('User authenticated with valid token');
+                                
+                                // Store basic user info from token
+                                const basicUserInfo = {
+                                    name: keycloak.tokenParsed.preferred_username || keycloak.tokenParsed.name,
+                                    email: keycloak.tokenParsed.email || keycloak.tokenParsed.preferred_username,
+                                    role: AuthService.getUserRole(keycloak.tokenParsed),
+                                    token: keycloak.token,
+                                    timestamp: new Date().getTime()
+                                };
+                                
+                                localStorage.setItem('aretiUser', JSON.stringify(basicUserInfo));
+                                
+                                // Setup token refresh
+                                AuthService.setupTokenRefresh();
+                                
+                                resolve(authenticated);
+                            } else {
+                                debugLog('User not authenticated');
+                                localStorage.removeItem('aretiUser');
+                                resolve(authenticated);
+                            }
+                        })
+                        .catch(error => {
+                            debugLog('Keycloak init error:', error);
+                            reject(error);
+                        });
+                    });
+                },
+                
+                // Get user role from token
+                getUserRole: (tokenParsed) => {
+                    if (!tokenParsed || !tokenParsed.realm_access) {
+                        return 'user';
+                    }
+                    
+                    const roles = tokenParsed.realm_access.roles || [];
+                    if (roles.includes('admin')) return 'admin';
+                    if (roles.includes('manager')) return 'manager';
+                    return 'user';
+                },
+                
+                // Setup automatic token refresh
+                setupTokenRefresh: () => {
+                    keycloak.onTokenExpired = () => {
+                        debugLog('Token expired, refreshing...');
+                        keycloak.updateToken(30).then((refreshed) => {
+                            if (refreshed) {
+                                debugLog('Token refreshed');
+                                // Update stored user info with new token
+                                const user = AuthService.getUserProfile();
+                                if (user) {
+                                    user.token = keycloak.token;
+                                    user.timestamp = new Date().getTime();
+                                    localStorage.setItem('aretiUser', JSON.stringify(user));
+                                }
+                            } else {
+                                debugLog('Token not refreshed, still valid');
+                            }
+                        }).catch(error => {
+                            debugLog('Failed to refresh token:', error);
+                            // Force re-login on refresh failure
+                            AuthService.login();
+                        });
+                    };
+                },
+                
+                // Log in
+                login: () => {
+                    debugLog('Starting login process');
+                    keycloak.login({
+                        redirectUri: window.location.origin + '/dashboard'
+                    });
+                },
+                
+                // Log out
+                logout: () => {
+                    debugLog('Logging out');
+                    localStorage.removeItem('aretiUser');
+                    keycloak.logout({
+                        redirectUri: window.location.origin
+                    });
+                },
+                
+                // Check if authenticated
+                isAuthenticated: () => {
+                    // Check local storage first
+                    const user = localStorage.getItem('aretiUser');
+                    if (user) {
+                        const userData = JSON.parse(user);
+                        const now = new Date().getTime();
+                        // If token is relatively fresh (less than 5 minutes old), consider authenticated
+                        if (now - userData.timestamp < 5 * 60 * 1000) {
+                            return true;
+                        }
+                    }
+                    
+                    // Otherwise check Keycloak token
+                    return !!keycloak.token;
+                },
+                
+                // Get user profile
+                getUserProfile: () => {
+                    const user = localStorage.getItem('aretiUser');
+                    return user ? JSON.parse(user) : null;
+                },
+                
+                // Get authorization header for API requests
+                getAuthHeader: () => {
+                    const user = AuthService.getUserProfile();
+                    if (!user) return {};
+                    
+                    return {
+                        'Authorization': `Bearer ${user.token}`
+                    };
+                }
+            };
+        })();
+        
+        // Dashboard Component
+        const Dashboard = () => {
+            // Authentication state
+            const [isAuthenticated, setIsAuthenticated] = useState(false);
+            const [currentUser, setCurrentUser] = useState(null);
+            const [authLoading, setAuthLoading] = useState(true);
+            
+            // UI state
+            const [sidebarOpen, setSidebarOpen] = useState(true);
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+            const [currentTab, setCurrentTab] = useState('overview');
+            const [darkMode, setDarkMode] = useState(false);
+            
+            // Check for existing session on component mount
+            useEffect(() => {
+                console.log('Dashboard mounting, checking auth...');
+                setAuthLoading(true);
+                
+                // Initialize authentication
+                AuthService.init()
+                    .then(authenticated => {
+                        console.log('Auth initialization result:', authenticated);
+                        if (authenticated) {
+                            const userData = AuthService.getUserProfile();
+                            console.log('User profile:', userData);
+                            if (userData) {
+                                setCurrentUser(userData);
+                                setIsAuthenticated(true);
+                            } else {
+                                console.log('No user profile found, redirecting to login');
+                                AuthService.login();
+                            }
+                        } else {
+                            console.log('Not authenticated, redirecting to login');
+                            AuthService.login();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Authentication error:', error);
+                        AuthService.login();
+                    })
+                    .finally(() => {
+                        setAuthLoading(false);
+                    });
+            }, []);
+            
+            // Handle login
+            const handleLogin = () => {
+                AuthService.login();
+            };
+            
+            // Handle logout
+            const handleLogout = () => {
+                // Reset component state
+                setCurrentUser(null);
+                setIsAuthenticated(false);
+                
+                // Log out via AuthService
+                AuthService.logout();
+            };
+            
+            // UI functions
+            const toggleSidebar = () => {
+                setSidebarOpen(!sidebarOpen);
+            };
+            
+            const toggleMobileMenu = () => {
+                setMobileMenuOpen(!mobileMenuOpen);
+            };
+            
+            const toggleDarkMode = () => {
+                setDarkMode(!darkMode);
+                // Could also save this preference to localStorage
+                localStorage.setItem('darkMode', !darkMode);
+            };
+            
+            // Content rendering based on tab
+            const renderContent = () => {
+                switch(currentTab) {
+                    case 'overview':
+                        return (
+                            React.createElement('div', { className: "bg-white p-6 rounded-lg shadow" },
+                                React.createElement('h2', { className: "text-lg font-semibold mb-4" }, `Welcome, ${currentUser?.name || 'User'}!`),
+                                React.createElement('p', {}, 
+                                    `You are logged in as: `, 
+                                    React.createElement('strong', {}, currentUser?.role || 'User')
+                                ),
+                                React.createElement('p', { className: "mt-4" }, "This is the overview dashboard.")
+                            )
+                        );
+                    case 'users':
+                        // Only admins can access user management
+                        if (currentUser?.role !== 'admin') {
+                            return (
+                                React.createElement('div', { className: "bg-red-100 p-6 rounded-lg border border-red-300" },
+                                    React.createElement('h2', { className: "text-lg font-semibold mb-4 text-red-700" }, "Access Denied"),
+                                    React.createElement('p', {}, "You need admin privileges to access this section.")
+                                )
+                            );
+                        }
+                        return (
+                            React.createElement('div', { className: "bg-white p-6 rounded-lg shadow" },
+                                React.createElement('h2', { className: "text-lg font-semibold mb-4" }, "User Management"),
+                                React.createElement('p', {}, "This page would show user management features.")
+                            )
+                        );
+                    case 'settings':
+                        return (
+                            React.createElement('div', { className: "bg-white p-6 rounded-lg shadow" },
+                                React.createElement('h2', { className: "text-lg font-semibold mb-4" }, "Settings"),
+                                React.createElement('p', {}, "This page would show settings options.")
+                            )
+                        );
+                    default:
+                        return (
+                            React.createElement('div', { className: "bg-white p-6 rounded-lg shadow" },
+                                React.createElement('h2', { className: "text-lg font-semibold mb-4" }, "Page Not Found"),
+                                React.createElement('p', {}, "The requested page was not found.")
+                            )
+                        );
+                }
+            };
+            
+            // Show loading state
+            if (authLoading) {
+                return (
+                    React.createElement('div', { className: "min-h-screen flex items-center justify-center bg-blue-900 py-12 px-4 sm:px-6 lg:px-8" },
+                        React.createElement('div', { className: "max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg text-center" },
+                            React.createElement('div', { className: "animate-spin rounded-full h-12 w-12 border-b-2 border-blue-800 mx-auto" }),
+                            React.createElement('p', { className: "text-gray-600" }, "Loading dashboard...")
+                        )
+                    )
+                );
+            }
+            
+            // If not authenticated, show login prompt
+            if (!isAuthenticated) {
+                return (
+                    React.createElement('div', { className: "min-h-screen flex items-center justify-center bg-blue-900 py-12 px-4 sm:px-6 lg:px-8" },
+                        React.createElement('div', { className: "max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg" },
+                            React.createElement('div', {},
+                                React.createElement('div', { className: "flex justify-center" },
+                                    React.createElement('div', { className: "w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center mb-4" },
+                                        React.createElement('span', { className: "text-white font-bold text-2xl" }, "A")
+                                    )
+                                ),
+                                React.createElement('h2', { className: "mt-6 text-center text-3xl font-extrabold text-gray-900" }, "Areti Alliance CRM"),
+                                React.createElement('p', { className: "mt-2 text-center text-sm text-gray-600" }, "Sign in to your account")
+                            ),
+                            React.createElement('div', {},
+                                React.createElement('button', { 
+                                    onClick: handleLogin,
+                                    className: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-800 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                }, "Sign in with SSO")
+                            )
+                        )
+                    )
+                );
+            }
+            
+            // Define style variables
+            const sidebarWidth = sidebarOpen ? 'w-64' : 'w-20';
+            const mainWidth = sidebarOpen ? 'ml-64' : 'ml-20';
+            
+            // Main dashboard UI
+            return (
+                React.createElement('div', { className: `flex h-screen bg-gray-100 ${darkMode ? 'dark' : ''}` },
+                    // Sidebar
+                    React.createElement('div', { className: `fixed inset-y-0 left-0 ${sidebarWidth} bg-blue-800 text-white transition-all duration-300 ease-in-out z-30 shadow-lg hidden md:block` },
+                        React.createElement('div', { className: "flex items-center justify-between p-4 border-b border-blue-900" },
+                            React.createElement('div', { className: "flex items-center" },
+                                sidebarOpen ? 
+                                    React.createElement('div', { className: "flex items-center" },
+                                        React.createElement('div', { className: "w-8 h-8 bg-white rounded-full flex items-center justify-center mr-2" },
+                                            React.createElement('span', { className: "text-blue-800 font-bold" }, "A")
+                                        ),
+                                        React.createElement('span', { className: "font-bold text-lg" }, "Areti Alliance")
+                                    ) : 
+                                    React.createElement('div', { className: "w-10 h-10 bg-white rounded-full flex items-center justify-center" },
+                                        React.createElement('span', { className: "text-blue-800 font-bold" }, "A")
+                                    )
+                            ),
+                            React.createElement('button', { onClick: toggleSidebar, className: "text-white focus:outline-none" },
+                                sidebarOpen ? 
+                                    React.createElement(X, { size: 20 }) : 
+                                    React.createElement(Menu, { size: 20 })
+                            )
+                        ),
+                        
+                        // Navigation Menu
+                        React.createElement('nav', { className: "mt-5" },
+                            React.createElement('div', { className: `px-4 pb-4 ${sidebarOpen ? 'text-sm text-gray-300' : 'text-center'}` },
+                                sidebarOpen ? 'MAIN MENU' : ''
+                            ),
+                            
+                            // Overview Tab
+                            React.createElement('a', { 
+                                href: "#",
+                                onClick: () => setCurrentTab('overview'),
+                                className: `flex items-center py-3 px-4 ${currentTab === 'overview' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
+                            },
+                                React.createElement(Layers, { size: 20 }),
+                                sidebarOpen && React.createElement('span', { className: "ml-3" }, "Overview")
+                            ),
+                            
+                            // Users Tab
+                            React.createElement('a', { 
+                                href: "#",
+                                onClick: () => setCurrentTab('users'),
+                                className: `flex items-center py-3 px-4 ${currentTab === 'users' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
+                            },
+                                React.createElement(Users, { size: 20 }),
+                                sidebarOpen && React.createElement('span', { className: "ml-3" }, "Users")
+                            ),
+                            
+                            // Settings Tab
+                            React.createElement('a', { 
+                                href: "#",
+                                onClick: () => setCurrentTab('settings'),
+                                className: `flex items-center py-3 px-4 ${currentTab === 'settings' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
+                            },
+                                React.createElement(Settings, { size: 20 }),
+                                sidebarOpen && React.createElement('span', { className: "ml-3" }, "Settings")
+                            )
+                        ),
+                        
+                        // Logout Button
+                        React.createElement('div', { className: "absolute bottom-0 w-full p-4 border-t border-blue-900" },
+                            React.createElement('button', { onClick: handleLogout, className: "flex items-center text-white w-full" },
+                                React.createElement(LogOut, { size: 20 }),
+                                sidebarOpen && React.createElement('span', { className: "ml-3" }, "Logout")
+                            )
+                        )
+                    ),
+                    
+                    // Mobile Menu
+                    mobileMenuOpen && React.createElement('div', { 
+                        className: "fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden", 
+                        onClick: toggleMobileMenu 
+                    },
+                        React.createElement('div', { 
+                            className: "fixed inset-y-0 left-0 w-64 bg-blue-800 text-white z-50", 
+                            onClick: e => e.stopPropagation() 
+                        },
+                            // Mobile Menu Header
+                            React.createElement('div', { className: "flex items-center justify-between p-4 border-b border-blue-900" },
+                                React.createElement('div', { className: "flex items-center" },
+                                    React.createElement('div', { className: "w-8 h-8 bg-white rounded-full flex items-center justify-center mr-2" },
+                                        React.createElement('span', { className: "text-blue-800 font-bold" }, "A")
+                                    ),
+                                    React.createElement('span', { className: "font-bold text-lg" }, "Areti Alliance")
+                                ),
+                                React.createElement('button', { onClick: toggleMobileMenu, className: "text-white focus:outline-none" },
+                                    React.createElement(X, { size: 20 })
+                                )
+                            ),
+                            
+                            // Mobile Navigation Menu
+                            React.createElement('nav', { className: "mt-5" },
+                                React.createElement('div', { className: "px-4 pb-4 text-sm text-gray-300" }, "MAIN MENU"),
+                                
+                                // Mobile Overview Tab
+                                React.createElement('a', { 
+                                    href: "#",
+                                    onClick: () => { setCurrentTab('overview'); toggleMobileMenu(); },
+                                    className: `flex items-center py-3 px-4 ${currentTab === 'overview' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
+                                },
+                                    React.createElement(Layers, { size: 20 }),
+                                    React.createElement('span', { className: "ml-3" }, "Overview")
+                                ),
+                                
+                                // Mobile Users Tab
+                                React.createElement('a', { 
+                                    href: "#",
+                                    onClick: () => { setCurrentTab('users'); toggleMobileMenu(); },
+                                    className: `flex items-center py-3 px-4 ${currentTab === 'users' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
+                                },
+                                    React.createElement(Users, { size: 20 }),
+                                    React.createElement('span', { className: "ml-3" }, "Users")
+                                ),
+                                
+                                // Mobile Settings Tab
+                                React.createElement('a', { 
+                                    href: "#",
+                                    onClick: () => { setCurrentTab('settings'); toggleMobileMenu(); },
+                                    className: `flex items-center py-3 px-4 ${currentTab === 'settings' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
+                                },
+                                    React.createElement(Settings, { size: 20 }),
+                                    React.createElement('span', { className: "ml-3" }, "Settings")
+                                )
+                            ),
+                            
+                            // Mobile Logout Button
+                            React.createElement('div', { className: "absolute bottom-0 w-full p-4 border-t border-blue-900" },
+                                React.createElement('button', { onClick: handleLogout, className: "flex items-center text-white w-full" },
+                                    React.createElement(LogOut, { size: 20 }),
+                                    React.createElement('span', { className: "ml-3" }, "Logout")
+                                )
+                            )
+                        )
+                    ),
+                    
+                    // Main Content
+                    React.createElement('div', { className: `flex-1 transition-all duration-300 ease-in-out ${mainWidth}` },
+                        // Top Navigation
+                        React.createElement('header', { className: "bg-white shadow-sm" },
+                            React.createElement('div', { className: "flex justify-between items-center px-4 py-3" },
+                                React.createElement('div', { className: "flex items-center" },
+                                    React.createElement('button', { className: "md:hidden mr-4", onClick: toggleMobileMenu },
+                                        React.createElement(Menu, { size: 24 })
+                                    ),
+                                    React.createElement('h1', { className: "text-xl font-semibold text-gray-800" },
+                                        `${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)} Dashboard`
+                                    )
+                                ),
+                                React.createElement('div', { className: "flex items-center space-x-4" },
+                                    React.createElement('button', { onClick: toggleDarkMode, className: "p-1 rounded-full hover:bg-gray-100" },
+                                        darkMode ? 
+                                            React.createElement(Sun, { size: 20 }) : 
+                                            React.createElement(Moon, { size: 20 })
+                                    ),
+                                    React.createElement('div', { className: "flex items-center" },
+                                        React.createElement('div', { className: "h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center" },
+                                            React.createElement('span', { className: "font-medium" }, 
+                                                currentUser?.name?.[0]?.toUpperCase() || 'A'
+                                            )
+                                        ),
+                                        React.createElement('span', { className: "ml-2 text-sm hidden md:block" },
+                                            currentUser?.name || 'User'
+                                        )
+                                    )
+                                )
+                            )
+                        ),
+                        
+                        // Page Content
+                        React.createElement('main', { className: "p-4" },
+                            renderContent()
+                        )
+                    )
+                )
+            );
+        };
+        
+        // Initialize React
+        const rootElement = document.getElementById('root');
+        const root = createRoot(rootElement);
+        root.render(React.createElement(Dashboard));
+    </script>
+</body>
+</html>

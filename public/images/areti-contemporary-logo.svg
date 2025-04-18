@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <!-- Contemporary Logo with clean lines and modern aesthetics -->
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E88E5" />
+      <stop offset="100%" stop-color="#0C3B66" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main shape - modern take on shield concept -->
+  <rect x="120" y="60" width="160" height="160" rx="20" ry="20" fill="white" stroke="url(#blueGrad)" stroke-width="3"/>
+  
+  <!-- Contemporary "A" element -->
+  <path d="M160,180 L200,90 L240,180" stroke="#0C3B66" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="175" y1="150" x2="225" y2="150" stroke="#0C3B66" stroke-width="10" stroke-linecap="round"/>
+  
+  <!-- Modern network icons representing alliance -->
+  <circle cx="160" cy="200" r="8" fill="#1E88E5"/>
+  <circle cx="200" cy="200" r="8" fill="#1E88E5"/>
+  <circle cx="240" cy="200" r="8" fill="#1E88E5"/>
+  
+  <!-- Connecting lines -->
+  <line x1="160" y1="200" x2="200" y2="200" stroke="#0C3B66" stroke-width="3"/>
+  <line x1="200" y1="200" x2="240" y2="200" stroke="#0C3B66" stroke-width="3"/>
+  
+  <!-- Contemporary typography -->
+  <text x="200" y="240" font-family="Arial, sans-serif" font-weight="300" font-size="24" text-anchor="middle" fill="#0C3B66">
+    ARETI
+  </text>
+  
+  <text x="200" y="265" font-family="Arial, sans-serif" font-weight="300" font-size="16" text-anchor="middle" fill="#1E88E5" letter-spacing="3">
+    ALLIANCE
+  </text>
+  
+  <!-- Modern orange accent -->
+  <rect x="160" y="250" width="80" height="2" fill="#FF5722" rx="1" ry="1"/>
+</svg>

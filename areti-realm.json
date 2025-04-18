@@ -1,0 +1,7 @@
+{
+  "realm": "areti-alliance",
+  "enabled": true,
+  "displayName": "Areti Alliance",
+  "displayNameHtml": "<div class=\"kc-logo-text\">Areti Alliance</div>",
+  "defaultLocale": "en"
+}
