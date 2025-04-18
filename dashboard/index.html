@@ -63,22 +63,22 @@
         
         // AuthService implementation
         const AuthService = (() => {
-            // Get Configuration from environment
-            // Use window.location.origin to make sure paths are relative to where the app is hosted
+            // Configuration - using the exact values provided
             const KEYCLOAK_URL = 'https://auth.aretialliance.com';
             const KEYCLOAK_REALM = 'areti-alliance';
             const KEYCLOAK_CLIENT_ID = 'areti-crm-client';
             
-            // Initialize Keycloak
+            // Initialize Keycloak with exact configuration
             const keycloak = new Keycloak({
                 url: KEYCLOAK_URL,
                 realm: KEYCLOAK_REALM,
                 clientId: KEYCLOAK_CLIENT_ID
             });
             
-            // Debug logging helper
+            // Debug logging helper with timestamp
             const debugLog = (...args) => {
-                console.log('[Auth]', ...args);
+                const timestamp = new Date().toISOString();
+                console.log(`[Auth ${timestamp}]`, ...args);
             };
             
             return {
@@ -86,15 +86,15 @@
                 init: () => {
                     debugLog('Initializing Keycloak');
                     return new Promise((resolve, reject) => {
-                        // Make sure we have the exact path for silent-check-sso.html
-                        const currentPath = window.location.pathname;
-                        const basePath = currentPath.endsWith('/') 
-                            ? currentPath.slice(0, -1) 
-                            : currentPath.substring(0, currentPath.lastIndexOf('/'));
+                        // Determine base path for silent check SSO
+                        const fullPath = window.location.pathname;
+                        const basePath = fullPath.endsWith('/') 
+                            ? fullPath.slice(0, -1)
+                            : fullPath.substring(0, fullPath.lastIndexOf('/') + 1);
                         
-                        const silentCheckSsoUri = window.location.origin + basePath + '/silent-check-sso.html';
+                        const silentCheckSsoUri = window.location.origin + basePath + 'silent-check-sso.html';
                         
-                        debugLog('Using silentCheckSsoUri:', silentCheckSsoUri);
+                        debugLog('Silent check SSO URI:', silentCheckSsoUri);
                         
                         keycloak.init({
                             onLoad: 'check-sso',
@@ -105,17 +105,18 @@
                         })
                         .then(authenticated => {
                             debugLog('Keycloak initialized, authenticated:', authenticated);
-                            
                             if (authenticated) {
                                 debugLog('User authenticated with valid token');
+                                debugLog('Token expires in', Math.round((keycloak.tokenParsed.exp - new Date().getTime()/1000)) + ' seconds');
                                 
-                                // Store basic user info from token
+                                // Store basic user info from token with additional debugging info
                                 const basicUserInfo = {
                                     name: keycloak.tokenParsed.preferred_username || keycloak.tokenParsed.name,
                                     email: keycloak.tokenParsed.email || keycloak.tokenParsed.preferred_username,
                                     role: AuthService.getUserRole(keycloak.tokenParsed),
                                     token: keycloak.token,
-                                    refreshToken: keycloak.refreshToken, // Store refresh token
+                                    refreshToken: keycloak.refreshToken,
+                                    tokenExpires: keycloak.tokenParsed.exp * 1000, // Convert to milliseconds
                                     timestamp: new Date().getTime()
                                 };
                                 
@@ -126,7 +127,7 @@
                                 
                                 resolve(authenticated);
                             } else {
-                                debugLog('User not authenticated');
+                                debugLog('User not authenticated, redirecting to login');
                                 localStorage.removeItem('aretiUser');
                                 resolve(authenticated);
                             }
@@ -145,6 +146,10 @@
                     }
                     
                     const roles = tokenParsed.realm_access.roles || [];
+                    
+                    // Log roles for debugging
+                    debugLog('User roles:', roles);
+                    
                     if (roles.includes('admin')) return 'admin';
                     if (roles.includes('manager')) return 'manager';
                     return 'user';
@@ -152,10 +157,9 @@
                 
                 // Setup automatic token refresh
                 setupTokenRefresh: () => {
-                    // Set minimum validity to 70 seconds
-                    const minValidity = 70;
+                    // Min validity in seconds - refresh token 60 seconds before expiration
+                    const minValidity = 60; 
                     
-                    // Setup token expiration handler
                     keycloak.onTokenExpired = () => {
                         debugLog('Token expired, refreshing...');
                         keycloak.updateToken(minValidity)
@@ -167,6 +171,7 @@
                                     if (user) {
                                         user.token = keycloak.token;
                                         user.refreshToken = keycloak.refreshToken;
+                                        user.tokenExpires = keycloak.tokenParsed.exp * 1000;
                                         user.timestamp = new Date().getTime();
                                         localStorage.setItem('aretiUser', JSON.stringify(user));
                                     }
@@ -182,34 +187,51 @@
                             });
                     };
                     
-                    // Set up periodic token check
+                    // Set up periodic token check (every 30 seconds)
                     setInterval(() => {
-                        keycloak.updateToken(minValidity)
-                            .then((refreshed) => {
-                                if (refreshed) {
-                                    debugLog('Token refreshed during periodic check');
-                                    // Update stored user info with new token
-                                    const user = AuthService.getUserProfile();
-                                    if (user) {
-                                        user.token = keycloak.token;
-                                        user.refreshToken = keycloak.refreshToken;
-                                        user.timestamp = new Date().getTime();
-                                        localStorage.setItem('aretiUser', JSON.stringify(user));
-                                    }
-                                }
-                            })
-                            .catch(() => {
-                                debugLog('Token refresh failed during periodic check');
-                                // Don't force logout here - let the normal token expiration handler handle it
-                            });
-                    }, 60000); // Check every minute
+                        if (keycloak.authenticated) {
+                            const currentTime = Math.floor(Date.now() / 1000);
+                            const timeToExpire = keycloak.tokenParsed.exp - currentTime;
+                            
+                            // If token expires in less than min validity, refresh it
+                            if (timeToExpire < minValidity) {
+                                debugLog(`Token expires in ${timeToExpire} seconds, refreshing...`);
+                                keycloak.updateToken(minValidity)
+                                    .then((refreshed) => {
+                                        if (refreshed) {
+                                            debugLog('Token refreshed during periodic check');
+                                            // Update stored user info with new token
+                                            const user = AuthService.getUserProfile();
+                                            if (user) {
+                                                user.token = keycloak.token;
+                                                user.refreshToken = keycloak.refreshToken;
+                                                user.tokenExpires = keycloak.tokenParsed.exp * 1000;
+                                                user.timestamp = new Date().getTime();
+                                                localStorage.setItem('aretiUser', JSON.stringify(user));
+                                            }
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        debugLog('Periodic token refresh failed:', error);
+                                        // Don't force logout immediately on periodic check failure
+                                    });
+                            }
+                        }
+                    }, 30000);
                 },
                 
                 // Log in
                 login: () => {
                     debugLog('Starting login process');
+                    // Clear any existing auth data
+                    localStorage.removeItem('aretiUser');
+                    
+                    // Ensure we redirect back to the dashboard after login
+                    const redirectUri = window.location.origin + '/dashboard';
+                    debugLog('Redirect URI:', redirectUri);
+                    
                     keycloak.login({
-                        redirectUri: window.location.origin + '/dashboard'
+                        redirectUri: redirectUri
                     });
                 },
                 
@@ -217,26 +239,34 @@
                 logout: () => {
                     debugLog('Logging out');
                     localStorage.removeItem('aretiUser');
+                    
+                    // Redirect to main website after logout
+                    const redirectUri = window.location.origin;
                     keycloak.logout({
-                        redirectUri: window.location.origin
+                        redirectUri: redirectUri
                     });
                 },
                 
                 // Check if authenticated
                 isAuthenticated: () => {
-                    // Check local storage first
+                    // First check Keycloak directly
+                    if (keycloak.authenticated) {
+                        return true;
+                    }
+                    
+                    // Then check local storage as fallback
                     const user = localStorage.getItem('aretiUser');
                     if (user) {
                         const userData = JSON.parse(user);
                         const now = new Date().getTime();
-                        // If token is relatively fresh (less than 5 minutes old), consider authenticated
-                        if (now - userData.timestamp < 5 * 60 * 1000) {
+                        
+                        // Check if token has expired
+                        if (userData.tokenExpires && userData.tokenExpires > now) {
                             return true;
                         }
                     }
                     
-                    // Otherwise check Keycloak token
-                    return !!keycloak.token;
+                    return false;
                 },
                 
                 // Get user profile
@@ -247,8 +277,16 @@
                 
                 // Get authorization header for API requests
                 getAuthHeader: () => {
+                    // First try to get token directly from Keycloak if authenticated
+                    if (keycloak.authenticated) {
+                        return {
+                            'Authorization': `Bearer ${keycloak.token}`
+                        };
+                    }
+                    
+                    // Fallback to stored token
                     const user = AuthService.getUserProfile();
-                    if (!user) return {};
+                    if (!user || !user.token) return {};
                     
                     return {
                         'Authorization': `Bearer ${user.token}`
