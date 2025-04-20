@@ -1,171 +1,108 @@
-import { Auth0Client } from '@auth0/auth0-spa-js';
+// services/auth.js
 import config from '../config';
-import axios from 'axios';
 
-let auth0Client = null;
-let cachedUser = null;
-
-// Initialize Auth0 client
-const initAuth0 = async () => {
-  if (auth0Client) return auth0Client;
-  
-  auth0Client = new Auth0Client({
-    domain: config.auth0Domain,
-    client_id: config.auth0ClientId,
-    redirect_uri: `${window.location.origin}/callback`,
-    audience: config.audience,
-    cacheLocation: 'localstorage'
-  });
-
-  try {
-    // Handle callback if code is present in URL
-    if (window.location.search.includes("code=")) {
-      await auth0Client.handleRedirectCallback();
-      window.history.replaceState({}, document.title, "/");
-    }
-    
-    // Check if user is authenticated
-    const isAuthenticated = await auth0Client.isAuthenticated();
-    
-    if (isAuthenticated) {
-      // Get user info and cache it
-      cachedUser = await auth0Client.getUser();
-      
-      // Get the Auth0 token
-      const token = await auth0Client.getTokenSilently();
-      
-      // Exchange with our service
-      try {
-        const response = await axios.post(`${config.authServiceUrl}/auth/token`, {
-          token
-        });
-        
-        // Store in localStorage
-        if (response.data && response.data.token) {
-          const userInfo = {
-            name: cachedUser.name || cachedUser.nickname || 'User',
-            email: cachedUser.email || 'user@example.com',
-            role: 'admin', // Customize as needed
-            token: response.data.token,
-            timestamp: new Date().getTime()
-          };
-          
-          localStorage.setItem('aretiUser', JSON.stringify(userInfo));
-        }
-      } catch (error) {
-        console.error('Token exchange error:', error);
-      }
-    }
-  } catch (error) {
-    console.error('Auth0 initialization error:', error);
+class AuthService {
+  constructor() {
+    this.domain = config.auth0Domain;
+    this.clientId = config.auth0ClientId;
+    this.audience = config.audience;
+    this.tokenKey = 'auth_token';
+    this.profileKey = 'user_profile';
   }
-  
-  return auth0Client;
-};
 
-// Authentication service
-const AuthService = {
-  // Initialize
-  init: async () => {
-    try {
-      // Check for cached user in localStorage
-      const userFromStorage = localStorage.getItem('aretiUser');
-      if (userFromStorage) {
-        try {
-          const userData = JSON.parse(userFromStorage);
-          const now = new Date().getTime();
-          
-          // Check if token is not expired (24 hour validity)
-          if (now - userData.timestamp < 24 * 60 * 60 * 1000) {
-            console.log('Found valid user in localStorage');
-            cachedUser = userData;
-            return true;
-          }
-        } catch (e) {
-          console.error('Error parsing user from localStorage:', e);
-        }
+  init() {
+    return new Promise((resolve) => {
+      // Check if user is returning from Auth0 (authentication callback)
+      if (window.location.hash.includes('access_token')) {
+        this.handleAuthentication();
+        resolve(true);
+      } else {
+        resolve(this.isAuthenticated());
       }
-      
-      // Initialize Auth0
-      await initAuth0();
-      
-      // Return authentication status
-      return !!cachedUser;
-    } catch (error) {
-      console.error('Auth initialization error:', error);
-      return false;
-    }
-  },
-
-  // Login
-  login: async () => {
-    try {
-      const client = await initAuth0();
-      await client.loginWithRedirect();
-    } catch (error) {
-      console.error('Login error:', error);
-    }
-  },
-
-  // Logout
-  logout: async () => {
-    try {
-      // Clear local storage
-      localStorage.removeItem('aretiUser');
-      
-      // Clear cached user
-      cachedUser = null;
-      
-      // Logout from Auth0
-      const client = await initAuth0();
-      await client.logout({
-        returnTo: window.location.origin
-      });
-    } catch (error) {
-      console.error('Logout error:', error);
-      window.location.reload();
-    }
-  },
-
-  // Check if authenticated
-  isAuthenticated: () => {
-    return !!cachedUser || !!localStorage.getItem('aretiUser');
-  },
-
-  // Get user profile
-  getUserProfile: () => {
-    if (cachedUser) return cachedUser;
-    
-    const userFromStorage = localStorage.getItem('aretiUser');
-    if (userFromStorage) {
-      try {
-        return JSON.parse(userFromStorage);
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-      }
-    }
-    
-    return null;
-  },
-
-  // Get authorization header
-  getAuthHeader: () => {
-    const userFromStorage = localStorage.getItem('aretiUser');
-    if (userFromStorage) {
-      try {
-        const userData = JSON.parse(userFromStorage);
-        if (userData.token) {
-          return {
-            'Authorization': `Bearer ${userData.token}`
-          };
-        }
-      } catch (error) {
-        console.error('Error creating auth header:', error);
-      }
-    }
-    
-    return {};
+    });
   }
-};
 
-export default AuthService;
+  handleAuthentication() {
+    const hash = this.parseHash(window.location.hash);
+    if (hash.access_token) {
+      this.setSession(hash);
+      return true;
+    }
+    return false;
+  }
+
+  parseHash(hash) {
+    hash = hash.substring(1).split('&');
+    const result = {};
+    hash.forEach(item => {
+      const [key, value] = item.split('=');
+      result[key] = value;
+    });
+    return result;
+  }
+
+  setSession(authResult) {
+    // Set the time that the access token will expire
+    const expiresAt = JSON.stringify(
+      authResult.expires_in * 1000 + new Date().getTime()
+    );
+    localStorage.setItem('access_token', authResult.access_token);
+    localStorage.setItem('id_token', authResult.id_token);
+    localStorage.setItem('expires_at', expiresAt);
+    
+    // Fetch user profile
+    this.getUserInfo(authResult.access_token);
+  }
+
+  getUserInfo(accessToken) {
+    const url = `https://${this.domain}/userinfo`;
+    fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    .then(response => response.json())
+    .then(profile => {
+      localStorage.setItem(this.profileKey, JSON.stringify(profile));
+    })
+    .catch(error => console.error('Error fetching user profile:', error));
+  }
+
+  login() {
+    const redirectUri = `${window.location.origin}/callback`;
+    window.location.href = `https://${this.domain}/authorize?` +
+      `response_type=token&` +
+      `client_id=${this.clientId}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `audience=${encodeURIComponent(this.audience)}&` +
+      `scope=openid profile email`;
+  }
+
+  logout() {
+    // Clear all authentication data from localStorage
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('expires_at');
+    localStorage.removeItem(this.profileKey);
+    
+    // Redirect to Auth0 logout endpoint
+    window.location.href = `https://${this.domain}/v2/logout?client_id=${this.clientId}&returnTo=${encodeURIComponent(window.location.origin)}`;
+  }
+
+  isAuthenticated() {
+    // Check if the user has an active session
+    const expiresAt = JSON.parse(localStorage.getItem('expires_at') || '0');
+    return new Date().getTime() < expiresAt;
+  }
+
+  getUserProfile() {
+    const profile = localStorage.getItem(this.profileKey);
+    return profile ? JSON.parse(profile) : null;
+  }
+
+  getToken() {
+    return localStorage.getItem('access_token');
+  }
+}
+
+export default new AuthService();

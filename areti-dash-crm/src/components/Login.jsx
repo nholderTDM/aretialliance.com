@@ -6,9 +6,10 @@ const Login = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {
-    setIsLoading(true);
-    setError('');
+  // In your login component
+const handleLogin = () => {
+  AuthService.login();
+};
     
     try {
       // Redirect to Keycloak login

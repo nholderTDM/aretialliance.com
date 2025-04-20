@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   Layers, 
   Users, 
+  Building,
+  CheckSquare,
   Settings, 
   LogOut, 
   Menu,
@@ -9,7 +11,12 @@ import {
   Moon,
   Sun
 } from 'lucide-react';
-import AuthService from '../services/keycloak';
+import AuthService from '../services/auth';
+import ApiService from '../services/api';
+import Overview from './Overview';
+import Contacts from './Contacts';
+import Organizations from './Organizations';
+import Tasks from './Tasks';
 
 const Dashboard = () => {
   // Authentication state
@@ -27,6 +34,13 @@ const Dashboard = () => {
   useEffect(() => {
     console.log('Dashboard mounting, checking auth...');
     setAuthLoading(true);
+    
+    // Check authentication
+    if (!AuthService.isAuthenticated()) {
+      // Redirect to login if not authenticated
+      AuthService.login();
+      return;
+    }
     
     // Initialize authentication
     AuthService.init()
@@ -54,6 +68,12 @@ const Dashboard = () => {
       .finally(() => {
         setAuthLoading(false);
       });
+      
+    // Check for dark mode preference
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode === 'true') {
+      setDarkMode(true);
+    }
   }, []);
 
   // Handle login
@@ -82,7 +102,7 @@ const Dashboard = () => {
   
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
-    // Could also save this preference to localStorage
+    // Save preference to localStorage
     localStorage.setItem('darkMode', !darkMode);
   };
   
@@ -90,29 +110,13 @@ const Dashboard = () => {
   const renderContent = () => {
     switch(currentTab) {
       case 'overview':
-        return (
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-lg font-semibold mb-4">Welcome, {currentUser?.name || 'User'}!</h2>
-            <p>You are logged in as: <strong>{currentUser?.role || 'User'}</strong></p>
-            <p className="mt-4">This is the overview dashboard.</p>
-          </div>
-        );
-      case 'users':
-        // Only admins can access user management
-        if (currentUser?.role !== 'admin') {
-          return (
-            <div className="bg-red-100 p-6 rounded-lg border border-red-300">
-              <h2 className="text-lg font-semibold mb-4 text-red-700">Access Denied</h2>
-              <p>You need admin privileges to access this section.</p>
-            </div>
-          );
-        }
-        return (
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-lg font-semibold mb-4">User Management</h2>
-            <p>This page would show user management features.</p>
-          </div>
-        );
+        return <Overview />;
+      case 'contacts':
+        return <Contacts />;
+      case 'organizations':
+        return <Organizations />;
+      case 'tasks':
+        return <Tasks />;
       case 'settings':
         return (
           <div className="bg-white p-6 rounded-lg shadow">
@@ -215,11 +219,27 @@ const Dashboard = () => {
           </a>
           <a 
             href="#" 
-            onClick={() => setCurrentTab('users')}
-            className={`flex items-center py-3 px-4 ${currentTab === 'users' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            onClick={() => setCurrentTab('contacts')}
+            className={`flex items-center py-3 px-4 ${currentTab === 'contacts' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
           >
             <Users size={20} />
-            {sidebarOpen && <span className="ml-3">Users</span>}
+            {sidebarOpen && <span className="ml-3">Contacts</span>}
+          </a>
+          <a 
+            href="#" 
+            onClick={() => setCurrentTab('organizations')}
+            className={`flex items-center py-3 px-4 ${currentTab === 'organizations' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+          >
+            <Building size={20} />
+            {sidebarOpen && <span className="ml-3">Organizations</span>}
+          </a>
+          <a 
+            href="#" 
+            onClick={() => setCurrentTab('tasks')}
+            className={`flex items-center py-3 px-4 ${currentTab === 'tasks' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+          >
+            <CheckSquare size={20} />
+            {sidebarOpen && <span className="ml-3">Tasks</span>}
           </a>
           <a 
             href="#" 
@@ -265,11 +285,27 @@ const Dashboard = () => {
               </a>
               <a 
                 href="#" 
-                onClick={() => { setCurrentTab('users'); toggleMobileMenu(); }}
-                className={`flex items-center py-3 px-4 ${currentTab === 'users' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+                onClick={() => { setCurrentTab('contacts'); toggleMobileMenu(); }}
+                className={`flex items-center py-3 px-4 ${currentTab === 'contacts' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
               >
                 <Users size={20} />
-                <span className="ml-3">Users</span>
+                <span className="ml-3">Contacts</span>
+              </a>
+              <a 
+                href="#" 
+                onClick={() => { setCurrentTab('organizations'); toggleMobileMenu(); }}
+                className={`flex items-center py-3 px-4 ${currentTab === 'organizations' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+              >
+                <Building size={20} />
+                <span className="ml-3">Organizations</span>
+              </a>
+              <a 
+                href="#" 
+                onClick={() => { setCurrentTab('tasks'); toggleMobileMenu(); }}
+                className={`flex items-center py-3 px-4 ${currentTab === 'tasks' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+              >
+                <CheckSquare size={20} />
+                <span className="ml-3">Tasks</span>
               </a>
               <a 
                 href="#" 
