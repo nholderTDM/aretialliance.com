@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Areti Alliance Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
     <style>
         .loading-spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
@@ -23,425 +19,162 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
     </style>
 </head>
 <body class="bg-gray-100">
-    <div id="root">
-        <!-- Loading state until React initializes -->
-        <div class="min-h-screen flex items-center justify-center">
-            <div class="text-center">
-                <div class="loading-spinner mx-auto mb-4"></div>
-                <p class="text-gray-600">Loading dashboard...</p>
+    <div class="min-h-screen">
+        <div class="bg-blue-800 text-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
+                        <span class="text-blue-800 font-bold text-xl">A</span>
+                    </div>
+                    <h1 class="text-xl font-bold">Areti Alliance Dashboard</h1>
+                </div>
+                <div>
+                    <button id="logoutBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto mt-8 p-4">
+            <div id="loginForm" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white font-bold text-2xl">A</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Areti Alliance CRM</h2>
+                    <p class="text-gray-600">Sign in to your account</p>
+                </div>
+                
+                <div id="errorAlert" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+                    Invalid username or password
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <input type="text" id="username" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <button id="loginBtn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Sign in
+                    </button>
+                </div>
+                
+                <div class="mt-4 text-center text-xs text-gray-500">
+                    Use username: admin, password: admin123 for testing
+                </div>
+            </div>
+            
+            <div id="dashboardContent" class="hidden">
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-xl font-semibold mb-4">Welcome to your Dashboard</h2>
+                    <p>You are logged in as: <span id="userRole" class="font-semibold">Admin</span></p>
+                    <p class="mt-4">This is a simplified dashboard. You can expand it with additional features as needed.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold mb-3">Recent Activity</h3>
+                        <p class="text-gray-500">No recent activity</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold mb-3">Tasks</h3>
+                        <p class="text-gray-500">No pending tasks</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold mb-3">Notifications</h3>
+                        <p class="text-gray-500">No new notifications</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- App scripts -->
-    <script type="module">
-        // Import required dependencies from CDN
-        import { createRoot } from 'https://esm.sh/react-dom@18/client';
-        import { useState, useEffect } from 'https://esm.sh/react@18';
-        import { 
-            Layers, Users, Settings, LogOut, 
-            Menu, X, Moon, Sun 
-        } from 'https://esm.sh/lucide-react@0.263.1';
-        
-        // Simple Authentication Service
-        const AuthService = {
-            token: localStorage.getItem('token'),
-            user: JSON.parse(localStorage.getItem('user') || 'null'),
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const dashboardContent = document.getElementById('dashboardContent');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const errorAlert = document.getElementById('errorAlert');
+            const userRole = document.getElementById('userRole');
             
-            isAuthenticated() {
-                return !!this.token;
-            },
+            // Check if user is already logged in
+            const token = localStorage.getItem('token');
+            if (token) {
+                showDashboard();
+            }
             
-            async login(username, password) {
-                try {
-                    const response = await fetch('/auth/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ username, password })
-                    });
-                    
-                    if (!response.ok) {
-                        const error = await response.json();
-                        throw new Error(error.error || 'Login failed');
-                    }
-                    
-                    const data = await response.json();
-                    this.token = data.token;
-                    this.user = data.user;
-                    
-                    localStorage.setItem('token', this.token);
-                    localStorage.setItem('user', JSON.stringify(this.user));
-                    
-                    return data.user;
-                } catch (error) {
-                    console.error('Login error:', error);
-                    throw error;
+            loginBtn.addEventListener('click', function() {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                if (!username || !password) {
+                    errorAlert.textContent = 'Username and password are required';
+                    errorAlert.classList.remove('hidden');
+                    return;
                 }
-            },
+                
+                // Send login request
+                fetch('/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Login failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    showDashboard();
+                })
+                .catch(error => {
+                    console.error('Login error:', error);
+                    errorAlert.textContent = 'Invalid username or password';
+                    errorAlert.classList.remove('hidden');
+                });
+            });
             
-            logout() {
-                this.token = null;
-                this.user = null;
+            logoutBtn.addEventListener('click', function() {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
-                window.location.reload();
-            },
+                showLogin();
+            });
             
-            getUser() {
-                return this.user;
-            }
-        };
-        
-        // Login Component
-        const Login = ({ onLogin }) => {
-            const [username, setUsername] = useState('');
-            const [password, setPassword] = useState('');
-            const [error, setError] = useState('');
-            const [loading, setLoading] = useState(false);
-            
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                setError('');
-                setLoading(true);
+            function showDashboard() {
+                loginForm.classList.add('hidden');
+                dashboardContent.classList.remove('hidden');
                 
-                try {
-                    const user = await AuthService.login(username, password);
-                    onLogin(user);
-                } catch (error) {
-                    setError(error.message || 'Login failed');
-                } finally {
-                    setLoading(false);
-                }
-            };
-            
-            return (
-                <div className="min-h-screen flex items-center justify-center bg-blue-900 py-12 px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
-                        <div>
-                            <div className="flex justify-center">
-                                <div className="w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center mb-4">
-                                    <span className="text-white font-bold text-2xl">A</span>
-                                </div>
-                            </div>
-                            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                                Areti Alliance CRM
-                            </h2>
-                            <p className="mt-2 text-center text-sm text-gray-600">
-                                Sign in to your account
-                            </p>
-                        </div>
-                        
-                        {error && (
-                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                                <span className="block sm:inline">{error}</span>
-                            </div>
-                        )}
-                        
-                        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                            <div>
-                                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                                    Username
-                                </label>
-                                <input
-                                    id="username"
-                                    name="username"
-                                    type="text"
-                                    required
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                />
-                            </div>
-                            
-                            <div>
-                                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                    Password
-                                </label>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    required
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                            </div>
-                            
-                            <div>
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-800 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-                                >
-                                    {loading ? 'Signing in...' : 'Sign in'}
-                                </button>
-                            </div>
-                        </form>
-                        
-                        <div className="mt-4 text-center">
-                            <p className="text-xs text-gray-600">
-                                Use username: admin, password: admin123 for testing
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-        
-        // Dashboard Component
-        const Dashboard = () => {
-            // State variables
-            const [isAuthenticated, setIsAuthenticated] = useState(AuthService.isAuthenticated());
-            const [currentUser, setCurrentUser] = useState(AuthService.getUser());
-            const [sidebarOpen, setSidebarOpen] = useState(true);
-            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-            const [currentTab, setCurrentTab] = useState('overview');
-            const [darkMode, setDarkMode] = useState(false);
-            
-            // Handle login
-            const handleLogin = (user) => {
-                setCurrentUser(user);
-                setIsAuthenticated(true);
-            };
-            
-            // Handle logout
-            const handleLogout = () => {
-                AuthService.logout();
-                setCurrentUser(null);
-                setIsAuthenticated(false);
-            };
-            
-            // Functions
-            const toggleSidebar = () => {
-                setSidebarOpen(!sidebarOpen);
-            };
-            
-            const toggleMobileMenu = () => {
-                setMobileMenuOpen(!mobileMenuOpen);
-            };
-            
-            const toggleDarkMode = () => {
-                setDarkMode(!darkMode);
-            };
-            
-            // If not authenticated, show login form
-            if (!isAuthenticated) {
-                return React.createElement(Login, { onLogin: handleLogin });
+                // Get user info from localStorage
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                userRole.textContent = user.role || 'User';
             }
             
-            // Define style variables
-            const sidebarWidth = sidebarOpen ? 'w-64' : 'w-20';
-            const mainWidth = sidebarOpen ? 'ml-64' : 'ml-20';
-            
-            return (
-                React.createElement('div', { className: `flex h-screen bg-gray-100 ${darkMode ? 'dark' : ''}` },
-                    // Sidebar
-                    React.createElement('div', { className: `fixed inset-y-0 left-0 ${sidebarWidth} bg-blue-800 text-white transition-all duration-300 ease-in-out z-30 shadow-lg hidden md:block` },
-                        React.createElement('div', { className: "flex items-center justify-between p-4 border-b border-blue-900" },
-                            React.createElement('div', { className: "flex items-center" },
-                                sidebarOpen ? 
-                                    React.createElement('div', { className: "flex items-center" },
-                                        React.createElement('div', { className: "w-8 h-8 bg-white rounded-full flex items-center justify-center mr-2" },
-                                            React.createElement('span', { className: "text-blue-800 font-bold" }, "A")
-                                        ),
-                                        React.createElement('span', { className: "font-bold text-lg" }, "Areti Alliance")
-                                    ) : 
-                                    React.createElement('div', { className: "w-10 h-10 bg-white rounded-full flex items-center justify-center" },
-                                        React.createElement('span', { className: "text-blue-800 font-bold" }, "A")
-                                    )
-                            ),
-                            React.createElement('button', { onClick: toggleSidebar, className: "text-white focus:outline-none" },
-                                sidebarOpen ? 
-                                    React.createElement(X, { size: 20 }) : 
-                                    React.createElement(Menu, { size: 20 })
-                            )
-                        ),
-                        
-                        // Navigation Menu
-                        React.createElement('nav', { className: "mt-5" },
-                            React.createElement('div', { className: `px-4 pb-4 ${sidebarOpen ? 'text-sm text-gray-300' : 'text-center'}` },
-                                sidebarOpen ? 'MAIN MENU' : ''
-                            ),
-                            
-                            // Overview Tab
-                            React.createElement('a', { 
-                                href: "#",
-                                onClick: (e) => { e.preventDefault(); setCurrentTab('overview'); },
-                                className: `flex items-center py-3 px-4 ${currentTab === 'overview' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
-                            },
-                                React.createElement(Layers, { size: 20 }),
-                                sidebarOpen && React.createElement('span', { className: "ml-3" }, "Overview")
-                            ),
-                            
-                            // Users Tab
-                            React.createElement('a', { 
-                                href: "#",
-                                onClick: (e) => { e.preventDefault(); setCurrentTab('users'); },
-                                className: `flex items-center py-3 px-4 ${currentTab === 'users' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
-                            },
-                                React.createElement(Users, { size: 20 }),
-                                sidebarOpen && React.createElement('span', { className: "ml-3" }, "Users")
-                            ),
-                            
-                            // Settings Tab
-                            React.createElement('a', { 
-                                href: "#",
-                                onClick: (e) => { e.preventDefault(); setCurrentTab('settings'); },
-                                className: `flex items-center py-3 px-4 ${currentTab === 'settings' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
-                            },
-                                React.createElement(Settings, { size: 20 }),
-                                sidebarOpen && React.createElement('span', { className: "ml-3" }, "Settings")
-                            )
-                        ),
-                        
-                        // Logout Button
-                        React.createElement('div', { className: "absolute bottom-0 w-full p-4 border-t border-blue-900" },
-                            React.createElement('button', { onClick: handleLogout, className: "flex items-center text-white w-full" },
-                                React.createElement(LogOut, { size: 20 }),
-                                sidebarOpen && React.createElement('span', { className: "ml-3" }, "Logout")
-                            )
-                        )
-                    ),
-                    
-                    // Mobile Menu
-                    mobileMenuOpen && React.createElement('div', { 
-                        className: "fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden", 
-                        onClick: toggleMobileMenu 
-                    },
-                        React.createElement('div', { 
-                            className: "fixed inset-y-0 left-0 w-64 bg-blue-800 text-white z-50", 
-                            onClick: e => e.stopPropagation() 
-                        },
-                            // Mobile Menu Header
-                            React.createElement('div', { className: "flex items-center justify-between p-4 border-b border-blue-900" },
-                                React.createElement('div', { className: "flex items-center" },
-                                    React.createElement('div', { className: "w-8 h-8 bg-white rounded-full flex items-center justify-center mr-2" },
-                                        React.createElement('span', { className: "text-blue-800 font-bold" }, "A")
-                                    ),
-                                    React.createElement('span', { className: "font-bold text-lg" }, "Areti Alliance")
-                                ),
-                                React.createElement('button', { onClick: toggleMobileMenu, className: "text-white focus:outline-none" },
-                                    React.createElement(X, { size: 20 })
-                                )
-                            ),
-                            
-                            // Mobile Navigation Menu
-                            React.createElement('nav', { className: "mt-5" },
-                                React.createElement('div', { className: "px-4 pb-4 text-sm text-gray-300" }, "MAIN MENU"),
-                                
-                                // Mobile Overview Tab
-                                React.createElement('a', { 
-                                    href: "#",
-                                    onClick: (e) => { e.preventDefault(); setCurrentTab('overview'); toggleMobileMenu(); },
-                                    className: `flex items-center py-3 px-4 ${currentTab === 'overview' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
-                                },
-                                    React.createElement(Layers, { size: 20 }),
-                                    React.createElement('span', { className: "ml-3" }, "Overview")
-                                ),
-                                
-                                // Mobile Users Tab
-                                React.createElement('a', { 
-                                    href: "#",
-                                    onClick: (e) => { e.preventDefault(); setCurrentTab('users'); toggleMobileMenu(); },
-                                    className: `flex items-center py-3 px-4 ${currentTab === 'users' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
-                                },
-                                    React.createElement(Users, { size: 20 }),
-                                    React.createElement('span', { className: "ml-3" }, "Users")
-                                ),
-                                
-                                // Mobile Settings Tab
-                                React.createElement('a', { 
-                                    href: "#",
-                                    onClick: (e) => { e.preventDefault(); setCurrentTab('settings'); toggleMobileMenu(); },
-                                    className: `flex items-center py-3 px-4 ${currentTab === 'settings' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
-                                },
-                                    React.createElement(Settings, { size: 20 }),
-                                    React.createElement('span', { className: "ml-3" }, "Settings")
-                                )
-                            ),
-                            
-                            // Mobile Logout Button
-                            React.createElement('div', { className: "absolute bottom-0 w-full p-4 border-t border-blue-900" },
-                                React.createElement('button', { onClick: handleLogout, className: "flex items-center text-white w-full" },
-                                    React.createElement(LogOut, { size: 20 }),
-                                    React.createElement('span', { className: "ml-3" }, "Logout")
-                                )
-                            )
-                        )
-                    ),
-                    
-                    // Main Content
-                    React.createElement('div', { className: `flex-1 transition-all duration-300 ease-in-out ${mainWidth}` },
-                        // Top Navigation
-                        React.createElement('header', { className: "bg-white shadow-sm" },
-                            React.createElement('div', { className: "flex justify-between items-center px-4 py-3" },
-                                React.createElement('div', { className: "flex items-center" },
-                                    React.createElement('button', { className: "md:hidden mr-4", onClick: toggleMobileMenu },
-                                        React.createElement(Menu, { size: 24 })
-                                    ),
-                                    React.createElement('h1', { className: "text-xl font-semibold text-gray-800" },
-                                        `${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)} Dashboard`
-                                    )
-                                ),
-                                React.createElement('div', { className: "flex items-center space-x-4" },
-                                    React.createElement('button', { onClick: toggleDarkMode, className: "p-1 rounded-full hover:bg-gray-100" },
-                                        darkMode ? 
-                                            React.createElement(Sun, { size: 20 }) : 
-                                            React.createElement(Moon, { size: 20 })
-                                    ),
-                                    React.createElement('div', { className: "flex items-center" },
-                                        React.createElement('div', { className: "h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center" },
-                                            React.createElement('span', { className: "font-medium" }, 
-                                                currentUser?.name?.[0]?.toUpperCase() || 'A'
-                                            )
-                                        ),
-                                        React.createElement('span', { className: "ml-2 text-sm hidden md:block" },
-                                            currentUser?.name || 'User'
-                                        )
-                                    )
-                                )
-                            )
-                        ),
-                        
-                        // Page Content
-                        React.createElement('main', { className: "p-4" },
-                            React.createElement('div', { className: "bg-white p-6 rounded-lg shadow" },
-                                React.createElement('h2', { className: "text-lg font-semibold mb-4" }, 
-                                    `Welcome, ${currentUser?.name || 'User'}!`
-                                ),
-                                React.createElement('p', {}, 
-                                    `You are logged in as: `, 
-                                    React.createElement('strong', {}, currentUser?.role || 'User')
-                                ),
-                                React.createElement('p', { className: "mt-4" }, 
-                                    "This is a simplified dashboard that uses local authentication. You can expand it with additional features as needed."
-                                )
-                            )
-                        )
-                    )
-                )
-            );
-        };
-        
-        // Initialize React
-        const rootElement = document.getElementById('root');
-        const root = createRoot(rootElement);
-        root.render(React.createElement(Dashboard));
+            function showLogin() {
+                loginForm.classList.remove('hidden');
+                dashboardContent.classList.add('hidden');
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                errorAlert.classList.add('hidden');
+            }
+        });
     </script>
 </body>
 </html>
