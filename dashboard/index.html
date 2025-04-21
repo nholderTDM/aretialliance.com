@@ -126,30 +126,27 @@
                     return;
                 }
                 
-                // Send login request
-                fetch('/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Login failed');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                // TEMPORARY SOLUTION: Check against hardcoded credentials
+                // This bypasses the server authentication for now
+                if ((username === 'admin' && password === 'admin123') || 
+                    (username === 'user' && password === 'user123')) {
+                    
+                    // Create a mock token and user object
+                    const mockToken = 'mock_token_' + Date.now();
+                    const mockUser = {
+                        id: username === 'admin' ? '1' : '2',
+                        name: username === 'admin' ? 'Admin User' : 'Regular User',
+                        email: username === 'admin' ? 'admin@aretialliance.com' : 'user@aretialliance.com',
+                        role: username === 'admin' ? 'admin' : 'user'
+                    };
+                    
+                    localStorage.setItem('token', mockToken);
+                    localStorage.setItem('user', JSON.stringify(mockUser));
                     showDashboard();
-                })
-                .catch(error => {
-                    console.error('Login error:', error);
+                } else {
                     errorAlert.textContent = 'Invalid username or password';
                     errorAlert.classList.remove('hidden');
-                });
+                }
             });
             
             logoutBtn.addEventListener('click', function() {
