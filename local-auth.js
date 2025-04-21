@@ -20,7 +20,7 @@ const users = [
     name: 'Nate Holder',
     email: 'nholder@aretialliance.com',
     role: 'admin'
-  }
+  },
 {
     id: '3',
     username: 'fgill',
