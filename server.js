@@ -2,14 +2,57 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
-const localAuth = require('./local-auth');
+
+// Local authentication service
+const localAuth = {
+  authenticate: (username, password) => {
+    // Simple user database
+    const users = [
+      {
+        id: '1',
+        username: 'admin',
+        password: 'admin123',
+        name: 'Admin User',
+        email: 'admin@aretialliance.com',
+        role: 'admin'
+      },
+      {
+        id: '2',
+        username: 'user',
+        password: 'user123',
+        name: 'Regular User',
+        email: 'user@aretialliance.com',
+        role: 'user'
+      }
+    ];
+
+    const user = users.find(u => u.username === username && u.password === password);
+    if (!user) return null;
+    
+    // JWT Secret
+    const JWT_SECRET = '3374021dca7bded335c1c2b15ff77984d52fc4f885e2335d79eb546f2431377f';
+    
+    // Create and return a token
+    const token = jwt.sign(
+      { 
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    
+    return { user, token };
+  }
+};
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // JWT Secret
-const JWT_SECRET = process.env.JWT_SECRET || '3374021dca7bded335c1c2b15ff77984d52fc4f885e2335d79eb546f2431377f';
+const JWT_SECRET = '3374021dca7bded335c1c2b15ff77984d52fc4f885e2335d79eb546f2431377f';
 
 // Middleware
 app.use(cors());
@@ -69,29 +112,22 @@ app.post('/auth/login', (req, res) => {
   });
 });
 
-app.get('/auth/user', authMiddleware, (req, res) => {
-  res.json({ user: req.user });
-});
-
-// API Routes - Protected by authentication
-app.use('/api', authMiddleware);
-
-// Example protected API route
-app.get('/api/data', (req, res) => {
+// Protected API endpoint
+app.get('/api/data', authMiddleware, (req, res) => {
   res.json({
     message: 'Protected data',
     user: req.user
   });
 });
 
-// Static files for main website
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Static files for dashboard
+// Serve static files for the dashboard
 app.use('/dashboard', express.static(path.join(__dirname, 'dashboard')));
 
-// Dashboard route handling
-app.get('/dashboard/*', (req, res) => {
+// Serve static files for the main website
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Dashboard route handler
+app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'dashboard', 'index.html'));
 });
 
