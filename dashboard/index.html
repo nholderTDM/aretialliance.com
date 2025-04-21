@@ -4,18 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Areti Alliance Dashboard</title>
-    <!-- Import Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Import Keycloak -->
-    <script src="https://cdn.jsdelivr.net/npm/keycloak-js@21.1.2/dist/keycloak.min.js"></script>
-    <!-- Import React -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- Import Lucide icons -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        /* Additional custom styles can go here */
         .loading-spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
             width: 36px;
@@ -61,302 +55,178 @@
             Menu, X, Moon, Sun 
         } from 'https://esm.sh/lucide-react@0.263.1';
         
-        // AuthService implementation
-        const AuthService = (() => {
-            // Configuration - using the exact values provided
-            const KEYCLOAK_URL = 'https://auth.aretialliance.com';
-            const KEYCLOAK_REALM = 'areti-alliance';
-            const KEYCLOAK_CLIENT_ID = 'areti-crm-client';
+        // Simple Authentication Service
+        const AuthService = {
+            token: localStorage.getItem('token'),
+            user: JSON.parse(localStorage.getItem('user') || 'null'),
             
-            // Initialize Keycloak with exact configuration
-            const keycloak = new Keycloak({
-                url: KEYCLOAK_URL,
-                realm: KEYCLOAK_REALM,
-                clientId: KEYCLOAK_CLIENT_ID
-            });
+            isAuthenticated() {
+                return !!this.token;
+            },
             
-            // Debug logging helper with timestamp
-            const debugLog = (...args) => {
-                const timestamp = new Date().toISOString();
-                console.log(`[Auth ${timestamp}]`, ...args);
-            };
+            async login(username, password) {
+                try {
+                    const response = await fetch('/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
+                    
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Login failed');
+                    }
+                    
+                    const data = await response.json();
+                    this.token = data.token;
+                    this.user = data.user;
+                    
+                    localStorage.setItem('token', this.token);
+                    localStorage.setItem('user', JSON.stringify(this.user));
+                    
+                    return data.user;
+                } catch (error) {
+                    console.error('Login error:', error);
+                    throw error;
+                }
+            },
             
-            return {
-                // Initialize Keycloak
-                init: () => {
-                    debugLog('Initializing Keycloak');
-                    return new Promise((resolve, reject) => {
-                        // Determine base path for silent check SSO
-                        const fullPath = window.location.pathname;
-                        const basePath = fullPath.endsWith('/') 
-                            ? fullPath.slice(0, -1)
-                            : fullPath.substring(0, fullPath.lastIndexOf('/') + 1);
-                        
-                        const silentCheckSsoUri = window.location.origin + basePath + 'silent-check-sso.html';
-                        
-                        debugLog('Silent check SSO URI:', silentCheckSsoUri);
-                        
-                        keycloak.init({
-                            onLoad: 'check-sso',
-                            silentCheckSsoRedirectUri: silentCheckSsoUri,
-                            pkceMethod: 'S256',
-                            checkLoginIframe: false,
-                            enableLogging: true // Enable Keycloak logging for debugging
-                        })
-                        .then(authenticated => {
-                            debugLog('Keycloak initialized, authenticated:', authenticated);
-                            if (authenticated) {
-                                debugLog('User authenticated with valid token');
-                                debugLog('Token expires in', Math.round((keycloak.tokenParsed.exp - new Date().getTime()/1000)) + ' seconds');
-                                
-                                // Store basic user info from token with additional debugging info
-                                const basicUserInfo = {
-                                    name: keycloak.tokenParsed.preferred_username || keycloak.tokenParsed.name,
-                                    email: keycloak.tokenParsed.email || keycloak.tokenParsed.preferred_username,
-                                    role: AuthService.getUserRole(keycloak.tokenParsed),
-                                    token: keycloak.token,
-                                    refreshToken: keycloak.refreshToken,
-                                    tokenExpires: keycloak.tokenParsed.exp * 1000, // Convert to milliseconds
-                                    timestamp: new Date().getTime()
-                                };
-                                
-                                localStorage.setItem('aretiUser', JSON.stringify(basicUserInfo));
-                                
-                                // Setup token refresh
-                                AuthService.setupTokenRefresh();
-                                
-                                resolve(authenticated);
-                            } else {
-                                debugLog('User not authenticated, redirecting to login');
-                                localStorage.removeItem('aretiUser');
-                                resolve(authenticated);
-                            }
-                        })
-                        .catch(error => {
-                            debugLog('Keycloak init error:', error);
-                            reject(error);
-                        });
-                    });
-                },
+            logout() {
+                this.token = null;
+                this.user = null;
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.reload();
+            },
+            
+            getUser() {
+                return this.user;
+            }
+        };
+        
+        // Login Component
+        const Login = ({ onLogin }) => {
+            const [username, setUsername] = useState('');
+            const [password, setPassword] = useState('');
+            const [error, setError] = useState('');
+            const [loading, setLoading] = useState(false);
+            
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setError('');
+                setLoading(true);
                 
-                // Get user role from token
-                getUserRole: (tokenParsed) => {
-                    if (!tokenParsed || !tokenParsed.realm_access) {
-                        return 'user';
-                    }
-                    
-                    const roles = tokenParsed.realm_access.roles || [];
-                    
-                    // Log roles for debugging
-                    debugLog('User roles:', roles);
-                    
-                    if (roles.includes('admin')) return 'admin';
-                    if (roles.includes('manager')) return 'manager';
-                    return 'user';
-                },
-                
-                // Setup automatic token refresh
-                setupTokenRefresh: () => {
-                    // Min validity in seconds - refresh token 60 seconds before expiration
-                    const minValidity = 60; 
-                    
-                    keycloak.onTokenExpired = () => {
-                        debugLog('Token expired, refreshing...');
-                        keycloak.updateToken(minValidity)
-                            .then((refreshed) => {
-                                if (refreshed) {
-                                    debugLog('Token refreshed successfully');
-                                    // Update stored user info with new token
-                                    const user = AuthService.getUserProfile();
-                                    if (user) {
-                                        user.token = keycloak.token;
-                                        user.refreshToken = keycloak.refreshToken;
-                                        user.tokenExpires = keycloak.tokenParsed.exp * 1000;
-                                        user.timestamp = new Date().getTime();
-                                        localStorage.setItem('aretiUser', JSON.stringify(user));
-                                    }
-                                } else {
-                                    debugLog('Token not refreshed, still valid');
-                                }
-                            })
-                            .catch(error => {
-                                debugLog('Failed to refresh token:', error);
-                                // Clear local data and force re-login
-                                localStorage.removeItem('aretiUser');
-                                AuthService.login();
-                            });
-                    };
-                    
-                    // Set up periodic token check (every 30 seconds)
-                    setInterval(() => {
-                        if (keycloak.authenticated) {
-                            const currentTime = Math.floor(Date.now() / 1000);
-                            const timeToExpire = keycloak.tokenParsed.exp - currentTime;
-                            
-                            // If token expires in less than min validity, refresh it
-                            if (timeToExpire < minValidity) {
-                                debugLog(`Token expires in ${timeToExpire} seconds, refreshing...`);
-                                keycloak.updateToken(minValidity)
-                                    .then((refreshed) => {
-                                        if (refreshed) {
-                                            debugLog('Token refreshed during periodic check');
-                                            // Update stored user info with new token
-                                            const user = AuthService.getUserProfile();
-                                            if (user) {
-                                                user.token = keycloak.token;
-                                                user.refreshToken = keycloak.refreshToken;
-                                                user.tokenExpires = keycloak.tokenParsed.exp * 1000;
-                                                user.timestamp = new Date().getTime();
-                                                localStorage.setItem('aretiUser', JSON.stringify(user));
-                                            }
-                                        }
-                                    })
-                                    .catch((error) => {
-                                        debugLog('Periodic token refresh failed:', error);
-                                        // Don't force logout immediately on periodic check failure
-                                    });
-                            }
-                        }
-                    }, 30000);
-                },
-                
-                // Log in
-                login: () => {
-                    debugLog('Starting login process');
-                    // Clear any existing auth data
-                    localStorage.removeItem('aretiUser');
-                    
-                    // Ensure we redirect back to the dashboard after login
-                    const redirectUri = window.location.origin + '/dashboard';
-                    debugLog('Redirect URI:', redirectUri);
-                    
-                    keycloak.login({
-                        redirectUri: redirectUri
-                    });
-                },
-                
-                // Log out
-                logout: () => {
-                    debugLog('Logging out');
-                    localStorage.removeItem('aretiUser');
-                    
-                    // Redirect to main website after logout
-                    const redirectUri = window.location.origin;
-                    keycloak.logout({
-                        redirectUri: redirectUri
-                    });
-                },
-                
-                // Check if authenticated
-                isAuthenticated: () => {
-                    // First check Keycloak directly
-                    if (keycloak.authenticated) {
-                        return true;
-                    }
-                    
-                    // Then check local storage as fallback
-                    const user = localStorage.getItem('aretiUser');
-                    if (user) {
-                        const userData = JSON.parse(user);
-                        const now = new Date().getTime();
-                        
-                        // Check if token has expired
-                        if (userData.tokenExpires && userData.tokenExpires > now) {
-                            return true;
-                        }
-                    }
-                    
-                    return false;
-                },
-                
-                // Get user profile
-                getUserProfile: () => {
-                    const user = localStorage.getItem('aretiUser');
-                    return user ? JSON.parse(user) : null;
-                },
-                
-                // Get authorization header for API requests
-                getAuthHeader: () => {
-                    // First try to get token directly from Keycloak if authenticated
-                    if (keycloak.authenticated) {
-                        return {
-                            'Authorization': `Bearer ${keycloak.token}`
-                        };
-                    }
-                    
-                    // Fallback to stored token
-                    const user = AuthService.getUserProfile();
-                    if (!user || !user.token) return {};
-                    
-                    return {
-                        'Authorization': `Bearer ${user.token}`
-                    };
+                try {
+                    const user = await AuthService.login(username, password);
+                    onLogin(user);
+                } catch (error) {
+                    setError(error.message || 'Login failed');
+                } finally {
+                    setLoading(false);
                 }
             };
-        })();
+            
+            return (
+                <div className="min-h-screen flex items-center justify-center bg-blue-900 py-12 px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
+                        <div>
+                            <div className="flex justify-center">
+                                <div className="w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center mb-4">
+                                    <span className="text-white font-bold text-2xl">A</span>
+                                </div>
+                            </div>
+                            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                                Areti Alliance CRM
+                            </h2>
+                            <p className="mt-2 text-center text-sm text-gray-600">
+                                Sign in to your account
+                            </p>
+                        </div>
+                        
+                        {error && (
+                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                <span className="block sm:inline">{error}</span>
+                            </div>
+                        )}
+                        
+                        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                            <div>
+                                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                                    Username
+                                </label>
+                                <input
+                                    id="username"
+                                    name="username"
+                                    type="text"
+                                    required
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                />
+                            </div>
+                            
+                            <div>
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                                    Password
+                                </label>
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    required
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </div>
+                            
+                            <div>
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-800 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                                >
+                                    {loading ? 'Signing in...' : 'Sign in'}
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div className="mt-4 text-center">
+                            <p className="text-xs text-gray-600">
+                                Use username: admin, password: admin123 for testing
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
         
         // Dashboard Component
         const Dashboard = () => {
-            // Authentication state
-            const [isAuthenticated, setIsAuthenticated] = useState(false);
-            const [currentUser, setCurrentUser] = useState(null);
-            const [authLoading, setAuthLoading] = useState(true);
-            
-            // UI state
+            // State variables
+            const [isAuthenticated, setIsAuthenticated] = useState(AuthService.isAuthenticated());
+            const [currentUser, setCurrentUser] = useState(AuthService.getUser());
             const [sidebarOpen, setSidebarOpen] = useState(true);
             const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
             const [currentTab, setCurrentTab] = useState('overview');
             const [darkMode, setDarkMode] = useState(false);
             
-            // Check for existing session on component mount
-            useEffect(() => {
-                console.log('Dashboard mounting, checking auth...');
-                setAuthLoading(true);
-                
-                // Initialize authentication
-                AuthService.init()
-                    .then(authenticated => {
-                        console.log('Auth initialization result:', authenticated);
-                        if (authenticated) {
-                            const userData = AuthService.getUserProfile();
-                            console.log('User profile:', userData);
-                            if (userData) {
-                                setCurrentUser(userData);
-                                setIsAuthenticated(true);
-                            } else {
-                                console.log('No user profile found, redirecting to login');
-                                AuthService.login();
-                            }
-                        } else {
-                            console.log('Not authenticated, redirecting to login');
-                            AuthService.login();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Authentication error:', error);
-                        AuthService.login();
-                    })
-                    .finally(() => {
-                        setAuthLoading(false);
-                    });
-            }, []);
-            
             // Handle login
-            const handleLogin = () => {
-                AuthService.login();
+            const handleLogin = (user) => {
+                setCurrentUser(user);
+                setIsAuthenticated(true);
             };
             
             // Handle logout
             const handleLogout = () => {
-                // Reset component state
+                AuthService.logout();
                 setCurrentUser(null);
                 setIsAuthenticated(false);
-                
-                // Log out via AuthService
-                AuthService.logout();
             };
             
-            // UI functions
+            // Functions
             const toggleSidebar = () => {
                 setSidebarOpen(!sidebarOpen);
             };
@@ -367,99 +237,17 @@
             
             const toggleDarkMode = () => {
                 setDarkMode(!darkMode);
-                // Could also save this preference to localStorage
-                localStorage.setItem('darkMode', !darkMode);
             };
             
-            // Content rendering based on tab
-            const renderContent = () => {
-                switch(currentTab) {
-                    case 'overview':
-                        return (
-                            React.createElement('div', { className: "bg-white p-6 rounded-lg shadow" },
-                                React.createElement('h2', { className: "text-lg font-semibold mb-4" }, `Welcome, ${currentUser?.name || 'User'}!`),
-                                React.createElement('p', {}, 
-                                    `You are logged in as: `, 
-                                    React.createElement('strong', {}, currentUser?.role || 'User')
-                                ),
-                                React.createElement('p', { className: "mt-4" }, "This is the overview dashboard.")
-                            )
-                        );
-                    case 'users':
-                        // Only admins can access user management
-                        if (currentUser?.role !== 'admin') {
-                            return (
-                                React.createElement('div', { className: "bg-red-100 p-6 rounded-lg border border-red-300" },
-                                    React.createElement('h2', { className: "text-lg font-semibold mb-4 text-red-700" }, "Access Denied"),
-                                    React.createElement('p', {}, "You need admin privileges to access this section.")
-                                )
-                            );
-                        }
-                        return (
-                            React.createElement('div', { className: "bg-white p-6 rounded-lg shadow" },
-                                React.createElement('h2', { className: "text-lg font-semibold mb-4" }, "User Management"),
-                                React.createElement('p', {}, "This page would show user management features.")
-                            )
-                        );
-                    case 'settings':
-                        return (
-                            React.createElement('div', { className: "bg-white p-6 rounded-lg shadow" },
-                                React.createElement('h2', { className: "text-lg font-semibold mb-4" }, "Settings"),
-                                React.createElement('p', {}, "This page would show settings options.")
-                            )
-                        );
-                    default:
-                        return (
-                            React.createElement('div', { className: "bg-white p-6 rounded-lg shadow" },
-                                React.createElement('h2', { className: "text-lg font-semibold mb-4" }, "Page Not Found"),
-                                React.createElement('p', {}, "The requested page was not found.")
-                            )
-                        );
-                }
-            };
-            
-            // Show loading state
-            if (authLoading) {
-                return (
-                    React.createElement('div', { className: "min-h-screen flex items-center justify-center bg-blue-900 py-12 px-4 sm:px-6 lg:px-8" },
-                        React.createElement('div', { className: "max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg text-center" },
-                            React.createElement('div', { className: "animate-spin rounded-full h-12 w-12 border-b-2 border-blue-800 mx-auto" }),
-                            React.createElement('p', { className: "text-gray-600" }, "Loading dashboard...")
-                        )
-                    )
-                );
-            }
-            
-            // If not authenticated, show login prompt
+            // If not authenticated, show login form
             if (!isAuthenticated) {
-                return (
-                    React.createElement('div', { className: "min-h-screen flex items-center justify-center bg-blue-900 py-12 px-4 sm:px-6 lg:px-8" },
-                        React.createElement('div', { className: "max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg" },
-                            React.createElement('div', {},
-                                React.createElement('div', { className: "flex justify-center" },
-                                    React.createElement('div', { className: "w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center mb-4" },
-                                        React.createElement('span', { className: "text-white font-bold text-2xl" }, "A")
-                                    )
-                                ),
-                                React.createElement('h2', { className: "mt-6 text-center text-3xl font-extrabold text-gray-900" }, "Areti Alliance CRM"),
-                                React.createElement('p', { className: "mt-2 text-center text-sm text-gray-600" }, "Sign in to your account")
-                            ),
-                            React.createElement('div', {},
-                                React.createElement('button', { 
-                                    onClick: handleLogin,
-                                    className: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-800 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                }, "Sign in with SSO")
-                            )
-                        )
-                    )
-                );
+                return React.createElement(Login, { onLogin: handleLogin });
             }
             
             // Define style variables
             const sidebarWidth = sidebarOpen ? 'w-64' : 'w-20';
             const mainWidth = sidebarOpen ? 'ml-64' : 'ml-20';
             
-            // Main dashboard UI
             return (
                 React.createElement('div', { className: `flex h-screen bg-gray-100 ${darkMode ? 'dark' : ''}` },
                     // Sidebar
@@ -493,7 +281,7 @@
                             // Overview Tab
                             React.createElement('a', { 
                                 href: "#",
-                                onClick: () => setCurrentTab('overview'),
+                                onClick: (e) => { e.preventDefault(); setCurrentTab('overview'); },
                                 className: `flex items-center py-3 px-4 ${currentTab === 'overview' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
                             },
                                 React.createElement(Layers, { size: 20 }),
@@ -503,7 +291,7 @@
                             // Users Tab
                             React.createElement('a', { 
                                 href: "#",
-                                onClick: () => setCurrentTab('users'),
+                                onClick: (e) => { e.preventDefault(); setCurrentTab('users'); },
                                 className: `flex items-center py-3 px-4 ${currentTab === 'users' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
                             },
                                 React.createElement(Users, { size: 20 }),
@@ -513,7 +301,7 @@
                             // Settings Tab
                             React.createElement('a', { 
                                 href: "#",
-                                onClick: () => setCurrentTab('settings'),
+                                onClick: (e) => { e.preventDefault(); setCurrentTab('settings'); },
                                 className: `flex items-center py-3 px-4 ${currentTab === 'settings' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
                             },
                                 React.createElement(Settings, { size: 20 }),
@@ -559,7 +347,7 @@
                                 // Mobile Overview Tab
                                 React.createElement('a', { 
                                     href: "#",
-                                    onClick: () => { setCurrentTab('overview'); toggleMobileMenu(); },
+                                    onClick: (e) => { e.preventDefault(); setCurrentTab('overview'); toggleMobileMenu(); },
                                     className: `flex items-center py-3 px-4 ${currentTab === 'overview' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
                                 },
                                     React.createElement(Layers, { size: 20 }),
@@ -569,7 +357,7 @@
                                 // Mobile Users Tab
                                 React.createElement('a', { 
                                     href: "#",
-                                    onClick: () => { setCurrentTab('users'); toggleMobileMenu(); },
+                                    onClick: (e) => { e.preventDefault(); setCurrentTab('users'); toggleMobileMenu(); },
                                     className: `flex items-center py-3 px-4 ${currentTab === 'users' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
                                 },
                                     React.createElement(Users, { size: 20 }),
@@ -579,7 +367,7 @@
                                 // Mobile Settings Tab
                                 React.createElement('a', { 
                                     href: "#",
-                                    onClick: () => { setCurrentTab('settings'); toggleMobileMenu(); },
+                                    onClick: (e) => { e.preventDefault(); setCurrentTab('settings'); toggleMobileMenu(); },
                                     className: `flex items-center py-3 px-4 ${currentTab === 'settings' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`
                                 },
                                     React.createElement(Settings, { size: 20 }),
@@ -632,7 +420,18 @@
                         
                         // Page Content
                         React.createElement('main', { className: "p-4" },
-                            renderContent()
+                            React.createElement('div', { className: "bg-white p-6 rounded-lg shadow" },
+                                React.createElement('h2', { className: "text-lg font-semibold mb-4" }, 
+                                    `Welcome, ${currentUser?.name || 'User'}!`
+                                ),
+                                React.createElement('p', {}, 
+                                    `You are logged in as: `, 
+                                    React.createElement('strong', {}, currentUser?.role || 'User')
+                                ),
+                                React.createElement('p', { className: "mt-4" }, 
+                                    "This is a simplified dashboard that uses local authentication. You can expand it with additional features as needed."
+                                )
+                            )
                         )
                     )
                 )
