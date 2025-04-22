@@ -125,6 +125,24 @@
                             <a href="#" data-tab="tasks" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
                                 <i class="ri-task-line mr-2"></i> Tasks
                             </a>
+                            <a href="#" data-tab="deliveries" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-truck-line mr-2"></i> Deliveries
+                            </a>
+                            <a href="#" data-tab="drivers" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-user-star-line mr-2"></i> Drivers
+                            </a>
+                            <a href="#" data-tab="routes" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-route-line mr-2"></i> Routes
+                            </a>
+                            <a href="#" data-tab="quotes" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-file-list-3-line mr-2"></i> Quotes
+                            </a>
+                            <a href="#" data-tab="performance" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-line-chart-line mr-2"></i> Performance
+                            </a>
+                            <a href="#" data-tab="revenue" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-money-dollar-circle-line mr-2"></i> Revenue
+                            </a>
                             <a href="#" data-tab="settings" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
                                 <i class="ri-settings-line mr-2"></i> Settings
                             </a>
@@ -486,6 +504,102 @@
                                     <div class="text-center py-8 text-gray-500">
                                         No tasks found. Click "Add Task" to create your first task.
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Deliveries Tab -->
+                        <div id="deliveries" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Deliveries</h2>
+                                    <button id="addDeliveryBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Add Delivery
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Delivery management is coming soon.</p>
+                                    <p class="mt-2">This feature will allow you to track all deliveries, assign drivers, and monitor status.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Drivers Tab -->
+                        <div id="drivers" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Drivers</h2>
+                                    <button id="addDriverBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Add Driver
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Driver management is coming soon.</p>
+                                    <p class="mt-2">This feature will allow you to manage driver information, track availability, and assign routes.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Routes Tab -->
+                        <div id="routes" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Routes</h2>
+                                    <button id="addRouteBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Add Route
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Route management is coming soon.</p>
+                                    <p class="mt-2">This feature will allow you to create delivery routes and optimize delivery schedules.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quotes Tab -->
+                        <div id="quotes" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Quotes</h2>
+                                    <button id="addQuoteBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Add Quote
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Quote management is coming soon.</p>
+                                    <p class="mt-2">This feature will allow you to create and track quotes for potential customers.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Performance Tab -->
+                        <div id="performance" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Performance</h2>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Performance analytics is coming soon.</p>
+                                    <p class="mt-2">This feature will provide insights into driver performance, delivery times, and customer satisfaction.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Revenue Tab -->
+                        <div id="revenue" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Revenue</h2>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Revenue tracking is coming soon.</p>
+                                    <p class="mt-2">This feature will allow you to track revenue by service type, customer, and time period.</p>
                                 </div>
                             </div>
                         </div>
