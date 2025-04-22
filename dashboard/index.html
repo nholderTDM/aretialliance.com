@@ -598,11 +598,16 @@
             });
             
             // Logout functionality
-            logoutBtn.addEventListener('click', function() {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                showLogin();
-            });
+logoutBtn.addEventListener('click', function() {
+    // Add confirmation dialog
+    if (confirm('Are you sure you want to end this session?')) {
+        // Clear user data from localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // Show login screen
+        showLogin();
+    }
+});
             
             // Show dashboard
             function showDashboard() {
