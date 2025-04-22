@@ -1,65 +1,53 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
-const cors = require('cors');
-const { authenticate, verifyToken } = require('./local-auth');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'dashboard')));
-
-// Authentication endpoint
-app.post('/api/auth/login', (req, res) => {
-    const { username, password } = req.body;
-    
-    if (!username || !password) {
-        return res.status(400).json({ message: 'Username and password are required' });
-    }
-    
-    const result = authenticate(username, password);
-    
-    if (!result) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-    }
-    
-    res.json({
-        token: result.token,
-        user: {
-            id: result.user.id,
-            name: result.user.name,
-            email: result.user.email,
-            role: result.user.role
-        }
-    });
-});
-
-// Protected route example
-app.get('/api/user/profile', (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    
-    if (!token) {
-        return res.status(401).json({ message: 'No token provided' });
-    }
-    
-    const user = verifyToken(token);
-    
-    if (!user) {
-        return res.status(401).json({ message: 'Invalid token' });
-    }
-    
-    res.json({ user });
-});
-
-// Serve the main HTML file
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dashboard', 'index.html'));
-});
-
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+// Login functionality
+loginBtn.addEventListener('click', function() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  
+  if (!username || !password) {
+      errorAlert.textContent = 'Username and password are required';
+      errorAlert.classList.remove('hidden');
+      return;
+  }
+  
+  // Show loading indicator
+  const originalBtnText = loginBtn.innerHTML;
+  loginBtn.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+  loginBtn.disabled = true;
+  
+  // Call authentication endpoint - use your existing endpoint from server.js
+  fetch('/auth/login', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Authentication failed');
+      }
+      return response.json();
+  })
+  .then(data => {
+      if (!data.success) {
+          throw new Error('Authentication failed');
+      }
+      
+      // Store the token and user data
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      // Show dashboard
+      showDashboard();
+  })
+  .catch(error => {
+      console.error('Login error:', error);
+      errorAlert.textContent = 'Invalid username or password';
+      errorAlert.classList.remove('hidden');
+  })
+  .finally(() => {
+      // Reset button state
+      loginBtn.innerHTML = originalBtnText;
+      loginBtn.disabled = false;
+  });
 });
