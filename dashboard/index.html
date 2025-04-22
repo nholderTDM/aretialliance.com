@@ -595,7 +595,7 @@ function verifyTokenAndLoadDashboard() {
         showLogin();
     });
 }
-            // Login functionality
+           // Login functionality
 loginBtn.addEventListener('click', function() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -611,8 +611,8 @@ loginBtn.addEventListener('click', function() {
     loginBtn.innerHTML = '<div class="loading-spinner mx-auto"></div>';
     loginBtn.disabled = true;
     
-    // Call authentication endpoint
-    fetch('/api/auth/login', {
+    // Call authentication endpoint - use the correct endpoint from server.js
+    fetch('/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -626,12 +626,34 @@ loginBtn.addEventListener('click', function() {
         return response.json();
     })
     .then(data => {
+        if (!data.success) {
+            throw new Error('Authentication failed');
+        }
+        
         // Store the token and user data
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         
         // Show dashboard
-        showDashboard();
+function showDashboard() {
+    loginForm.classList.add('hidden');
+    dashboardContent.classList.remove('hidden');
+    userInfo.classList.remove('hidden');
+    
+    // Get user info from localStorage
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    userName.textContent = user.name || 'User';
+    userRoleOverview.textContent = user.role || 'User';
+    profileName.textContent = user.name || 'User';
+    profileEmail.textContent = user.email || 'user@example.com';
+    profileRole.textContent = user.role || 'User';
+    
+    // Load data from localStorage
+    loadDataFromLocalStorage();
+    
+    // Set overview tab as active by default
+    document.querySelector('.tab-link[data-tab="overview"]').click();
+}
     })
     .catch(error => {
         console.error('Login error:', error);
