@@ -565,55 +565,54 @@
             });
             
             // Login functionality
-            loginBtn.addEventListener('click', function() {
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                
-                if (!username || !password) {
-                    errorAlert.textContent = 'Username and password are required';
-                    errorAlert.classList.remove('hidden');
-                    return;
-                }
-                
-                // TEMPORARY SOLUTION: Check against hardcoded credentials
-                if ((username === 'admin' && password === 'admin123') || 
-                    (username === 'user' && password === 'user123')) {
-                    
-                    // Create a mock token and user object
-                    const mockToken = 'mock_token_' + Date.now();
-                    const mockUser = {
-                        id: username === 'admin' ? '1' : '2',
-                        name: username === 'admin' ? 'Admin User' : 'Regular User',
-                        email: username === 'admin' ? 'admin@aretialliance.com' : 'user@aretialliance.com',
-                        role: username === 'admin' ? 'admin' : 'user'
-                    };
-                    
-                    localStorage.setItem('token', mockToken);
-                    localStorage.setItem('user', JSON.stringify(mockUser));
-                    showDashboard();
-                } else {
-                    errorAlert.textContent = 'Invalid username or password';
-                    errorAlert.classList.remove('hidden');
-                }
-            });
-            
-            // Logout functionality
-logoutBtn.addEventListener('click', function() {
-    // Add confirmation dialog
-    if (confirm('Are you sure you want to end this session?')) {
-        // Clear user data from localStorage
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        // Show login screen
-        showLogin();
+loginBtn.addEventListener('click', function() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    if (!username || !password) {
+        errorAlert.textContent = 'Username and password are required';
+        errorAlert.classList.remove('hidden');
+        return;
     }
+    
+    // Show loading indicator
+    const originalBtnText = loginBtn.innerHTML;
+    loginBtn.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+    loginBtn.disabled = true;
+    
+    // Call authentication endpoint
+    fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Authentication failed');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Store the token and user data
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // Show dashboard
+        showDashboard();
+    })
+    .catch(error => {
+        console.error('Login error:', error);
+        errorAlert.textContent = 'Invalid username or password';
+        errorAlert.classList.remove('hidden');
+    })
+    .finally(() => {
+        // Reset button state
+        loginBtn.innerHTML = originalBtnText;
+        loginBtn.disabled = false;
+    });
 });
-            
-            // Show dashboard
-            function showDashboard() {
-                loginForm.classList.add('hidden');
-                dashboardContent.classList.remove('hidden');
-                userInfo.classList.remove('hidden');
                 
                 // Get user info from localStorage
                 const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -628,8 +627,19 @@ logoutBtn.addEventListener('click', function() {
                 
                 // Set overview tab as active by default
                 document.querySelector('.tab-link[data-tab="overview"]').click();
-            }
+            });
             
+            // Logout functionality
+logoutBtn.addEventListener('click', function() {
+    // Add confirmation dialog
+    if (confirm('Are you sure you want to end this session?')) {
+        // Clear user data from localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // Show login screen
+        showLogin();
+    }
+});
             // Show login
             function showLogin() {
                 loginForm.classList.remove('hidden');
@@ -1274,7 +1284,7 @@ logoutBtn.addEventListener('click', function() {
                     updateOverview();
                 }
             };
-        });
+    
     </script>
 </body>
 </html>
