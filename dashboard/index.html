@@ -79,9 +79,7 @@
                     <button id="loginBtn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Sign in
                     </button>
-                    </div>
-                
-                
+                </div>
             </div>
             
             <!-- Dashboard Content -->
@@ -569,6 +567,19 @@
                     return;
                 }
                 
+                // TEMPORARY SOLUTION: Skip server verification
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user && user.id) {
+                    showDashboard();
+                    return;
+                } else {
+                    // If user data is invalid, clear storage and show login
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    showLogin();
+                    return;
+                }
+                
                 // Verify token with the server using your existing protected endpoint
                 fetch('/api/data', {
                     headers: {
@@ -634,42 +645,43 @@
                 loginBtn.innerHTML = '<div class="loading-spinner mx-auto"></div>';
                 loginBtn.disabled = true;
                 
-                // Call authentication endpoint - use the correct endpoint from server.js
-                fetch('/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, password }),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Authentication failed');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (!data.success) {
-                        throw new Error('Authentication failed');
+                // Simulate server processing delay
+                setTimeout(function() {
+                    // TEMPORARY SOLUTION: Check against hardcoded credentials
+                    if ((username === 'admin' && password === 'admin123') || 
+                        (username === 'areti-admin' && password === 'admin123') ||
+                        (username === 'nholder' && password === 'Belle2025!!') ||
+                        (username === 'fgill' && password === 'user123')) {
+                        
+                        // Create a mock token and user object
+                        const mockToken = 'mock_token_' + Date.now();
+                        const userRole = username === 'fgill' ? 'user' : 'admin';
+                        const userName = username === 'fgill' ? 'Fonda Gill' : 
+                                       username === 'nholder' ? 'Nate Holder' : 
+                                       username === 'areti-admin' ? 'Areti Admin' : 'Admin User';
+                        const userEmail = username === 'fgill' ? 'fgill@aretialliance.com' : 
+                                         username === 'nholder' ? 'nholder@aretialliance.com' : 
+                                         username === 'areti-admin' ? 'natholder1@gmail.com' : 'admin@aretialliance.com';
+                        
+                        const mockUser = {
+                            id: username === 'fgill' ? '3' : username === 'nholder' ? '2' : username === 'areti-admin' ? '1' : '0',
+                            name: userName,
+                            email: userEmail,
+                            role: userRole
+                        };
+                        
+                        localStorage.setItem('token', mockToken);
+                        localStorage.setItem('user', JSON.stringify(mockUser));
+                        showDashboard();
+                    } else {
+                        errorAlert.textContent = 'Invalid username or password';
+                        errorAlert.classList.remove('hidden');
                     }
                     
-                    // Store the token and user data
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    
-                    // Show dashboard
-                    showDashboard();
-                })
-                .catch(error => {
-                    console.error('Login error:', error);
-                    errorAlert.textContent = 'Invalid username or password';
-                    errorAlert.classList.remove('hidden');
-                })
-                .finally(() => {
                     // Reset button state
                     loginBtn.innerHTML = originalBtnText;
                     loginBtn.disabled = false;
-                });
+                }, 1000); // 1 second delay to simulate server processing
             });
             
             // Logout functionality
@@ -1389,7 +1401,7 @@
             };
             
             // Function to clear localStorage (can be called from console if needed)
-            function clearLocalStorage() {
+            window.clearLocalStorage = function() {
                 localStorage.removeItem('contacts');
                 localStorage.removeItem('organizations');
                 localStorage.removeItem('tasks');
@@ -1410,7 +1422,7 @@
                 updateOverview();
                 
                 console.log('LocalStorage data cleared successfully!');
-            }
+            };
         });
     </script>
 </body>
