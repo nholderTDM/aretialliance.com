@@ -313,7 +313,48 @@ app.get('/dashboard', (req, res) => {
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+// Add these imports at the top of the file
+const cron = require('node-cron');
+const { syncDriversFromSheet } = require('./sync-drivers');
+require('dotenv').config();
 
+// Add this code before app.listen()
+
+// API endpoint for on-demand sync
+app.post('/api/sync/drivers', authMiddleware, async (req, res) => {
+  // Check if user has admin role
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Unauthorized. Admin access required.' });
+  }
+  
+  try {
+    const result = await syncDriversFromSheet();
+    res.json(result);
+  } catch (error) {
+    console.error('Error in sync endpoint:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Error syncing from Google Sheets: ' + error.message 
+    });
+  }
+});
+
+// Set up scheduled sync
+const syncSchedule = process.env.SYNC_SCHEDULE || '0 0 * * *'; // Default: daily at midnight
+try {
+  cron.schedule(syncSchedule, async () => {
+    console.log(`Running scheduled drivers sync at ${new Date().toISOString()}`);
+    try {
+      const result = await syncDriversFromSheet();
+      console.log('Scheduled sync completed:', result);
+    } catch (error) {
+      console.error('Error in scheduled sync:', error);
+    }
+  });
+  console.log(`Scheduled sync configured with schedule: ${syncSchedule}`);
+} catch (error) {
+  console.error('Failed to set up scheduled sync:', error);
+}
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

@@ -1,3 +1,4 @@
+// File: areti-dash-crm/src/components/Drivers.js
 import React, { useState, useEffect } from 'react';
 import ApiService from '../services/api';
 
@@ -7,6 +8,10 @@ const Drivers = () => {
   const [error, setError] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
   const [currentDriver, setCurrentDriver] = useState(null);
+  const [syncLoading, setSyncLoading] = useState(false);
+  const [syncMessage, setSyncMessage] = useState(null);
+  const [syncStats, setSyncStats] = useState({ lastSync: null, count: null });
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,7 +28,25 @@ const Drivers = () => {
 
   useEffect(() => {
     loadDrivers();
+    loadSyncStats();
   }, []);
+
+  // Load sync statistics from localStorage
+  const loadSyncStats = () => {
+    try {
+      const lastSync = localStorage.getItem('lastDriverSync');
+      const syncCount = localStorage.getItem('lastDriverSyncCount');
+      
+      if (lastSync) {
+        setSyncStats({
+          lastSync: new Date(lastSync),
+          count: syncCount ? parseInt(syncCount) : null
+        });
+      }
+    } catch (err) {
+      console.error('Error loading sync stats:', err);
+    }
+  };
 
   const loadDrivers = async () => {
     try {
@@ -69,6 +92,66 @@ const Drivers = () => {
     }
   };
 
+  // Function to sync with Google Sheets
+  const syncWithGoogleSheets = async () => {
+    if (!window.confirm('This will import new driver applications from Google Sheets. Continue?')) {
+      return;
+    }
+    
+    try {
+      setSyncLoading(true);
+      setSyncMessage(null);
+      
+      const response = await fetch('/api/sync/drivers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        const message = `Successfully imported ${data.imported} new driver${data.imported !== 1 ? 's' : ''} and updated ${data.updated} existing driver${data.updated !== 1 ? 's' : ''}.`;
+        setSyncMessage({
+          type: 'success',
+          text: message
+        });
+        
+        // Save sync stats to localStorage
+        localStorage.setItem('lastDriverSync', new Date().toISOString());
+        localStorage.setItem('lastDriverSyncCount', data.imported + data.updated);
+        
+        // Update the stats in state
+        setSyncStats({
+          lastSync: new Date(),
+          count: data.imported + data.updated
+        });
+        
+        // Reload drivers to show the imported data
+        loadDrivers();
+      } else {
+        setSyncMessage({
+          type: 'error',
+          text: data.error || 'Failed to sync with Google Sheets.'
+        });
+      }
+    } catch (err) {
+      setSyncMessage({
+        type: 'error',
+        text: `Error: ${err.message}`
+      });
+      console.error('Sync error:', err);
+    } finally {
+      setSyncLoading(false);
+    }
+  };
+
   const editDriver = (driver) => {
     setCurrentDriver(driver);
     setFormData({
@@ -102,6 +185,19 @@ const Drivers = () => {
     }
   };
 
+  const changeDriverStatus = async (driver, newStatus) => {
+    try {
+      setLoading(true);
+      await ApiService.updateDriver(driver.id, { ...driver, status: newStatus });
+      loadDrivers();
+    } catch (err) {
+      setError(`Failed to update driver status to ${newStatus}`);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const resetForm = () => {
     setCurrentDriver(null);
     setFormData({
@@ -118,19 +214,6 @@ const Drivers = () => {
       applicationDate: ''
     });
     setFormOpen(false);
-  };
-
-  const changeDriverStatus = async (driver, newStatus) => {
-    try {
-      setLoading(true);
-      await ApiService.updateDriver(driver.id, { ...driver, status: newStatus });
-      loadDrivers();
-    } catch (err) {
-      setError(`Failed to update driver status to ${newStatus}`);
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const getStatusBadgeClass = (status) => {
@@ -174,18 +257,62 @@ const Drivers = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Drivers</h2>
-        <button
-          onClick={() => setFormOpen(!formOpen)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          {formOpen ? 'Cancel' : 'Add Driver'}
-        </button>
+        <div>
+          <h2 className="text-xl font-semibold">Drivers</h2>
+          {syncStats.lastSync && (
+            <div className="text-xs text-gray-500">
+              Last synced: {syncStats.lastSync.toLocaleString()} 
+              {syncStats.count !== null && ` • ${syncStats.count} driver${syncStats.count !== 1 ? 's' : ''} imported/updated`}
+            </div>
+          )}
+        </div>
+        <div className="flex space-x-2">
+          <button
+            onClick={syncWithGoogleSheets}
+            disabled={syncLoading}
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2"
+          >
+            {syncLoading ? (
+              <>
+                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Syncing...
+              </>
+            ) : (
+              <>
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                </svg>
+                Sync from Google Sheets
+              </>
+            )}
+          </button>
+          <button
+            onClick={() => setFormOpen(!formOpen)}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            {formOpen ? 'Cancel' : 'Add Driver'}
+          </button>
+        </div>
       </div>
 
       {error && (
         <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
           {error}
+        </div>
+      )}
+      
+      {syncMessage && (
+        <div className={`${syncMessage.type === 'success' ? 'bg-green-100 border-green-500 text-green-700' : 'bg-red-100 border-red-500 text-red-700'} border-l-4 p-4 mb-4 flex justify-between items-center`}>
+          <div>{syncMessage.text}</div>
+          <button 
+            onClick={() => setSyncMessage(null)} 
+            className="text-gray-600 hover:text-gray-800"
+          >
+            &times;
+          </button>
         </div>
       )}
 
