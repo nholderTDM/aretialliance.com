@@ -2575,174 +2575,156 @@ if (customQuoteBtn) {
     });
 }
             
- // Driver application form with conditional SMS consent validation
+ // Driver application form with submission to both Google Sheets and backend API
 const driverForm = document.getElementById('driver-form');
 if (driverForm) {
-    // Add input validation for phone number field
-    const phoneInput = document.getElementById('driver-phone');
-    if (phoneInput) {
-        // Add event listener to validate as user types
-        phoneInput.addEventListener('input', function(e) {
-            // Remove any non-numeric characters
-            let value = this.value.replace(/\D/g, '');
-            
-            // Limit to 10 digits
-            if (value.length > 10) {
-                value = value.slice(0, 10);
-            }
-            
-            // Apply formatting as XXX-XXX-XXXX as user types
-            if (value.length > 0) {
-                if (value.length <= 3) {
-                    // Just the area code
-                    this.value = value;
-                } else if (value.length <= 6) {
-                    // Area code and prefix
-                    this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
-                } else {
-                    // Complete number
-                    this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
-                }
-            } else {
-                this.value = value;
-            }
-        });
+  driverForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form values
+    const driverName = document.getElementById('driver-name').value;
+    const driverEmail = document.getElementById('driver-email').value;
+    const driverPhone = document.getElementById('driver-phone').value;
+    const contactPreference = document.getElementById('contact-preference').value;
+    const driverCity = document.getElementById('driver-city').value;
+    const driverState = document.getElementById('driver-state').value;
+    const smsConsent = document.getElementById('sms-consent').checked;
+    
+    // Validate phone number has exactly 10 digits
+    const phoneDigits = driverPhone.replace(/\D/g, '');
+    if (phoneDigits.length !== 10) {
+      alert('Please enter a valid 10-digit phone number.');
+      document.getElementById('driver-phone').focus();
+      return false;
     }
     
-    // Add event listener for preferred contact method dropdown
-    const contactPreferenceDropdown = document.getElementById('contact-preference');
-    const smsConsentCheckbox = document.getElementById('sms-consent');
-    const smsConsentLabel = document.querySelector('label[for="sms-consent"]');
-    
-    // Store the original label text at the global level
-    const originalLabelText = smsConsentLabel ? smsConsentLabel.textContent : "I allow Areti Alliance to communicate with me via SMS messaging. Standard rates will apply.";
-    
-    if (contactPreferenceDropdown && smsConsentCheckbox && smsConsentLabel) {
-        // Update SMS consent checkbox status when contact preference changes
-        contactPreferenceDropdown.addEventListener('change', function() {
-            if (this.value === 'text') {
-                // Add required indicator to label
-                smsConsentLabel.textContent = originalLabelText + ' *';
-                smsConsentLabel.style.color = 'var(--primary-blue)';
-                smsConsentLabel.style.fontWeight = '600';
-            } else {
-                // Remove required indicator from label
-                smsConsentLabel.textContent = originalLabelText;
-                smsConsentLabel.style.color = '';
-                smsConsentLabel.style.fontWeight = '';
-            }
-        });
+    // Check if SMS consent is required but not checked
+    if (contactPreference === 'text' && !smsConsent) {
+      alert('SMS consent is required when selecting Text Message as your preferred contact method.');
+      document.getElementById('sms-consent').focus();
+      return false;
     }
-
-    driverForm.addEventListener('submit', function(e) {
-        e.preventDefault();
+    
+    // Format phone number consistently as XXX-XXX-XXXX
+    const formattedPhone = `${phoneDigits.substring(0, 3)}-${phoneDigits.substring(3, 6)}-${phoneDigits.substring(6)}`;
+    
+    // Get selected vehicle types
+    const vehicleTypes = Array.from(document.querySelectorAll('input[name="vehicle-types"]:checked'))
+      .map(checkbox => checkbox.value);
+    
+    // Get consent checkboxes
+    const backgroundCheck = document.getElementById('background-check').checked;
+    const drivingHistory = document.getElementById('driving-history').checked;
+    const generalConsent = document.getElementById('consent').checked;
+    
+    // Prepare data for Google Sheets (keep this part)
+    const formDataForSheets = {
+      name: driverName,
+      email: driverEmail,
+      phone: formattedPhone,
+      contactPreference: contactPreference,
+      city: driverCity,
+      state: driverState,
+      vehicleTypes: vehicleTypes,
+      backgroundCheck: backgroundCheck,
+      drivingHistory: drivingHistory,
+      smsConsent: smsConsent,
+      generalConsent: generalConsent
+    };
+    
+    // Prepare data for API (this is new)
+    const formDataForAPI = {
+      name: driverName,
+      email: driverEmail,
+      phone: formattedPhone,
+      contactPreference: contactPreference,
+      city: driverCity,
+      state: driverState,
+      vehicleTypes: vehicleTypes,
+      backgroundCheck: backgroundCheck,
+      drivingHistory: drivingHistory,
+      smsConsent: smsConsent,
+      generalConsent: generalConsent,
+      notes: "Application submitted from website"
+    };
+    
+    console.log('Form data being sent:', formDataForSheets);
+    
+    // Show loading state
+    const submitBtn = driverForm.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    
+    // Submit to Google Sheets (keep your existing code here)
+    try {
+      // Using no-cors mode - this is your existing Google Sheets submission
+      fetch('https://script.google.com/macros/s/AKfycbz79D35pdPkSBHyT1Z3neHbQRJiuRKMcA3gOv4zZpZfHsQrcyHGAdZ3sc0ir4BZTzU/exec', {
+        method: 'POST', 
+        body: JSON.stringify(formDataForSheets),
+        mode: 'no-cors' // Using no-cors mode
+      })
+      .then(() => {
+        // Now also submit to our backend API
+        return fetch('/api/public/driver-applications', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formDataForAPI)
+        });
+      })
+      .then(response => {
+        // Since Google Sheets uses no-cors, we only check the API response
+        if (response && !response.ok) {
+          // API submission failed, but Google Sheets submission may have succeeded
+          console.warn('API submission failed, but Google Sheets submission may have succeeded');
+          // We'll still show a success message since the Google Sheets data was captured
+          return { success: true, sheetsOnly: true };
+        }
+        return response ? response.json() : { success: true };
+      })
+      .then(data => {
+        // Show success message regardless of API success (as long as Sheets worked)
+        alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
         
-        // Get form values
-        const driverName = document.getElementById('driver-name').value;
-        const driverEmail = document.getElementById('driver-email').value;
-        const driverPhone = document.getElementById('driver-phone').value;
-        const contactPreference = document.getElementById('contact-preference').value;
-        const driverCity = document.getElementById('driver-city').value;
-        const driverState = document.getElementById('driver-state').value;
-        const smsConsent = document.getElementById('sms-consent').checked;
+        // Reset the form
+        driverForm.reset();
         
-        // Validate phone number has exactly 10 digits
-        const phoneDigits = driverPhone.replace(/\D/g, '');
-        if (phoneDigits.length !== 10) {
-            alert('Please enter a valid 10-digit phone number.');
-            document.getElementById('driver-phone').focus();
-            return false;
+        // Reset SMS consent label if it was modified
+        const smsConsentLabel = document.querySelector('label[for="sms-consent"]');
+        if (smsConsentLabel && originalLabelText) {
+          // Store the original label text at the global level
+        const originalLabelText = smsConsentLabel ? smsConsentLabel.textContent : "I allow Areti Alliance to communicate with me via SMS messaging. Standard rates will apply.";
+          smsConsentLabel.style.color = '';
+          smsConsentLabel.style.fontWeight = '';
         }
         
-        // Check if SMS consent is required but not checked
-        if (contactPreference === 'text' && !smsConsent) {
-            alert('SMS consent is required when selecting Text Message as your preferred contact method.');
-            document.getElementById('sms-consent').focus();
-            return false;
+        // Log if we had partial success
+        if (data.sheetsOnly) {
+          console.log('Note: Data was saved to Google Sheets but not to the CRM API');
         }
-        
-        // Format phone number consistently as XXX-XXX-XXXX
-        const formattedPhone = `${phoneDigits.substring(0, 3)}-${phoneDigits.substring(3, 6)}-${phoneDigits.substring(6)}`;
-        
-        // Get selected vehicle types
-        const vehicleTypes = Array.from(document.querySelectorAll('input[name="vehicle-types"]:checked'))
-            .map(checkbox => checkbox.value);
-        
-        // Get consent checkboxes
-        const backgroundCheck = document.getElementById('background-check').checked;
-        const drivingHistory = document.getElementById('driving-history').checked;
-        const generalConsent = document.getElementById('consent').checked;
-        
-        // Prepare data for Google Sheets
-        const formData = {
-            name: driverName,
-            email: driverEmail,
-            phone: formattedPhone,
-            contactPreference: contactPreference,
-            city: driverCity,
-            state: driverState,
-            vehicleTypes: vehicleTypes,
-            backgroundCheck: backgroundCheck,
-            drivingHistory: drivingHistory,
-            smsConsent: smsConsent,
-            generalConsent: generalConsent
-        };
-        
-        console.log('Form data being sent:', formData);
-        
-        // Show loading state
-        const submitBtn = driverForm.querySelector('button[type="submit"]');
-        const originalBtnText = submitBtn.textContent;
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Submitting...';
-        
-        // Handle form submission using no-cors mode with proper error handling
-        try {
-            // Using no-cors mode means we can't read the response, so we need a different approach
-            fetch('https://script.google.com/macros/s/AKfycbz79D35pdPkSBHyT1Z3neHbQRJiuRKMcA3gOv4zZpZfHsQrcyHGAdZ3sc0ir4BZTzU/exec', {
-                method: 'POST', 
-                body: JSON.stringify(formData),
-                mode: 'no-cors' // Using no-cors mode
-            })
-            .then(() => {
-                // Since we can't actually read the response with no-cors, we'll just assume success
-                // Show success message
-                alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
-                
-                // Reset the form
-                driverForm.reset();
-                
-                // Reset button
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
-                
-                // Reset SMS consent label if it was modified
-                if (smsConsentLabel) {
-                    smsConsentLabel.textContent = originalLabelText;
-                    smsConsentLabel.style.color = '';
-                    smsConsentLabel.style.fontWeight = '';
-                }
-            })
-            .catch(() => {
-                // This catch should never be reached with no-cors mode,
-                // but we'll leave it as a safeguard
-                console.error('Network error occurred');
-                alert('There was an error submitting your application. Please try again or contact us directly.');
-                
-                // Reset button
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
-            });
-        } catch (err) {
-            // This would only happen if there's a syntax error or similar
-            console.error('Error:', err);
-            alert('There was an unexpected error submitting your application. Please try again later.');
-            
-            // Reset button
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalBtnText;
-        }
-    });
+      })
+      .catch((err) => {
+        // This would only happen if both submissions failed or if there's a JS error
+        console.error('Error:', err);
+        alert('There was an error submitting your application. Please try again or contact us directly.');
+      })
+      .finally(() => {
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      });
+    } catch (err) {
+      // This would only happen if there's a syntax error or similar
+      console.error('Error:', err);
+      alert('There was an unexpected error submitting your application. Please try again later.');
+      
+      // Reset button
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+    }
+  });
 }
 
 // Contact form

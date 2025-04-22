@@ -15,7 +15,10 @@ const Drivers = () => {
     licenseNumber: '',
     status: 'active', // 'active', 'inactive', 'pending'
     address: '',
-    notes: ''
+    city: '',
+    state: '',
+    notes: '',
+    applicationDate: ''
   });
 
   useEffect(() => {
@@ -69,14 +72,17 @@ const Drivers = () => {
   const editDriver = (driver) => {
     setCurrentDriver(driver);
     setFormData({
-      name: driver.name,
-      email: driver.email,
+      name: driver.name || '',
+      email: driver.email || '',
       phone: driver.phone || '',
       vehicleType: driver.vehicleType || 'car',
       licenseNumber: driver.licenseNumber || '',
       status: driver.status || 'active',
       address: driver.address || '',
-      notes: driver.notes || ''
+      city: driver.city || '',
+      state: driver.state || '',
+      notes: driver.notes || '',
+      applicationDate: driver.applicationDate ? new Date(driver.applicationDate).toISOString().split('T')[0] : ''
     });
     setFormOpen(true);
   };
@@ -106,9 +112,25 @@ const Drivers = () => {
       licenseNumber: '',
       status: 'active',
       address: '',
-      notes: ''
+      city: '',
+      state: '',
+      notes: '',
+      applicationDate: ''
     });
     setFormOpen(false);
+  };
+
+  const changeDriverStatus = async (driver, newStatus) => {
+    try {
+      setLoading(true);
+      await ApiService.updateDriver(driver.id, { ...driver, status: newStatus });
+      loadDrivers();
+    } catch (err) {
+      setError(`Failed to update driver status to ${newStatus}`);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getStatusBadgeClass = (status) => {
@@ -122,6 +144,27 @@ const Drivers = () => {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const formatPhoneNumber = (phone) => {
+    if (!phone) return '-';
+    
+    // Remove all non-digit characters
+    const digits = phone.replace(/\D/g, '');
+    
+    // Format as XXX-XXX-XXXX if 10 digits
+    if (digits.length === 10) {
+      return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+    
+    // Return as-is if not 10 digits
+    return phone;
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
   };
 
   if (loading && drivers.length === 0) {
@@ -151,7 +194,7 @@ const Drivers = () => {
           <h3 className="text-lg font-medium mb-4">
             {currentDriver ? 'Edit Driver' : 'Add New Driver'}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Name *
@@ -188,6 +231,7 @@ const Drivers = () => {
                 value={formData.phone}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border rounded"
+                placeholder="XXX-XXX-XXXX"
               />
             </div>
             <div>
@@ -233,7 +277,7 @@ const Drivers = () => {
                 <option value="pending">Pending</option>
               </select>
             </div>
-            <div className="md:col-span-2">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Address
               </label>
@@ -245,6 +289,96 @@ const Drivers = () => {
                 className="w-full px-3 py-2 border rounded"
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                City
+              </label>
+              <input
+                type="text"
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                State
+              </label>
+              <select
+                name="state"
+                value={formData.state}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border rounded"
+              >
+                <option value="">Select State</option>
+                <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                <option value="AZ">Arizona</option>
+                <option value="AR">Arkansas</option>
+                <option value="CA">California</option>
+                <option value="CO">Colorado</option>
+                <option value="CT">Connecticut</option>
+                <option value="DE">Delaware</option>
+                <option value="DC">District Of Columbia</option>
+                <option value="FL">Florida</option>
+                <option value="GA">Georgia</option>
+                <option value="HI">Hawaii</option>
+                <option value="ID">Idaho</option>
+                <option value="IL">Illinois</option>
+                <option value="IN">Indiana</option>
+                <option value="IA">Iowa</option>
+                <option value="KS">Kansas</option>
+                <option value="KY">Kentucky</option>
+                <option value="LA">Louisiana</option>
+                <option value="ME">Maine</option>
+                <option value="MD">Maryland</option>
+                <option value="MA">Massachusetts</option>
+                <option value="MI">Michigan</option>
+                <option value="MN">Minnesota</option>
+                <option value="MS">Mississippi</option>
+                <option value="MO">Missouri</option>
+                <option value="MT">Montana</option>
+                <option value="NE">Nebraska</option>
+                <option value="NV">Nevada</option>
+                <option value="NH">New Hampshire</option>
+                <option value="NJ">New Jersey</option>
+                <option value="NM">New Mexico</option>
+                <option value="NY">New York</option>
+                <option value="NC">North Carolina</option>
+                <option value="ND">North Dakota</option>
+                <option value="OH">Ohio</option>
+                <option value="OK">Oklahoma</option>
+                <option value="OR">Oregon</option>
+                <option value="PA">Pennsylvania</option>
+                <option value="RI">Rhode Island</option>
+                <option value="SC">South Carolina</option>
+                <option value="SD">South Dakota</option>
+                <option value="TN">Tennessee</option>
+                <option value="TX">Texas</option>
+                <option value="UT">Utah</option>
+                <option value="VT">Vermont</option>
+                <option value="VA">Virginia</option>
+                <option value="WA">Washington</option>
+                <option value="WV">West Virginia</option>
+                <option value="WI">Wisconsin</option>
+                <option value="WY">Wyoming</option>
+              </select>
+            </div>
+            {currentDriver && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Application Date
+                </label>
+                <input
+                  type="date"
+                  name="applicationDate"
+                  value={formData.applicationDate}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border rounded"
+                />
+              </div>
+            )}
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -295,6 +429,9 @@ const Drivers = () => {
                   Vehicle
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Location
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -306,14 +443,22 @@ const Drivers = () => {
               {drivers.map((driver) => (
                 <tr key={driver.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {driver.name}
+                    <div className="font-medium">{driver.name}</div>
+                    <div className="text-xs text-gray-500">
+                      {driver.applicationDate && `Applied: ${formatDate(driver.applicationDate)}`}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>{driver.email}</div>
-                    <div className="text-sm text-gray-500">{driver.phone || '-'}</div>
+                    <div className="text-sm text-gray-500">{formatPhoneNumber(driver.phone)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {driver.vehicleType?.charAt(0).toUpperCase() + driver.vehicleType?.slice(1) || '-'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {driver.city && driver.state ? `${driver.city}, ${driver.state}` : 
+                     driver.city ? driver.city : 
+                     driver.state ? driver.state : '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 rounded text-xs ${getStatusBadgeClass(driver.status)}`}>
@@ -321,9 +466,33 @@ const Drivers = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    {driver.status === 'pending' && (
+                      <button
+                        onClick={() => changeDriverStatus(driver, 'active')}
+                        className="text-green-600 hover:text-green-900 mr-3"
+                      >
+                        Approve
+                      </button>
+                    )}
+                    {driver.status === 'active' && (
+                      <button
+                        onClick={() => changeDriverStatus(driver, 'inactive')}
+                        className="text-red-600 hover:text-red-900 mr-3"
+                      >
+                        Deactivate
+                      </button>
+                    )}
+                    {driver.status === 'inactive' && (
+                      <button
+                        onClick={() => changeDriverStatus(driver, 'active')}
+                        className="text-green-600 hover:text-green-900 mr-3"
+                      >
+                        Activate
+                      </button>
+                    )}
                     <button
                       onClick={() => editDriver(driver)}
-                      className="text-blue-600 hover:text-blue-900 mr-4"
+                      className="text-blue-600 hover:text-blue-900 mr-3"
                     >
                       Edit
                     </button>

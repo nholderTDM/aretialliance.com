@@ -3,6 +3,7 @@ const path = require('path');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
+const fs = require('fs');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -37,6 +38,24 @@ const users = [
     role: 'user'
   }
 ];
+
+// Data file paths
+const DATA_DIR = path.join(__dirname, 'data');
+const DRIVERS_FILE = path.join(DATA_DIR, 'drivers.json');
+const CONTACTS_FILE = path.join(DATA_DIR, 'contacts.json');
+
+// Ensure data directory exists
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+// Initialize data files if they don't exist
+if (!fs.existsSync(DRIVERS_FILE)) {
+  fs.writeFileSync(DRIVERS_FILE, JSON.stringify([]));
+}
+if (!fs.existsSync(CONTACTS_FILE)) {
+  fs.writeFileSync(CONTACTS_FILE, JSON.stringify([]));
+}
 
 // Basic middleware
 app.use(cors());
@@ -87,6 +106,27 @@ function authMiddleware(req, res, next) {
   }
 }
 
+// Helper functions for data operations
+function readData(filePath) {
+  try {
+    const data = fs.readFileSync(filePath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error(`Error reading data from ${filePath}:`, error);
+    return [];
+  }
+}
+
+function writeData(filePath, data) {
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    return true;
+  } catch (error) {
+    console.error(`Error writing data to ${filePath}:`, error);
+    return false;
+  }
+}
+
 // Login route - this is the critical endpoint for authentication
 app.post('/auth/login', (req, res) => {
   const { username, password } = req.body;
@@ -117,6 +157,148 @@ app.post('/auth/login', (req, res) => {
 app.get('/api/data', authMiddleware, (req, res) => {
   res.json({ message: 'Protected data', user: req.user });
 });
+
+// API Routes for Drivers
+// Get all drivers
+app.get('/api/drivers', authMiddleware, (req, res) => {
+  const drivers = readData(DRIVERS_FILE);
+  res.json(drivers);
+});
+
+// Get a single driver
+app.get('/api/drivers/:id', authMiddleware, (req, res) => {
+  const drivers = readData(DRIVERS_FILE);
+  const driver = drivers.find(d => d.id === req.params.id);
+  
+  if (!driver) {
+    return res.status(404).json({ error: 'Driver not found' });
+  }
+  
+  res.json(driver);
+});
+
+// Create a new driver
+app.post('/api/drivers', authMiddleware, (req, res) => {
+  const drivers = readData(DRIVERS_FILE);
+  const newDriver = {
+    id: Date.now().toString(),
+    ...req.body,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  
+  drivers.push(newDriver);
+  
+  if (writeData(DRIVERS_FILE, drivers)) {
+    res.status(201).json(newDriver);
+  } else {
+    res.status(500).json({ error: 'Failed to create driver' });
+  }
+});
+
+// Update a driver
+app.put('/api/drivers/:id', authMiddleware, (req, res) => {
+  const drivers = readData(DRIVERS_FILE);
+  const index = drivers.findIndex(d => d.id === req.params.id);
+  
+  if (index === -1) {
+    return res.status(404).json({ error: 'Driver not found' });
+  }
+  
+  const updatedDriver = {
+    ...drivers[index],
+    ...req.body,
+    updatedAt: new Date().toISOString()
+  };
+  
+  drivers[index] = updatedDriver;
+  
+  if (writeData(DRIVERS_FILE, drivers)) {
+    res.json(updatedDriver);
+  } else {
+    res.status(500).json({ error: 'Failed to update driver' });
+  }
+});
+
+// Delete a driver
+app.delete('/api/drivers/:id', authMiddleware, (req, res) => {
+  const drivers = readData(DRIVERS_FILE);
+  const filteredDrivers = drivers.filter(d => d.id !== req.params.id);
+  
+  if (drivers.length === filteredDrivers.length) {
+    return res.status(404).json({ error: 'Driver not found' });
+  }
+  
+  if (writeData(DRIVERS_FILE, filteredDrivers)) {
+    res.json({ message: 'Driver deleted successfully' });
+  } else {
+    res.status(500).json({ error: 'Failed to delete driver' });
+  }
+});
+
+// Public endpoint to receive driver applications from the public website
+app.post('/api/public/driver-applications', (req, res) => {
+  try {
+    const drivers = readData(DRIVERS_FILE);
+    
+    // Format phone number if needed
+    let phone = req.body.phone || '';
+    // Remove non-digit characters
+    const digits = phone.replace(/\D/g, '');
+    // Format if 10 digits
+    if (digits.length === 10) {
+      phone = `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+    
+    // Create the new driver application
+    const newDriver = {
+      id: Date.now().toString(),
+      name: req.body.name,
+      email: req.body.email,
+      phone: phone,
+      city: req.body.city,
+      state: req.body.state,
+      vehicleType: Array.isArray(req.body.vehicleTypes) && req.body.vehicleTypes.length > 0 
+        ? req.body.vehicleTypes[0] 
+        : 'car',
+      status: 'pending',
+      notes: req.body.notes || '',
+      applicationDate: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      // Additional fields from the application form
+      contactPreference: req.body.contactPreference,
+      backgroundCheckConsent: req.body.backgroundCheck,
+      drivingHistoryConfirmed: req.body.drivingHistory,
+      smsConsent: req.body.smsConsent,
+      vehicleTypes: req.body.vehicleTypes || []
+    };
+    
+    drivers.push(newDriver);
+    
+    if (writeData(DRIVERS_FILE, drivers)) {
+      // Success - return 201 Created status
+      res.status(201).json({ success: true, message: 'Application received successfully' });
+    } else {
+      // Failed to write to file
+      res.status(500).json({ success: false, error: 'Failed to process application' });
+    }
+  } catch (error) {
+    console.error('Error processing driver application:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// API Routes for Other Entities (Contacts, Organizations, etc.)
+// Add similar CRUD endpoints for other entities you need
+
+// Get all contacts
+app.get('/api/contacts', authMiddleware, (req, res) => {
+  const contacts = readData(CONTACTS_FILE);
+  res.json(contacts);
+});
+
+// Add more endpoints for CRUD operations on contacts
 
 // Serve static files
 app.use('/dashboard', express.static(path.join(__dirname, 'dashboard')));
