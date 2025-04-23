@@ -31,7 +31,9 @@
 <meta name="geo.position" content="33.748995;-84.387982">
 <meta name="ICBM" content="33.748995, -84.387982">
 
+<!-- Structured Data / Schema.org JSON-LD -->
 <script type="application/ld+json">
+
     {
       "@context": "https://schema.org",
       "@type": "DeliveryService",
@@ -74,6 +76,8 @@
       }
     }
     </script>
+     <!-- Favicon -->
+     <link rel="icon" type="image/png" href="./assets/images/favicon.png">
     <style>
         :root {
             --primary-blue: #0C3B66;
@@ -863,6 +867,47 @@
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What areas does Areti Alliance serve?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Areti Alliance is based in Atlanta, GA but operates across all states and territories to meet your logistics needs. Our primary service regions include the Southeast, Northeast, Midwest, and West Coast."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How much does delivery service cost?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Our delivery prices start at $12.99 for small packages with next-day delivery. Same-day services start at $15.99. For custom logistics solutions, we provide personalized quotes based on your specific needs."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How can I track my package?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Areti Alliance provides real-time tracking for all deliveries through our advanced GPS technology. Once your delivery is scheduled, you'll receive a tracking link that allows you to monitor your package's location at every moment."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How can businesses partner with Areti Alliance?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Businesses can partner with us for regular deliveries, e-commerce fulfillment, or custom logistics solutions. Contact our business solutions team for API integration options and customized service agreements."
+              }
+            }
+          ]
+        }
+        </script>
 </head>
 <body>
     <header>
@@ -936,11 +981,11 @@
             <button class="hamburger" id="hamburger">☰</button>
             <nav id="nav">
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="services.html">Services</a></li>
-                    <li><a href="drivers.html">Driver Opportunities</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="#home" data-tab="home" class="tab-link active">Home</a></li>
+                    <li><a href="#services" data-tab="services" class="tab-link">Services</a></li>
+                    <li><a href="#drivers" data-tab="drivers" class="tab-link">Drivers</a></li>
+                    <li><a href="#about" data-tab="about" class="tab-link">About</a></li>
+                    <li><a href="#contact" data-tab="contact" class="tab-link">Contact</a></li>
                 </ul>
             </nav>
             <div class="language-switcher">
