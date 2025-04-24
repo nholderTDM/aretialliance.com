@@ -6,6 +6,8 @@
     <title>Areti Alliance Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Add favicon link to prevent 404 error -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <style>
         .loading-spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
@@ -27,6 +29,24 @@
         
         .tab-content.active {
             display: block;
+        }
+        
+        /* Add styles for password field container */
+        .password-container {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6b7280;
+        }
+        
+        .password-toggle:hover {
+            color: #4b5563;
         }
     </style>
 </head>
@@ -73,16 +93,15 @@
                     
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <input type="password" id="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <div class="password-container mt-1 relative">
+                            <input type="password" id="password" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <i id="passwordToggle" class="password-toggle ri-eye-off-line"></i>
+                        </div>
                     </div>
                     
                     <button id="loginBtn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Sign in
                     </button>
-                </div>
-                
-                <div class="mt-4 text-center text-xs text-gray-500">
-                    Use username: admin, password: admin123 for testing
                 </div>
             </div>
             
@@ -104,6 +123,24 @@
                             </a>
                             <a href="#" data-tab="tasks" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
                                 <i class="ri-task-line mr-2"></i> Tasks
+                            </a>
+                            <a href="#" data-tab="deliveries" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-truck-line mr-2"></i> Deliveries
+                            </a>
+                            <a href="#" data-tab="drivers" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-user-star-line mr-2"></i> Drivers
+                            </a>
+                            <a href="#" data-tab="routes" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-route-line mr-2"></i> Routes
+                            </a>
+                            <a href="#" data-tab="quotes" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-file-list-3-line mr-2"></i> Quotes
+                            </a>
+                            <a href="#" data-tab="performance" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-line-chart-line mr-2"></i> Performance
+                            </a>
+                            <a href="#" data-tab="revenue" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-money-dollar-circle-line mr-2"></i> Revenue
                             </a>
                             <a href="#" data-tab="settings" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
                                 <i class="ri-settings-line mr-2"></i> Settings
@@ -470,6 +507,102 @@
                             </div>
                         </div>
                         
+                        <!-- Deliveries Tab -->
+                        <div id="deliveries" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Deliveries</h2>
+                                    <button id="addDeliveryBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Add Delivery
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Delivery management is coming soon.</p>
+                                    <p class="mt-2">This feature will allow you to track all deliveries, assign drivers, and monitor status.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Drivers Tab -->
+                        <div id="drivers" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Drivers</h2>
+                                    <button id="addDriverBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Add Driver
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Driver management is coming soon.</p>
+                                    <p class="mt-2">This feature will allow you to manage driver information, track availability, and assign routes.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Routes Tab -->
+                        <div id="routes" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Routes</h2>
+                                    <button id="addRouteBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Add Route
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Route management is coming soon.</p>
+                                    <p class="mt-2">This feature will allow you to create delivery routes and optimize delivery schedules.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quotes Tab -->
+                        <div id="quotes" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Quotes</h2>
+                                    <button id="addQuoteBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Add Quote
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Quote management is coming soon.</p>
+                                    <p class="mt-2">This feature will allow you to create and track quotes for potential customers.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Performance Tab -->
+                        <div id="performance" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Performance</h2>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Performance analytics is coming soon.</p>
+                                    <p class="mt-2">This feature will provide insights into driver performance, delivery times, and customer satisfaction.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Revenue Tab -->
+                        <div id="revenue" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Revenue</h2>
+                                </div>
+                                
+                                <div class="text-center py-8 text-gray-500">
+                                    <p>Revenue tracking is coming soon.</p>
+                                    <p class="mt-2">This feature will allow you to track revenue by service type, customer, and time period.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <!-- Settings Tab -->
                         <div id="settings" class="tab-content">
                             <div class="bg-white p-6 rounded-lg shadow">
@@ -518,6 +651,25 @@
             const profileEmail = document.getElementById('profileEmail');
             const profileRole = document.getElementById('profileRole');
             
+            // Password toggle functionality
+            const passwordField = document.getElementById('password');
+            const passwordToggle = document.getElementById('passwordToggle');
+            
+            if (passwordToggle) {
+                passwordToggle.addEventListener('click', function() {
+                    // Toggle password visibility
+                    if (passwordField.type === 'password') {
+                        passwordField.type = 'text';
+                        passwordToggle.classList.remove('ri-eye-off-line');
+                        passwordToggle.classList.add('ri-eye-line');
+                    } else {
+                        passwordField.type = 'password';
+                        passwordToggle.classList.remove('ri-eye-line');
+                        passwordToggle.classList.add('ri-eye-off-line');
+                    }
+                });
+            }
+            
             // Contact form elements
             const addContactBtn = document.getElementById('addContactBtn');
             const contactForm = document.getElementById('contactForm');
@@ -542,10 +694,7 @@
             let tasks = [];
             
             // Check if user is already logged in
-            const token = localStorage.getItem('token');
-            if (token) {
-                showDashboard();
-            }
+            verifyTokenAndLoadDashboard();
             
             // Tab navigation
             const tabLinks = document.querySelectorAll('.tab-link');
@@ -565,48 +714,57 @@
                     document.getElementById(tabId).classList.add('active');
                 });
             });
-            
-            // Login functionality
-            loginBtn.addEventListener('click', function() {
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                
-                if (!username || !password) {
-                    errorAlert.textContent = 'Username and password are required';
-                    errorAlert.classList.remove('hidden');
+
+            // Verify token and load dashboard
+            function verifyTokenAndLoadDashboard() {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showLogin();
                     return;
                 }
                 
-                // TEMPORARY SOLUTION: Check against hardcoded credentials
-                if ((username === 'admin' && password === 'admin123') || 
-                    (username === 'user' && password === 'user123')) {
-                    
-                    // Create a mock token and user object
-                    const mockToken = 'mock_token_' + Date.now();
-                    const mockUser = {
-                        id: username === 'admin' ? '1' : '2',
-                        name: username === 'admin' ? 'Admin User' : 'Regular User',
-                        email: username === 'admin' ? 'admin@aretialliance.com' : 'user@aretialliance.com',
-                        role: username === 'admin' ? 'admin' : 'user'
-                    };
-                    
-                    localStorage.setItem('token', mockToken);
-                    localStorage.setItem('user', JSON.stringify(mockUser));
+                // TEMPORARY SOLUTION: Skip server verification
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user && user.id) {
                     showDashboard();
+                    return;
                 } else {
-                    errorAlert.textContent = 'Invalid username or password';
-                    errorAlert.classList.remove('hidden');
+                    // If user data is invalid, clear storage and show login
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    showLogin();
+                    return;
                 }
-            });
-            
-            // Logout functionality
-            logoutBtn.addEventListener('click', function() {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                showLogin();
-            });
-            
-            // Show dashboard
+                
+                // Verify token with the server using your existing protected endpoint
+                fetch('/api/data', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Token validation failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // If token is valid, update user data (if needed) and show dashboard
+                    if (data.user) {
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                    }
+                    showDashboard();
+                })
+                .catch(error => {
+                    console.error('Token verification error:', error);
+                    // If token is invalid, clear storage and show login
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    showLogin();
+                });
+            }
+
+            // Show dashboard function
             function showDashboard() {
                 loginForm.classList.add('hidden');
                 dashboardContent.classList.remove('hidden');
@@ -626,7 +784,74 @@
                 // Set overview tab as active by default
                 document.querySelector('.tab-link[data-tab="overview"]').click();
             }
+
+            // Login functionality
+            loginBtn.addEventListener('click', function() {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                if (!username || !password) {
+                    errorAlert.textContent = 'Username and password are required';
+                    errorAlert.classList.remove('hidden');
+                    return;
+                }
+                
+                // Show loading indicator
+                const originalBtnText = loginBtn.innerHTML;
+                loginBtn.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+                loginBtn.disabled = true;
+                
+                // Simulate server processing delay
+                setTimeout(function() {
+                    // TEMPORARY SOLUTION: Check against hardcoded credentials
+                    if ((username === 'admin' && password === 'admin123') || 
+                        (username === 'areti-admin' && password === 'admin123') ||
+                        (username === 'nholder' && password === 'Belle2025!!') ||
+                        (username === 'fgill' && password === 'user123')) {
+                        
+                        // Create a mock token and user object
+                        const mockToken = 'mock_token_' + Date.now();
+                        const userRole = username === 'fgill' ? 'user' : 'admin';
+                        const userName = username === 'fgill' ? 'Fonda Gill' : 
+                                       username === 'nholder' ? 'Nate Holder' : 
+                                       username === 'areti-admin' ? 'Areti Admin' : 'Admin User';
+                        const userEmail = username === 'fgill' ? 'fgill@aretialliance.com' : 
+                                         username === 'nholder' ? 'nholder@aretialliance.com' : 
+                                         username === 'areti-admin' ? 'natholder1@gmail.com' : 'admin@aretialliance.com';
+                        
+                        const mockUser = {
+                            id: username === 'fgill' ? '3' : username === 'nholder' ? '2' : username === 'areti-admin' ? '1' : '0',
+                            name: userName,
+                            email: userEmail,
+                            role: userRole
+                        };
+                        
+                        localStorage.setItem('token', mockToken);
+                        localStorage.setItem('user', JSON.stringify(mockUser));
+                        showDashboard();
+                    } else {
+                        errorAlert.textContent = 'Invalid username or password';
+                        errorAlert.classList.remove('hidden');
+                    }
+                    
+                    // Reset button state
+                    loginBtn.innerHTML = originalBtnText;
+                    loginBtn.disabled = false;
+                }, 1000); // 1 second delay to simulate server processing
+            });
             
+            // Logout functionality
+            logoutBtn.addEventListener('click', function() {
+                // Add confirmation dialog
+                if (confirm('Are you sure you want to end this session?')) {
+                    // Clear user data from localStorage
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    // Show login screen
+                    showLogin();
+                }
+            });
+
             // Show login
             function showLogin() {
                 loginForm.classList.remove('hidden');
@@ -635,187 +860,62 @@
                 document.getElementById('username').value = '';
                 document.getElementById('password').value = '';
                 errorAlert.classList.add('hidden');
-            }
-            
-            // Contact form event listeners
-            if (addContactBtn) {
-                addContactBtn.addEventListener('click', function() {
-                    contactForm.classList.remove('hidden');
-                });
-            }
-            
-            if (cancelContactBtn) {
-                cancelContactBtn.addEventListener('click', function() {
-                    contactForm.classList.add('hidden');
-                });
-            }
-            
-            if (saveContactBtn) {
-                saveContactBtn.addEventListener('click', function() {
-                    const name = document.getElementById('contactName').value;
-                    const email = document.getElementById('contactEmail').value;
-                    
-                    if (!name || !email) {
-                        alert('Name and email are required');
-                        return;
-                    }
-                    
-                    const newContact = {
-                        id: Date.now().toString(),
-                        name: name,
-                        email: email,
-                        phone: document.getElementById('contactPhone').value,
-                        company: document.getElementById('contactCompany').value,
-                        status: document.getElementById('contactStatus').value,
-                        notes: document.getElementById('contactNotes').value,
-                        createdAt: new Date().toISOString()
-                    };
-                    
-                    contacts.push(newContact);
-                    saveDataToLocalStorage();
-                    renderContacts();
-                    contactForm.classList.add('hidden');
-                    
-                    // Reset form
-                    document.getElementById('contactName').value = '';
-                    document.getElementById('contactEmail').value = '';
-                    document.getElementById('contactPhone').value = '';
-                    document.getElementById('contactCompany').value = '';
-                    document.getElementById('contactStatus').value = 'lead';
-                    document.getElementById('contactNotes').value = '';
-                });
-            }
-            
-            // Organization form event listeners
-            if (addOrgBtn) {
-                addOrgBtn.addEventListener('click', function() {
-                    orgForm.classList.remove('hidden');
-                });
-            }
-            
-            if (cancelOrgBtn) {
-                cancelOrgBtn.addEventListener('click', function() {
-                    orgForm.classList.add('hidden');
-                });
-            }
-            
-            if (saveOrgBtn) {
-                saveOrgBtn.addEventListener('click', function() {
-                    const name = document.getElementById('orgName').value;
-                    
-                    if (!name) {
-                        alert('Organization name is required');
-                        return;
-                    }
-                    
-                    const newOrg = {
-                        id: Date.now().toString(),
-                        name: name,
-                        industry: document.getElementById('orgIndustry').value,
-                        website: document.getElementById('orgWebsite').value,
-                        size: document.getElementById('orgSize').value,
-                        address: document.getElementById('orgAddress').value,
-                        notes: document.getElementById('orgNotes').value,
-                        createdAt: new Date().toISOString()
-                    };
-                    
-                    organizations.push(newOrg);
-                    saveDataToLocalStorage();
-                    renderOrganizations();
-                    orgForm.classList.add('hidden');
-                    
-                    // Reset form
-                    document.getElementById('orgName').value = '';
-                    document.getElementById('orgIndustry').value = '';
-                    document.getElementById('orgWebsite').value = '';
-                    document.getElementById('orgSize').value = 'small';
-                    document.getElementById('orgAddress').value = '';
-                    document.getElementById('orgNotes').value = '';
-                });
-            }
-            
-            // Task form event listeners
-            if (addTaskBtn) {
-                addTaskBtn.addEventListener('click', function() {
-                    // Update contact dropdown
-                    const contactDropdown = document.getElementById('taskContact');
-                    // Clear existing options except the first one
-                    while (contactDropdown.options.length > 1) {
-                        contactDropdown.remove(1);
-                    }
-                    
-                    // Add contacts to dropdown
-                    contacts.forEach(contact => {
-                        const option = document.createElement('option');
-                        option.value = contact.id;
-                        option.textContent = contact.name;
-                        contactDropdown.appendChild(option);
-                    });
-                    
-                    taskForm.classList.remove('hidden');
-                });
-            }
-            
-            if (cancelTaskBtn) {
-                cancelTaskBtn.addEventListener('click', function() {
-                    taskForm.classList.add('hidden');
-                });
-            }
-            
-            if (saveTaskBtn) {
-                saveTaskBtn.addEventListener('click', function() {
-                    const title = document.getElementById('taskTitle').value;
-                    
-                    if (!title) {
-                        alert('Task title is required');
-                        return;
-                    }
-                    
-                    const newTask = {
-                        id: Date.now().toString(),
-                        title: title,
-                        dueDate: document.getElementById('taskDueDate').value,
-                        priority: document.getElementById('taskPriority').value,
-                        status: document.getElementById('taskStatus').value,
-                        contactId: document.getElementById('taskContact').value,
-                        description: document.getElementById('taskDescription').value,
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString()
-                    };
-                    
-                    tasks.push(newTask);
-                    saveDataToLocalStorage();
-                    renderTasks();
-                    updateOverview();
-                    taskForm.classList.add('hidden');
-                    
-                    // Reset form
-                    document.getElementById('taskTitle').value = '';
-                    document.getElementById('taskDueDate').value = '';
-                    document.getElementById('taskPriority').value = 'medium';
-                    document.getElementById('taskStatus').value = 'pending';
-                    document.getElementById('taskContact').value = '';
-                    document.getElementById('taskDescription').value = '';
-                });
+                
+                // Reset password field type and icon
+                if (passwordField) {
+                    passwordField.type = 'password';
+                }
+                if (passwordToggle) {
+                    passwordToggle.classList.remove('ri-eye-line');
+                    passwordToggle.classList.add('ri-eye-off-line');
+                }
             }
             
             // Load data from localStorage
             function loadDataFromLocalStorage() {
-                const storedContacts = localStorage.getItem('contacts');
-                if (storedContacts) {
-                    contacts = JSON.parse(storedContacts);
+                try {
+                    // Initialize empty arrays first
+                    contacts = [];
+                    organizations = [];
+                    tasks = [];
+                    
+                    const storedContacts = localStorage.getItem('contacts');
+                    if (storedContacts) {
+                        const parsedContacts = JSON.parse(storedContacts);
+                        // Ensure contacts is an array
+                        if (Array.isArray(parsedContacts)) {
+                            contacts = parsedContacts;
+                        } else {
+                            console.error('Stored contacts is not an array, using empty array');
+                        }
+                    }
+                    
+                    const storedOrgs = localStorage.getItem('organizations');
+                    if (storedOrgs) {
+                        const parsedOrgs = JSON.parse(storedOrgs);
+                        // Ensure organizations is an array
+                        if (Array.isArray(parsedOrgs)) {
+                            organizations = parsedOrgs;
+                        } else {
+                            console.error('Stored organizations is not an array, using empty array');
+                        }
+                    }
+                    
+                    const storedTasks = localStorage.getItem('tasks');
+                    if (storedTasks) {
+                        const parsedTasks = JSON.parse(storedTasks);
+                        // Ensure tasks is an array
+                        if (Array.isArray(parsedTasks)) {
+                            tasks = parsedTasks;
+                        } else {
+                            console.error('Stored tasks is not an array, using empty array');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading data from localStorage:', error);
                 }
                 
-                const storedOrgs = localStorage.getItem('organizations');
-                if (storedOrgs) {
-                    organizations = JSON.parse(storedOrgs);
-                }
-                
-                const storedTasks = localStorage.getItem('tasks');
-                if (storedTasks) {
-                    tasks = JSON.parse(storedTasks);
-                }
-                
+                // Always render UI components, regardless of success/failure
                 renderContacts();
                 renderOrganizations();
                 renderTasks();
@@ -832,6 +932,12 @@
             // Render contacts
             function renderContacts() {
                 const contactsList = document.getElementById('contactsList');
+                
+                // Ensure contacts is an array
+                if (!Array.isArray(contacts)) {
+                    console.error('Contacts is not an array, resetting to empty array');
+                    contacts = [];
+                }
                 
                 if (contacts.length === 0) {
                     contactsList.innerHTML = `
@@ -927,6 +1033,12 @@
             function renderOrganizations() {
                 const orgsList = document.getElementById('orgsList');
                 
+                // Ensure organizations is an array
+                if (!Array.isArray(organizations)) {
+                    console.error('Organizations is not an array, resetting to empty array');
+                    organizations = [];
+                }
+                
                 if (organizations.length === 0) {
                     orgsList.innerHTML = `
                         <div class="text-center py-8 text-gray-500">
@@ -1015,6 +1127,12 @@
             // Render tasks
             function renderTasks() {
                 const tasksList = document.getElementById('tasksList');
+                
+                // Ensure tasks is an array
+                if (!Array.isArray(tasks)) {
+                    console.error('Tasks is not an array, resetting to empty array');
+                    tasks = [];
+                }
                 
                 if (tasks.length === 0) {
                     tasksList.innerHTML = `
@@ -1145,80 +1263,255 @@
             
             // Update overview stats
             function updateOverview() {
-                // Update counts
-                document.querySelector('.tab-content.active .bg-white:first-child .text-3xl:nth-of-type(1)').textContent = contacts.length;
-                document.querySelector('.tab-content.active .bg-white:first-child .text-3xl:nth-of-type(2)').textContent = organizations.length;
-                
-                // Update task counts
-                const pendingTasks = tasks.filter(t => t.status === 'pending').length;
-                const inProgressTasks = tasks.filter(t => t.status === 'in-progress').length;
-                const completedTasks = tasks.filter(t => t.status === 'completed').length;
-                
-                const pendingElem = document.querySelector('.tab-content.active .bg-white:first-child .flex:nth-of-type(1) .font-medium');
-                const inProgressElem = document.querySelector('.tab-content.active .bg-white:first-child .flex:nth-of-type(2) .font-medium');
-                const completedElem = document.querySelector('.tab-content.active .bg-white:first-child .flex:nth-of-type(3) .font-medium');
-                
-                if (pendingElem) pendingElem.textContent = pendingTasks;
-                if (inProgressElem) inProgressElem.textContent = inProgressTasks;
-                if (completedElem) completedElem.textContent = completedTasks;
-                
-                // Update recent tasks
-                const recentTasksContainer = document.querySelector('.tab-content.active .bg-white:nth-child(3)');
-                if (recentTasksContainer) {
-                    if (tasks.length === 0) {
-                        recentTasksContainer.innerHTML = `
-                            <h3 class="text-lg font-medium mb-4">Recent Tasks</h3>
-                            <div class="text-center py-10 text-gray-500">
-                                No recent tasks found
-                            </div>
-                        `;
-                    } else {
-                        const recentTasks = [...tasks]
-                            .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-                            .slice(0, 5);
-                        
-                        let html = `<h3 class="text-lg font-medium mb-4">Recent Tasks</h3>
-                                   <div class="space-y-3">`;
-                        
-                        recentTasks.forEach(task => {
-                            let statusClass = '';
-                            switch(task.status) {
-                                case 'completed':
-                                    statusClass = 'bg-green-100 text-green-800';
-                                    break;
-                                case 'in-progress':
-                                    statusClass = 'bg-blue-100 text-blue-800';
-                                    break;
-                                case 'pending':
-                                    statusClass = 'bg-yellow-100 text-yellow-800';
-                                    break;
-                                default:
-                                    statusClass = 'bg-gray-100 text-gray-800';
-                            }
-                            
-                            html += `
-                                <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
-                                    <div>
-                                        <div class="font-medium">${task.title}</div>
-                                        <div class="text-sm text-gray-500">
-                                            ${new Date(task.updatedAt).toLocaleDateString()}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <span class="px-2 py-1 rounded-full text-xs ${statusClass}">
-                                            ${task.status.replace('-', ' ').split(' ').map(word => 
-                                                word.charAt(0).toUpperCase() + word.slice(1)
-                                            ).join(' ')}
-                                        </span>
-                                    </div>
+                try {
+                    // Update counts - use optional chaining and fallbacks
+                    const contactCountElement = document.querySelector('.tab-content.active .bg-white:first-child .text-3xl:nth-of-type(1)');
+                    if (contactCountElement) {
+                        contactCountElement.textContent = Array.isArray(contacts) ? contacts.length : 0;
+                    }
+                    
+                    const orgCountElement = document.querySelector('.tab-content.active .bg-white:first-child .text-3xl:nth-of-type(2)');
+                    if (orgCountElement) {
+                        orgCountElement.textContent = Array.isArray(organizations) ? organizations.length : 0;
+                    }
+                    
+                    // Update task counts
+                    const pendingTasks = Array.isArray(tasks) ? tasks.filter(t => t.status === 'pending').length : 0;
+                    const inProgressTasks = Array.isArray(tasks) ? tasks.filter(t => t.status === 'in-progress').length : 0;
+                    const completedTasks = Array.isArray(tasks) ? tasks.filter(t => t.status === 'completed').length : 0;
+                    
+                    const pendingElem = document.querySelector('.tab-content.active .bg-white:first-child .flex:nth-of-type(1) .font-medium');
+                    const inProgressElem = document.querySelector('.tab-content.active .bg-white:first-child .flex:nth-of-type(2) .font-medium');
+                    const completedElem = document.querySelector('.tab-content.active .bg-white:first-child .flex:nth-of-type(3) .font-medium');
+                    
+                    if (pendingElem) pendingElem.textContent = pendingTasks;
+                    if (inProgressElem) inProgressElem.textContent = inProgressTasks;
+                    if (completedElem) completedElem.textContent = completedTasks;
+                    
+                    // Update recent tasks
+                    const recentTasksContainer = document.querySelector('.tab-content.active .bg-white:nth-child(3)');
+                    if (recentTasksContainer) {
+                        if (!Array.isArray(tasks) || tasks.length === 0) {
+                            recentTasksContainer.innerHTML = `
+                                <h3 class="text-lg font-medium mb-4">Recent Tasks</h3>
+                                <div class="text-center py-10 text-gray-500">
+                                    No recent tasks found
                                 </div>
                             `;
-                        });
-                        
-                        html += '</div>';
-                        recentTasksContainer.innerHTML = html;
+                        } else {
+                            const recentTasks = [...tasks]
+                                .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+                                .slice(0, 5);
+                            
+                            let html = `<h3 class="text-lg font-medium mb-4">Recent Tasks</h3>
+                                    <div class="space-y-3">`;
+                            
+                            recentTasks.forEach(task => {
+                                let statusClass = '';
+                                switch(task.status) {
+                                    case 'completed':
+                                        statusClass = 'bg-green-100 text-green-800';
+                                        break;
+                                    case 'in-progress':
+                                        statusClass = 'bg-blue-100 text-blue-800';
+                                        break;
+                                    case 'pending':
+                                        statusClass = 'bg-yellow-100 text-yellow-800';
+                                        break;
+                                    default:
+                                        statusClass = 'bg-gray-100 text-gray-800';
+                                }
+                                
+                                html += `
+                                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <div class="font-medium">${task.title}</div>
+                                            <div class="text-sm text-gray-500">
+                                                ${new Date(task.updatedAt).toLocaleDateString()}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="px-2 py-1 rounded-full text-xs ${statusClass}">
+                                                ${task.status.replace('-', ' ').split(' ').map(word => 
+                                                    word.charAt(0).toUpperCase() + word.slice(1)
+                                                ).join(' ')}
+                                            </span>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            
+                            html += '</div>';
+                            recentTasksContainer.innerHTML = html;
+                        }
                     }
+                } catch (error) {
+                    console.error('Error updating overview:', error);
                 }
+            }
+            
+            // Contact form event listeners
+            if (addContactBtn) {
+                addContactBtn.addEventListener('click', function() {
+                    contactForm.classList.remove('hidden');
+                });
+            }
+            
+            if (cancelContactBtn) {
+                cancelContactBtn.addEventListener('click', function() {
+                    contactForm.classList.add('hidden');
+                });
+            }
+            
+            if (saveContactBtn) {
+                saveContactBtn.addEventListener('click', function() {
+                    const name = document.getElementById('contactName').value;
+                    const email = document.getElementById('contactEmail').value;
+                    
+                    if (!name || !email) {
+                        alert('Name and email are required');
+                        return;
+                    }
+                    
+                    const newContact = {
+                        id: Date.now().toString(),
+                        name: name,
+                        email: email,
+                        phone: document.getElementById('contactPhone').value,
+                        company: document.getElementById('contactCompany').value,
+                        status: document.getElementById('contactStatus').value,
+                        notes: document.getElementById('contactNotes').value,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    contacts.push(newContact);
+                    saveDataToLocalStorage();
+                    renderContacts();
+                    contactForm.classList.add('hidden');
+                    
+                    // Reset form
+                    document.getElementById('contactName').value = '';
+                    document.getElementById('contactEmail').value = '';
+                    document.getElementById('contactPhone').value = '';
+                    document.getElementById('contactCompany').value = '';
+                    document.getElementById('contactStatus').value = 'lead';
+                    document.getElementById('contactNotes').value = '';
+                });
+            }
+            
+            // Organization form event listeners
+            if (addOrgBtn) {
+                addOrgBtn.addEventListener('click', function() {
+                    orgForm.classList.remove('hidden');
+                });
+            }
+            
+            if (cancelOrgBtn) {
+                cancelOrgBtn.addEventListener('click', function() {
+                    orgForm.classList.add('hidden');
+                });
+            }
+            
+            if (saveOrgBtn) {
+                saveOrgBtn.addEventListener('click', function() {
+                    const name = document.getElementById('orgName').value;
+                    
+                    if (!name) {
+                        alert('Organization name is required');
+                        return;
+                    }
+                    
+                    const newOrg = {
+                        id: Date.now().toString(),
+                        name: name,
+                        industry: document.getElementById('orgIndustry').value,
+                        website: document.getElementById('orgWebsite').value,
+                        size: document.getElementById('orgSize').value,
+                        address: document.getElementById('orgAddress').value,
+                        notes: document.getElementById('orgNotes').value,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    organizations.push(newOrg);
+                    saveDataToLocalStorage();
+                    renderOrganizations();
+                    orgForm.classList.add('hidden');
+                    
+                    // Reset form
+                    document.getElementById('orgName').value = '';
+                    document.getElementById('orgIndustry').value = '';
+                    document.getElementById('orgWebsite').value = '';
+                    document.getElementById('orgSize').value = 'small';
+                    document.getElementById('orgAddress').value = '';
+                    document.getElementById('orgNotes').value = '';
+                });
+            }
+            
+            // Task form event listeners
+            if (addTaskBtn) {
+                addTaskBtn.addEventListener('click', function() {
+                    // Update contact dropdown
+                    const contactDropdown = document.getElementById('taskContact');
+                    // Clear existing options except the first one
+                    while (contactDropdown.options.length > 1) {
+                        contactDropdown.remove(1);
+                    }
+                    
+                    // Add contacts to dropdown
+                    if (Array.isArray(contacts)) {
+                        contacts.forEach(contact => {
+                            const option = document.createElement('option');
+                            option.value = contact.id;
+                            option.textContent = contact.name;
+                            contactDropdown.appendChild(option);
+                        });
+                    }
+                    
+                    taskForm.classList.remove('hidden');
+                });
+            }
+            
+            if (cancelTaskBtn) {
+                cancelTaskBtn.addEventListener('click', function() {
+                    taskForm.classList.add('hidden');
+                });
+            }
+            
+            if (saveTaskBtn) {
+                saveTaskBtn.addEventListener('click', function() {
+                    const title = document.getElementById('taskTitle').value;
+                    
+                    if (!title) {
+                        alert('Task title is required');
+                        return;
+                    }
+                    
+                    const newTask = {
+                        id: Date.now().toString(),
+                        title: title,
+                        dueDate: document.getElementById('taskDueDate').value,
+                        priority: document.getElementById('taskPriority').value,
+                        status: document.getElementById('taskStatus').value,
+                        contactId: document.getElementById('taskContact').value,
+                        description: document.getElementById('taskDescription').value,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+                    
+                    tasks.push(newTask);
+                    saveDataToLocalStorage();
+                    renderTasks();
+                    updateOverview();
+                    taskForm.classList.add('hidden');
+                    
+                    // Reset form
+                    document.getElementById('taskTitle').value = '';
+                    document.getElementById('taskDueDate').value = '';
+                    document.getElementById('taskPriority').value = 'medium';
+                    document.getElementById('taskStatus').value = 'pending';
+                    document.getElementById('taskContact').value = '';
+                    document.getElementById('taskDescription').value = '';
+                });
             }
             
             // Edit, Delete, and Complete functions
@@ -1270,6 +1563,30 @@
                     renderTasks();
                     updateOverview();
                 }
+            };
+            
+            // Function to clear localStorage (can be called from console if needed)
+            window.clearLocalStorage = function() {
+                localStorage.removeItem('contacts');
+                localStorage.removeItem('organizations');
+                localStorage.removeItem('tasks');
+                
+                // Keep token and user for session
+                // localStorage.removeItem('token');
+                // localStorage.removeItem('user');
+                
+                // Reset arrays
+                contacts = [];
+                organizations = [];
+                tasks = [];
+                
+                // Update UI
+                renderContacts();
+                renderOrganizations();
+                renderTasks();
+                updateOverview();
+                
+                console.log('LocalStorage data cleared successfully!');
             };
         });
     </script>

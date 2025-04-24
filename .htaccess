@@ -1,0 +1,11 @@
+# Enable HSTS
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# Redirect for terms.html and privacy.html
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^terms\.html$ public/terms.html [L]
+  RewriteRule ^privacy\.html$ public/privacy.html [L]
+</IfModule>

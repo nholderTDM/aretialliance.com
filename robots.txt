@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://aretialliance.com/sitemap.xml

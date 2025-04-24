@@ -3,7 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fast, reliable last-mile delivery service in Atlanta and nationwide. Real-time tracking, same-day options, and customized business logistics solutions.">
     <title>Areti Alliance | On-Demand Last-Mile Delivery</title>
+   
+    <!-- Google SEO Analytics Meta Tag-->
+    <meta name="google-site-verification" content="Vy5bSexOLFa_Nqh6BPmBAwi3m3E7geDPqYtXGDlEDh8" />
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="last-mile delivery, same-day delivery, on-demand delivery, logistics solutions, Atlanta delivery service, package delivery, business logistics, real-time tracking">
+    <meta name="author" content="Areti Alliance">
+  
+<!-- Open Graph Meta Tags for social sharing -->
+<meta property="og:title" content="Areti Alliance | On-Demand Last-Mile Delivery">
+<meta property="og:description" content="Fast, reliable last-mile delivery solutions with real-time tracking, same-day service, and nationwide coverage based in Atlanta, GA.">
+<meta property="og:image" content="https://aretialliance.com/assets/images/areti-logo-social.png">
+<meta property="og:url" content="https://aretialliance.com">
+<meta property="og:type" content="website">
+
+<!-- Twitter Card data -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Areti Alliance | On-Demand Last-Mile Delivery">
+<meta name="twitter:description" content="Fast, reliable last-mile delivery solutions with real-time tracking, same-day service, and nationwide coverage based in Atlanta, GA.">
+<meta name="twitter:image" content="https://aretialliance.com/assets/images/areti-logo-social.png">
+
+<!-- Canonical URL to prevent duplicate content issues -->
+<link rel="canonical" href="https://aretialliance.com">
+
+<!-- Additional SEO tags -->
+<meta name="geo.region" content="US-GA">
+<meta name="geo.placename" content="Atlanta">
+<meta name="geo.position" content="33.748995;-84.387982">
+<meta name="ICBM" content="33.748995, -84.387982">
+
+
+     <!-- Favicon -->
+     <link rel="icon" type="image/png" href="./assets/images/favicon.png">
     <style>
         :root {
             --primary-blue: #0C3B66;
@@ -219,7 +253,12 @@
             padding: 100px 0;
             text-align: center;
         }
-        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+                    
         .hero h2 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
@@ -791,6 +830,109 @@
   display: block;
 }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Structured Data / Schema.org JSON-LD -->
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "DeliveryService",
+          "name": "Areti Alliance",
+          "url": "https://aretialliance.com",
+          "logo": "https://aretialliance.com/assets/images/areti-logo.png",
+          "description": "On-demand last-mile delivery solutions with real-time tracking, same-day delivery, and flexible scheduling for businesses of all sizes.",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "1201 West Peachtree Street NW, Suite 2300",
+            "addressLocality": "Atlanta",
+            "addressRegion": "GA",
+            "postalCode": "30309",
+            "addressCountry": "US"
+          },
+          "telephone": "18558183278",
+          "openingHours": "Mo-Fr 08:00-20:00 Sa-Su 09:00-17:00",
+          "areaServed": {
+            "@type": "GeoCircle",
+            "geoMidpoint": {
+              "@type": "GeoCoordinates",
+              "latitude": 33.748995,
+              "longitude": -84.387982
+            },
+            "geoRadius": "500000"
+          },
+          "sameAs": [
+            "https://facebook.com/aretialliance",
+            "https://twitter.com/aretialliance",
+            "https://linkedin.com/company/aretialliance",
+            "https://instagram.com/aretialliance"
+          ],
+          "potentialAction": {
+            "@type": "RequestQuote",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://aretialliance.com/services.html"
+            },
+            "resultType": "Quote"
+          }
+        }
+        </script>
+    <script>
+
+     // Handle www to non-www redirect
+        if (window.location.hostname.startsWith('www.')) {
+            window.location.href = window.location.href.replace('www.', '');
+        }
+    </script>
+    
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What areas does Areti Alliance serve?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Areti Alliance is based in Atlanta, GA but operates across all states and territories to meet your logistics needs. Our primary service regions include the Southeast, Northeast, Midwest, and West Coast."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How much does delivery service cost?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Our delivery prices start at $12.99 for small packages with next-day delivery. Same-day services start at $15.99. For custom logistics solutions, we provide personalized quotes based on your specific needs."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How can I track my package?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Areti Alliance provides real-time tracking for all deliveries through our advanced GPS technology. Once your delivery is scheduled, you'll receive a tracking link that allows you to monitor your package's location at every moment."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How can businesses partner with Areti Alliance?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Businesses can partner with us for regular deliveries, e-commerce fulfillment, or custom logistics solutions. Contact our business solutions team for API integration options and customized service agreements."
+              }
+            }
+          ]
+        }
+        </script>
+    
+        <!-- Clarity tracking code for https://aretialliance.com/ -->
+<script>
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "r8sdr9qori");
+</script>
 </head>
 <body>
     <header>
@@ -864,11 +1006,11 @@
             <button class="hamburger" id="hamburger">☰</button>
             <nav id="nav">
                 <ul>
-                    <li><a href="#" data-tab="home" class="tab-link active">Home</a></li>
-                    <li><a href="#" data-tab="services" class="tab-link">Services</a></li>
-                    <li><a href="#" data-tab="drivers" class="tab-link">Driver Opportunities</a></li>
-                    <li><a href="#" data-tab="about" class="tab-link">About</a></li>
-                    <li><a href="#" data-tab="contact" class="tab-link">Contact</a></li>
+                    <li><a href="#home" data-tab="home" class="tab-link active">Home</a></li>
+                    <li><a href="#services" data-tab="services" class="tab-link">Services</a></li>
+                    <li><a href="#drivers" data-tab="drivers" class="tab-link">Drivers</a></li>
+                    <li><a href="#about" data-tab="about" class="tab-link">About</a></li>
+                    <li><a href="#contact" data-tab="contact" class="tab-link">Contact</a></li>
                 </ul>
             </nav>
             <div class="language-switcher">
@@ -886,7 +1028,7 @@
     <div id="home" class="tab-content active">
         <section class="hero">
             <div class="container">
-                <h2 data-i18n="hero.title">On-Demand Last-Mile Delivery Solutions</h2>
+                <h1 data-i18n="hero.title">On-Demand Last-Mile Delivery Solutions</h1>
                 <p data-i18n="here.subtitle">Areti Alliance delivers packages across Atlanta and nationwide with speed, reliability, and care. Our advanced technology ensures your deliveries arrive on time, every time.</p>
                 <a href="#" class="btn" id="get-quote-btn">Get a Quote</a>
             </div>
@@ -2575,174 +2717,156 @@ if (customQuoteBtn) {
     });
 }
             
- // Driver application form with conditional SMS consent validation
+ // Driver application form with submission to both Google Sheets and backend API
 const driverForm = document.getElementById('driver-form');
 if (driverForm) {
-    // Add input validation for phone number field
-    const phoneInput = document.getElementById('driver-phone');
-    if (phoneInput) {
-        // Add event listener to validate as user types
-        phoneInput.addEventListener('input', function(e) {
-            // Remove any non-numeric characters
-            let value = this.value.replace(/\D/g, '');
-            
-            // Limit to 10 digits
-            if (value.length > 10) {
-                value = value.slice(0, 10);
-            }
-            
-            // Apply formatting as XXX-XXX-XXXX as user types
-            if (value.length > 0) {
-                if (value.length <= 3) {
-                    // Just the area code
-                    this.value = value;
-                } else if (value.length <= 6) {
-                    // Area code and prefix
-                    this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
-                } else {
-                    // Complete number
-                    this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
-                }
-            } else {
-                this.value = value;
-            }
-        });
+  driverForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form values
+    const driverName = document.getElementById('driver-name').value;
+    const driverEmail = document.getElementById('driver-email').value;
+    const driverPhone = document.getElementById('driver-phone').value;
+    const contactPreference = document.getElementById('contact-preference').value;
+    const driverCity = document.getElementById('driver-city').value;
+    const driverState = document.getElementById('driver-state').value;
+    const smsConsent = document.getElementById('sms-consent').checked;
+    
+    // Validate phone number has exactly 10 digits
+    const phoneDigits = driverPhone.replace(/\D/g, '');
+    if (phoneDigits.length !== 10) {
+      alert('Please enter a valid 10-digit phone number.');
+      document.getElementById('driver-phone').focus();
+      return false;
     }
     
-    // Add event listener for preferred contact method dropdown
-    const contactPreferenceDropdown = document.getElementById('contact-preference');
-    const smsConsentCheckbox = document.getElementById('sms-consent');
-    const smsConsentLabel = document.querySelector('label[for="sms-consent"]');
-    
-    // Store the original label text at the global level
-    const originalLabelText = smsConsentLabel ? smsConsentLabel.textContent : "I allow Areti Alliance to communicate with me via SMS messaging. Standard rates will apply.";
-    
-    if (contactPreferenceDropdown && smsConsentCheckbox && smsConsentLabel) {
-        // Update SMS consent checkbox status when contact preference changes
-        contactPreferenceDropdown.addEventListener('change', function() {
-            if (this.value === 'text') {
-                // Add required indicator to label
-                smsConsentLabel.textContent = originalLabelText + ' *';
-                smsConsentLabel.style.color = 'var(--primary-blue)';
-                smsConsentLabel.style.fontWeight = '600';
-            } else {
-                // Remove required indicator from label
-                smsConsentLabel.textContent = originalLabelText;
-                smsConsentLabel.style.color = '';
-                smsConsentLabel.style.fontWeight = '';
-            }
-        });
+    // Check if SMS consent is required but not checked
+    if (contactPreference === 'text' && !smsConsent) {
+      alert('SMS consent is required when selecting Text Message as your preferred contact method.');
+      document.getElementById('sms-consent').focus();
+      return false;
     }
-
-    driverForm.addEventListener('submit', function(e) {
-        e.preventDefault();
+    
+    // Format phone number consistently as XXX-XXX-XXXX
+    const formattedPhone = `${phoneDigits.substring(0, 3)}-${phoneDigits.substring(3, 6)}-${phoneDigits.substring(6)}`;
+    
+    // Get selected vehicle types
+    const vehicleTypes = Array.from(document.querySelectorAll('input[name="vehicle-types"]:checked'))
+      .map(checkbox => checkbox.value);
+    
+    // Get consent checkboxes
+    const backgroundCheck = document.getElementById('background-check').checked;
+    const drivingHistory = document.getElementById('driving-history').checked;
+    const generalConsent = document.getElementById('consent').checked;
+    
+    // Prepare data for Google Sheets (keep this part)
+    const formDataForSheets = {
+      name: driverName,
+      email: driverEmail,
+      phone: formattedPhone,
+      contactPreference: contactPreference,
+      city: driverCity,
+      state: driverState,
+      vehicleTypes: vehicleTypes,
+      backgroundCheck: backgroundCheck,
+      drivingHistory: drivingHistory,
+      smsConsent: smsConsent,
+      generalConsent: generalConsent
+    };
+    
+    // Prepare data for API (this is new)
+    const formDataForAPI = {
+      name: driverName,
+      email: driverEmail,
+      phone: formattedPhone,
+      contactPreference: contactPreference,
+      city: driverCity,
+      state: driverState,
+      vehicleTypes: vehicleTypes,
+      backgroundCheck: backgroundCheck,
+      drivingHistory: drivingHistory,
+      smsConsent: smsConsent,
+      generalConsent: generalConsent,
+      notes: "Application submitted from website"
+    };
+    
+    console.log('Form data being sent:', formDataForSheets);
+    
+    // Show loading state
+    const submitBtn = driverForm.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    
+    // Submit to Google Sheets (keep your existing code here)
+    try {
+      // Using no-cors mode - this is your existing Google Sheets submission
+      fetch('https://script.google.com/macros/s/AKfycbz79D35pdPkSBHyT1Z3neHbQRJiuRKMcA3gOv4zZpZfHsQrcyHGAdZ3sc0ir4BZTzU/exec', {
+        method: 'POST', 
+        body: JSON.stringify(formDataForSheets),
+        mode: 'no-cors' // Using no-cors mode
+      })
+      .then(() => {
+        // Now also submit to our backend API
+        return fetch('/api/public/driver-applications', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formDataForAPI)
+        });
+      })
+      .then(response => {
+        // Since Google Sheets uses no-cors, we only check the API response
+        if (response && !response.ok) {
+          // API submission failed, but Google Sheets submission may have succeeded
+          console.warn('API submission failed, but Google Sheets submission may have succeeded');
+          // We'll still show a success message since the Google Sheets data was captured
+          return { success: true, sheetsOnly: true };
+        }
+        return response ? response.json() : { success: true };
+      })
+      .then(data => {
+        // Show success message regardless of API success (as long as Sheets worked)
+        alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
         
-        // Get form values
-        const driverName = document.getElementById('driver-name').value;
-        const driverEmail = document.getElementById('driver-email').value;
-        const driverPhone = document.getElementById('driver-phone').value;
-        const contactPreference = document.getElementById('contact-preference').value;
-        const driverCity = document.getElementById('driver-city').value;
-        const driverState = document.getElementById('driver-state').value;
-        const smsConsent = document.getElementById('sms-consent').checked;
+        // Reset the form
+        driverForm.reset();
         
-        // Validate phone number has exactly 10 digits
-        const phoneDigits = driverPhone.replace(/\D/g, '');
-        if (phoneDigits.length !== 10) {
-            alert('Please enter a valid 10-digit phone number.');
-            document.getElementById('driver-phone').focus();
-            return false;
+        // Reset SMS consent label if it was modified
+        const smsConsentLabel = document.querySelector('label[for="sms-consent"]');
+        if (smsConsentLabel && originalLabelText) {
+          // Store the original label text at the global level
+        const originalLabelText = smsConsentLabel ? smsConsentLabel.textContent : "I allow Areti Alliance to communicate with me via SMS messaging. Standard rates will apply.";
+          smsConsentLabel.style.color = '';
+          smsConsentLabel.style.fontWeight = '';
         }
         
-        // Check if SMS consent is required but not checked
-        if (contactPreference === 'text' && !smsConsent) {
-            alert('SMS consent is required when selecting Text Message as your preferred contact method.');
-            document.getElementById('sms-consent').focus();
-            return false;
+        // Log if we had partial success
+        if (data.sheetsOnly) {
+          console.log('Note: Data was saved to Google Sheets but not to the CRM API');
         }
-        
-        // Format phone number consistently as XXX-XXX-XXXX
-        const formattedPhone = `${phoneDigits.substring(0, 3)}-${phoneDigits.substring(3, 6)}-${phoneDigits.substring(6)}`;
-        
-        // Get selected vehicle types
-        const vehicleTypes = Array.from(document.querySelectorAll('input[name="vehicle-types"]:checked'))
-            .map(checkbox => checkbox.value);
-        
-        // Get consent checkboxes
-        const backgroundCheck = document.getElementById('background-check').checked;
-        const drivingHistory = document.getElementById('driving-history').checked;
-        const generalConsent = document.getElementById('consent').checked;
-        
-        // Prepare data for Google Sheets
-        const formData = {
-            name: driverName,
-            email: driverEmail,
-            phone: formattedPhone,
-            contactPreference: contactPreference,
-            city: driverCity,
-            state: driverState,
-            vehicleTypes: vehicleTypes,
-            backgroundCheck: backgroundCheck,
-            drivingHistory: drivingHistory,
-            smsConsent: smsConsent,
-            generalConsent: generalConsent
-        };
-        
-        console.log('Form data being sent:', formData);
-        
-        // Show loading state
-        const submitBtn = driverForm.querySelector('button[type="submit"]');
-        const originalBtnText = submitBtn.textContent;
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Submitting...';
-        
-        // Handle form submission using no-cors mode with proper error handling
-        try {
-            // Using no-cors mode means we can't read the response, so we need a different approach
-            fetch('https://script.google.com/macros/s/AKfycbz79D35pdPkSBHyT1Z3neHbQRJiuRKMcA3gOv4zZpZfHsQrcyHGAdZ3sc0ir4BZTzU/exec', {
-                method: 'POST', 
-                body: JSON.stringify(formData),
-                mode: 'no-cors' // Using no-cors mode
-            })
-            .then(() => {
-                // Since we can't actually read the response with no-cors, we'll just assume success
-                // Show success message
-                alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
-                
-                // Reset the form
-                driverForm.reset();
-                
-                // Reset button
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
-                
-                // Reset SMS consent label if it was modified
-                if (smsConsentLabel) {
-                    smsConsentLabel.textContent = originalLabelText;
-                    smsConsentLabel.style.color = '';
-                    smsConsentLabel.style.fontWeight = '';
-                }
-            })
-            .catch(() => {
-                // This catch should never be reached with no-cors mode,
-                // but we'll leave it as a safeguard
-                console.error('Network error occurred');
-                alert('There was an error submitting your application. Please try again or contact us directly.');
-                
-                // Reset button
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
-            });
-        } catch (err) {
-            // This would only happen if there's a syntax error or similar
-            console.error('Error:', err);
-            alert('There was an unexpected error submitting your application. Please try again later.');
-            
-            // Reset button
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalBtnText;
-        }
-    });
+      })
+      .catch((err) => {
+        // This would only happen if both submissions failed or if there's a JS error
+        console.error('Error:', err);
+        alert('There was an error submitting your application. Please try again or contact us directly.');
+      })
+      .finally(() => {
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      });
+    } catch (err) {
+      // This would only happen if there's a syntax error or similar
+      console.error('Error:', err);
+      alert('There was an unexpected error submitting your application. Please try again later.');
+      
+      // Reset button
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+    }
+  });
 }
 
 // Contact form
