@@ -2435,73 +2435,25 @@ function renderLeadFunnel(funnelData) {
             }
             
             // Contact form event listeners
-            if (addContactBtn) {
-                addContactBtn.addEventListener('click', function() {
-                    contactForm.classList.remove('hidden');
-                });
-            }
-            
-            if (cancelContactBtn) {
-                cancelContactBtn.addEventListener('click', function() {
-                    contactForm.classList.add('hidden');
-                });
-            }
-            
-            if (saveContactBtn) {
-                saveContactBtn.addEventListener('click', function() {
-                    const name = document.getElementById('contactName').value;
-                    const email = document.getElementById('contactEmail').value;
-                    
-                    if (!name || !email) {
-                        alert('Name and email are required');
-                        return;
-                    }
-                    
-                    const newContact = {
-    id: Date.now().toString(),
-    name: name,
-    email: email,
-    phone: document.getElementById('contactPhone').value,
-    company: document.getElementById('contactCompany').value,
-    status: document.getElementById('contactStatus').value,
-    // New lead management fields
-    leadSource: document.getElementById('contactLeadSource').value,
-    leadScore: parseInt(document.getElementById('contactLeadScore').value) || 0,
-    stageTimestamps: {
-        lead: new Date().toISOString(),
-        opportunity: null,
-        customer: null,
-        partner: null
-    },
-    lastContactDate: new Date().toISOString(),
-    nextFollowUpDate: document.getElementById('contactNextFollowUp').value || null,
-    assignedTo: document.getElementById('contactAssignedTo').value || null,
-    notes: document.getElementById('contactNotes').value,
-    tags: document.getElementById('contactTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    // Related entities
-    relatedOrganizationId: document.getElementById('contactOrganization').value || null,
-    relatedTasks: [],
-    relatedQuotes: [],
-    relatedDeliveries: []
-};
-                    
-                    contacts.push(newContact);
-                    saveDataToLocalStorage();
-                    renderContacts();
-                    contactForm.classList.add('hidden');
-                    
-                    // Reset form
-                    document.getElementById('contactName').value = '';
-                    document.getElementById('contactEmail').value = '';
-                    document.getElementById('contactPhone').value = '';
-                    document.getElementById('contactCompany').value = '';
-                    document.getElementById('contactStatus').value = 'lead';
-                    document.getElementById('contactNotes').value = '';
-                });
-            }
-            
+if (addContactBtn) {
+    addContactBtn.addEventListener('click', function() {
+        // Show contact form
+        contactForm.classList.remove('hidden');
+        
+        // Reset form title to "Add New Contact"
+        document.getElementById('contactFormTitle').textContent = 'Add New Contact';
+        
+        // Hide contacts list
+        const contactsList = document.getElementById('contactsList');
+        contactsList.style.display = 'block';
+        
+        // Initialize the tabs
+        initContactFormTabs();
+        
+        // Populate organizations dropdown
+        populateOrganizationsDropdown();
+    });
+}            
             // Organization form event listeners
             if (addOrgBtn) {
                 addOrgBtn.addEventListener('click', function() {
@@ -2881,10 +2833,10 @@ document.getElementById('saveContactBtn').addEventListener('click', function() {
     
     // Save data and refresh UI
     saveDataToLocalStorage();
-    renderContacts();
     
     // Hide form and reset for next use
     document.getElementById('contactForm').classList.add('hidden');
+    document.getElementById('contactFormTitle').textContent = 'Add New Contact';
     document.getElementById('contactName').value = '';
     document.getElementById('contactEmail').value = '';
     document.getElementById('contactPhone').value = '';
@@ -2898,6 +2850,13 @@ document.getElementById('saveContactBtn').addEventListener('click', function() {
     
     // Reset tabs to first tab
     document.querySelector('.contact-tab-link[data-tab="basic-info"]').click();
+    
+    // IMPORTANT: Show the contact list and Add Contact button
+    const contactsList = document.getElementById('contactsList');
+    contactsList.style.display = 'block'; // Make sure the contacts list is visible
+    
+    // Re-render the contacts list to show the newly added/edited contact
+    renderContacts();
 });
             
             window.editOrg = function(id) {
