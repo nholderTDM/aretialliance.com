@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Abstract Logo representing connection and movement -->
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E88E5" />
+      <stop offset="100%" stop-color="#0C3B66" />
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9800" />
+      <stop offset="100%" stop-color="#FF5722" />
+    </linearGradient>
+    <filter id="blur" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+    </filter>
+  </defs>
+  
+  <!-- Abstract Shield Shape -->
+  <path d="M150,50 C200,60 250,80 230,170 C210,240 160,250 150,250 C140,250 90,240 70,170 C50,80 100,60 150,50 Z" 
+        fill="url(#blueGrad)" opacity="0.8"/>
+  
+  <!-- Dynamic flowing lines representing connection and movement -->
+  <path d="M60,120 C110,80 180,90 240,120" stroke="#1E88E5" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M60,140 C140,110 160,110 240,140" stroke="#0C3B66" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M60,160 C120,140 190,140 240,160" stroke="#1E88E5" stroke-width="4" fill="none" stroke-linecap="round"/>
+  
+  <!-- Abstract "A" suggestion -->
+  <path d="M120,180 L150,100 L180,180" stroke="#0C3B66" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="130" y1="150" x2="170" y2="150" stroke="#0C3B66" stroke-width="10" stroke-linecap="round"/>
+  
+  <!-- Orange accent elements -->
+  <circle cx="150" cy="100" r="8" fill="url(#orangeGrad)"/>
+  <circle cx="120" cy="180" r="8" fill="url(#orangeGrad)"/>
+  <circle cx="180" cy="180" r="8" fill="url(#orangeGrad)"/>
+  
+  <!-- Abstract glow effect -->
+  <circle cx="150" cy="150" r="25" fill="url(#orangeGrad)" opacity="0.3" filter="url(#blur)"/>
+</svg>

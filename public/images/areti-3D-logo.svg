@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- 3D Logo based on brand's shield concept -->
+  <defs>
+    <!-- Shield gradient -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E88E5" />
+      <stop offset="90%" stop-color="#0C3B66" />
+    </linearGradient>
+    
+    <!-- Orange accent gradient -->
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9800" />
+      <stop offset="100%" stop-color="#FF5722" />
+    </linearGradient>
+    
+    <!-- Shadow filter -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="6" stdDeviation="4" flood-color="rgba(0,0,0,0.4)"/>
+    </filter>
+  </defs>
+  
+  <!-- 3D Shield - main shape with gradient and shadow -->
+  <path d="M150,30 L250,70 L220,170 L150,200 L80,170 L50,70 Z" fill="url(#shieldGrad)" filter="url(#shadow)"/>
+  
+  <!-- 3D inner shield - gives depth -->
+  <path d="M150,45 L230,78 L205,160 L150,185 L95,160 L70,78 Z" fill="#ffffff" fill-opacity="0.3"/>
+  
+  <!-- Central 3D letter A with depth shading -->
+  <path d="M130,150 L150,85 L170,150" fill="none" stroke="#0C3B66" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="135" y1="125" x2="165" y2="125" stroke="#0C3B66" stroke-width="10" stroke-linecap="round"/>
+  
+  <!-- Curved route/path element -->
+  <path d="M110,110 Q150,70 190,110" fill="none" stroke="#1E88E5" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- Orange accent dot - destination -->
+  <circle cx="190" cy="110" r="6" fill="url(#accentGrad)"/>
+  
+  <!-- Orange accent at bottom of shield -->
+  <path d="M130,180 L170,180" stroke="url(#accentGrad)" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- "ALLIANCE" text without shadow effect -->
+  <text x="150" y="240" font-family="Arial, sans-serif" font-weight="bold" font-size="24" text-anchor="middle" fill="#1E88E5">ALLIANCE</text>
+  
+  <!-- "ARETI" text with 3D effect -->
+  <text x="150" y="220" font-family="Arial, sans-serif" font-weight="bold" font-size="20" text-anchor="middle" fill="#0C3B66">ARETI</text>
+  <text x="152" y="222" font-family="Arial, sans-serif" font-weight="bold" font-size="20" text-anchor="middle" fill="#0C3B66" fill-opacity="0.3">ARETI</text>
+</svg>

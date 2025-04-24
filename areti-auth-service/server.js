@@ -11,10 +11,13 @@ const port = process.env.PORT || 3000;
 // Environment variables with defaults
 const KEYCLOAK_URL = process.env.KEYCLOAK_URL || 'https://auth.aretialliance.com';
 const KEYCLOAK_REALM = process.env.REALM || 'areti-alliance';
-const JWT_SECRET = process.env.JWT_SECRET || 'change-this-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || '3374021dca7bded335c1c2b15ff77984d52fc4f885e2335d79eb546f2431377f';
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://aretialliance.com'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

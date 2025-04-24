@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Areti Alliance Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #1e40af;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen">
+        <!-- Top Navigation -->
+        <div class="bg-blue-800 text-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
+                        <span class="text-blue-800 font-bold text-xl">A</span>
+                    </div>
+                    <h1 class="text-xl font-bold">Areti Alliance Dashboard</h1>
+                </div>
+                <div id="userInfo" class="hidden flex items-center">
+                    <span id="userName" class="mr-4">User</span>
+                    <button id="logoutBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto mt-8 p-4">
+            <!-- Login Form -->
+            <div id="loginForm" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white font-bold text-2xl">A</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900">Areti Alliance CRM</h2>
+                    <p class="text-gray-600">Sign in to your account</p>
+                </div>
+                
+                <div id="errorAlert" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+                    Invalid username or password
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <input type="text" id="username" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <button id="loginBtn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Sign in
+                    </button>
+                </div>
+                
+                <div class="mt-4 text-center text-xs text-gray-500">
+                    Use username: admin, password: admin123 for testing
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div id="dashboardContent" class="hidden">
+                <div class="flex flex-col md:flex-row gap-6">
+                    <!-- Sidebar Navigation -->
+                    <div class="w-full md:w-64 bg-white rounded-lg shadow-md p-4">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-700 pb-2 border-b">Main Menu</h3>
+                        <nav class="space-y-2">
+                            <a href="#" data-tab="overview" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-dashboard-line mr-2"></i> Overview
+                            </a>
+                            <a href="#" data-tab="contacts" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-user-line mr-2"></i> Contacts
+                            </a>
+                            <a href="#" data-tab="organizations" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-building-line mr-2"></i> Organizations
+                            </a>
+                            <a href="#" data-tab="tasks" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-task-line mr-2"></i> Tasks
+                            </a>
+                            <a href="#" data-tab="settings" class="tab-link flex items-center p-2 text-gray-700 rounded hover:bg-blue-50 hover:text-blue-700 w-full">
+                                <i class="ri-settings-line mr-2"></i> Settings
+                            </a>
+                        </nav>
+                    </div>
+                    
+                    <!-- Main Content Area -->
+                    <div class="flex-1">
+                        <!-- Overview Tab -->
+                        <div id="overview" class="tab-content active">
+                            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                                <h2 class="text-xl font-semibold mb-4">Dashboard Overview</h2>
+                                <p>Welcome to the Areti Alliance CRM dashboard. You are logged in as: <span id="userRoleOverview" class="font-semibold">Admin</span></p>
+                            </div>
+                            
+                            <!-- Summary Cards -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <div class="bg-white p-4 rounded-lg shadow">
+                                    <div class="text-sm font-medium text-gray-500">Total Contacts</div>
+                                    <div class="mt-1 text-3xl font-semibold">0</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow">
+                                    <div class="text-sm font-medium text-gray-500">Total Organizations</div>
+                                    <div class="mt-1 text-3xl font-semibold">0</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow">
+                                    <div class="text-sm font-medium text-gray-500">Tasks Overview</div>
+                                    <div class="mt-3 space-y-2">
+                                        <div class="flex justify-between">
+                                            <span class="text-sm">Pending</span>
+                                            <span class="font-medium">0</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-sm">In Progress</span>
+                                            <span class="font-medium">0</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-sm">Completed</span>
+                                            <span class="font-medium">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Recent Activity -->
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                <h3 class="text-lg font-medium mb-4">Recent Tasks</h3>
+                                <div class="text-center py-10 text-gray-500">
+                                    No recent tasks found
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contacts Tab -->
+                        <div id="contacts" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Contacts</h2>
+                                    <button id="addContactBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Add Contact
+                                    </button>
+                                </div>
+                                
+                                <div id="contactForm" class="hidden mb-6 bg-gray-50 p-4 rounded border">
+                                    <h3 class="text-lg font-medium mb-4">Add New Contact</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Name *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="contactName"
+                                                required
+                                                class="w-full px-3 py-2 border rounded"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Email *
+                                            </label>
+                                            <input
+                                                type="email"
+                                                id="contactEmail"
+                                                required
+                                                class="w-full px-3 py-2 border rounded"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Phone
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                id="contactPhone"
+                                                class="w-full px-3 py-2 border rounded"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Company
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="contactCompany"
+                                                class="w-full px-3 py-2 border rounded"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Status
+                                            </label>
+                                            <select
+                                                id="contactStatus"
+                                                class="w-full px-3 py-2 border rounded"
+                                            >
+                                                <option value="lead">Lead</option>
+                                                <option value="opportunity">Opportunity</option>
+                                                <option value="customer">Customer</option>
+                                                <option value="partner">Partner</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            Notes
+                                        </label>
+                                        <textarea
+                                            id="contactNotes"
+                                            rows="3"
+                                            class="w-full px-3 py-2 border rounded"
+                                        ></textarea>
+                                    </div>
+                                    <div class="flex justify-end space-x-2">
+                                        <button
+                                            id="cancelContactBtn"
+                                            class="px-4 py-2 border text-gray-700 rounded hover:bg-gray-100"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            id="saveContactBtn"
+                                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="contactsList">
+                                    <div class="text-center py-8 text-gray-500">
+                                        No contacts found. Click "Add Contact" to create your first contact.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Organizations Tab -->
+                        <div id="organizations" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Organizations</h2>
+                                    <button id="addOrgBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Add Organization
+                                    </button>
+                                </div>
+                                
+                                <div id="orgForm" class="hidden mb-6 bg-gray-50 p-4 rounded border">
+                                    <h3 class="text-lg font-medium mb-4">Add New Organization</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Name *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="orgName"
+                                                required
+                                                class="w-full px-3 py-2 border rounded"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Industry
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="orgIndustry"
+                                                class="w-full px-3 py-2 border rounded"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Website
+                                            </label>
+                                            <input
+                                                type="url"
+                                                id="orgWebsite"
+                                                class="w-full px-3 py-2 border rounded"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Size
+                                            </label>
+                                            <select
+                                                id="orgSize"
+                                                class="w-full px-3 py-2 border rounded"
+                                            >
+                                                <option value="small">Small (1-50)</option>
+                                                <option value="medium">Medium (51-500)</option>
+                                                <option value="large">Large (500+)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            Address
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="orgAddress"
+                                            class="w-full px-3 py-2 border rounded"
+                                        />
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            Notes
+                                        </label>
+                                        <textarea
+                                            id="orgNotes"
+                                            rows="3"
+                                            class="w-full px-3 py-2 border rounded"
+                                        ></textarea>
+                                    </div>
+                                    <div class="flex justify-end space-x-2">
+                                        <button
+                                            id="cancelOrgBtn"
+                                            class="px-4 py-2 border text-gray-700 rounded hover:bg-gray-100"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            id="saveOrgBtn"
+                                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="orgsList">
+                                    <div class="text-center py-8 text-gray-500">
+                                        No organizations found. Click "Add Organization" to create your first organization.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tasks Tab -->
+                        <div id="tasks" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-xl font-semibold">Tasks</h2>
+                                    <button id="addTaskBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Add Task
+                                    </button>
+                                </div>
+                                
+                                <div id="taskForm" class="hidden mb-6 bg-gray-50 p-4 rounded border">
+                                    <h3 class="text-lg font-medium mb-4">Add New Task</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Title *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="taskTitle"
+                                                required
+                                                class="w-full px-3 py-2 border rounded"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Due Date
+                                            </label>
+                                            <input
+                                                type="date"
+                                                id="taskDueDate"
+                                                class="w-full px-3 py-2 border rounded"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Priority
+                                            </label>
+                                            <select
+                                                id="taskPriority"
+                                                class="w-full px-3 py-2 border rounded"
+                                            >
+                                                <option value="low">Low</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="high">High</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Status
+                                            </label>
+                                            <select
+                                                id="taskStatus"
+                                                class="w-full px-3 py-2 border rounded"
+                                            >
+                                                <option value="pending">Pending</option>
+                                                <option value="in-progress">In Progress</option>
+                                                <option value="completed">Completed</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                Associated Contact
+                                            </label>
+                                            <select
+                                                id="taskContact"
+                                                class="w-full px-3 py-2 border rounded"
+                                            >
+                                                <option value="">None</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            Description
+                                        </label>
+                                        <textarea
+                                            id="taskDescription"
+                                            rows="3"
+                                            class="w-full px-3 py-2 border rounded"
+                                        ></textarea>
+                                    </div>
+                                    <div class="flex justify-end space-x-2">
+                                        <button
+                                            id="cancelTaskBtn"
+                                            class="px-4 py-2 border text-gray-700 rounded hover:bg-gray-100"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            id="saveTaskBtn"
+                                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="tasksList">
+                                    <div class="text-center py-8 text-gray-500">
+                                        No tasks found. Click "Add Task" to create your first task.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Settings Tab -->
+                        <div id="settings" class="tab-content">
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <h2 class="text-xl font-semibold mb-4">Settings</h2>
+                                <p>This page would show settings options. Currently under development.</p>
+                                
+                                <div class="mt-6">
+                                    <h3 class="text-lg font-medium mb-3">User Profile</h3>
+                                    <div class="bg-gray-50 p-4 rounded">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <span class="text-sm text-gray-500">Name</span>
+                                                <p id="profileName" class="font-medium">User</p>
+                                            </div>
+                                            <div>
+                                                <span class="text-sm text-gray-500">Email</span>
+                                                <p id="profileEmail" class="font-medium">user@example.com</p>
+                                            </div>
+                                            <div>
+                                                <span class="text-sm text-gray-500">Role</span>
+                                                <p id="profileRole" class="font-medium">User</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const loginForm = document.getElementById('loginForm');
+            const dashboardContent = document.getElementById('dashboardContent');
+            const userInfo = document.getElementById('userInfo');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const errorAlert = document.getElementById('errorAlert');
+            const userName = document.getElementById('userName');
+            const userRoleOverview = document.getElementById('userRoleOverview');
+            const profileName = document.getElementById('profileName');
+            const profileEmail = document.getElementById('profileEmail');
+            const profileRole = document.getElementById('profileRole');
+            
+            // Contact form elements
+            const addContactBtn = document.getElementById('addContactBtn');
+            const contactForm = document.getElementById('contactForm');
+            const cancelContactBtn = document.getElementById('cancelContactBtn');
+            const saveContactBtn = document.getElementById('saveContactBtn');
+            
+            // Organization form elements
+            const addOrgBtn = document.getElementById('addOrgBtn');
+            const orgForm = document.getElementById('orgForm');
+            const cancelOrgBtn = document.getElementById('cancelOrgBtn');
+            const saveOrgBtn = document.getElementById('saveOrgBtn');
+            
+            // Task form elements
+            const addTaskBtn = document.getElementById('addTaskBtn');
+            const taskForm = document.getElementById('taskForm');
+            const cancelTaskBtn = document.getElementById('cancelTaskBtn');
+            const saveTaskBtn = document.getElementById('saveTaskBtn');
+            
+            // Data objects
+            let contacts = [];
+            let organizations = [];
+            let tasks = [];
+            
+            // Check if user is already logged in
+            const token = localStorage.getItem('token');
+            if (token) {
+                showDashboard();
+            }
+            
+            // Tab navigation
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all tabs
+                    tabLinks.forEach(tab => tab.classList.remove('active', 'bg-blue-50', 'text-blue-700'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to current tab
+                    this.classList.add('active', 'bg-blue-50', 'text-blue-700');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Login functionality
+            loginBtn.addEventListener('click', function() {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                if (!username || !password) {
+                    errorAlert.textContent = 'Username and password are required';
+                    errorAlert.classList.remove('hidden');
+                    return;
+                }
+                
+                // TEMPORARY SOLUTION: Check against hardcoded credentials
+                if ((username === 'admin' && password === 'admin123') || 
+                    (username === 'user' && password === 'user123')) {
+                    
+                    // Create a mock token and user object
+                    const mockToken = 'mock_token_' + Date.now();
+                    const mockUser = {
+                        id: username === 'admin' ? '1' : '2',
+                        name: username === 'admin' ? 'Admin User' : 'Regular User',
+                        email: username === 'admin' ? 'admin@aretialliance.com' : 'user@aretialliance.com',
+                        role: username === 'admin' ? 'admin' : 'user'
+                    };
+                    
+                    localStorage.setItem('token', mockToken);
+                    localStorage.setItem('user', JSON.stringify(mockUser));
+                    showDashboard();
+                } else {
+                    errorAlert.textContent = 'Invalid username or password';
+                    errorAlert.classList.remove('hidden');
+                }
+            });
+            
+            // Logout functionality
+            logoutBtn.addEventListener('click', function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                showLogin();
+            });
+            
+            // Show dashboard
+            function showDashboard() {
+                loginForm.classList.add('hidden');
+                dashboardContent.classList.remove('hidden');
+                userInfo.classList.remove('hidden');
+                
+                // Get user info from localStorage
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                userName.textContent = user.name || 'User';
+                userRoleOverview.textContent = user.role || 'User';
+                profileName.textContent = user.name || 'User';
+                profileEmail.textContent = user.email || 'user@example.com';
+                profileRole.textContent = user.role || 'User';
+                
+                // Load data from localStorage
+                loadDataFromLocalStorage();
+                
+                // Set overview tab as active by default
+                document.querySelector('.tab-link[data-tab="overview"]').click();
+            }
+            
+            // Show login
+            function showLogin() {
+                loginForm.classList.remove('hidden');
+                dashboardContent.classList.add('hidden');
+                userInfo.classList.add('hidden');
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                errorAlert.classList.add('hidden');
+            }
+            
+            // Contact form event listeners
+            if (addContactBtn) {
+                addContactBtn.addEventListener('click', function() {
+                    contactForm.classList.remove('hidden');
+                });
+            }
+            
+            if (cancelContactBtn) {
+                cancelContactBtn.addEventListener('click', function() {
+                    contactForm.classList.add('hidden');
+                });
+            }
+            
+            if (saveContactBtn) {
+                saveContactBtn.addEventListener('click', function() {
+                    const name = document.getElementById('contactName').value;
+                    const email = document.getElementById('contactEmail').value;
+                    
+                    if (!name || !email) {
+                        alert('Name and email are required');
+                        return;
+                    }
+                    
+                    const newContact = {
+                        id: Date.now().toString(),
+                        name: name,
+                        email: email,
+                        phone: document.getElementById('contactPhone').value,
+                        company: document.getElementById('contactCompany').value,
+                        status: document.getElementById('contactStatus').value,
+                        notes: document.getElementById('contactNotes').value,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    contacts.push(newContact);
+                    saveDataToLocalStorage();
+                    renderContacts();
+                    contactForm.classList.add('hidden');
+                    
+                    // Reset form
+                    document.getElementById('contactName').value = '';
+                    document.getElementById('contactEmail').value = '';
+                    document.getElementById('contactPhone').value = '';
+                    document.getElementById('contactCompany').value = '';
+                    document.getElementById('contactStatus').value = 'lead';
+                    document.getElementById('contactNotes').value = '';
+                });
+            }
+            
+            // Organization form event listeners
+            if (addOrgBtn) {
+                addOrgBtn.addEventListener('click', function() {
+                    orgForm.classList.remove('hidden');
+                });
+            }
+            
+            if (cancelOrgBtn) {
+                cancelOrgBtn.addEventListener('click', function() {
+                    orgForm.classList.add('hidden');
+                });
+            }
+            
+            if (saveOrgBtn) {
+                saveOrgBtn.addEventListener('click', function() {
+                    const name = document.getElementById('orgName').value;
+                    
+                    if (!name) {
+                        alert('Organization name is required');
+                        return;
+                    }
+                    
+                    const newOrg = {
+                        id: Date.now().toString(),
+                        name: name,
+                        industry: document.getElementById('orgIndustry').value,
+                        website: document.getElementById('orgWebsite').value,
+                        size: document.getElementById('orgSize').value,
+                        address: document.getElementById('orgAddress').value,
+                        notes: document.getElementById('orgNotes').value,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    organizations.push(newOrg);
+                    saveDataToLocalStorage();
+                    renderOrganizations();
+                    orgForm.classList.add('hidden');
+                    
+                    // Reset form
+                    document.getElementById('orgName').value = '';
+                    document.getElementById('orgIndustry').value = '';
+                    document.getElementById('orgWebsite').value = '';
+                    document.getElementById('orgSize').value = 'small';
+                    document.getElementById('orgAddress').value = '';
+                    document.getElementById('orgNotes').value = '';
+                });
+            }
+            
+            // Task form event listeners
+            if (addTaskBtn) {
+                addTaskBtn.addEventListener('click', function() {
+                    // Update contact dropdown
+                    const contactDropdown = document.getElementById('taskContact');
+                    // Clear existing options except the first one
+                    while (contactDropdown.options.length > 1) {
+                        contactDropdown.remove(1);
+                    }
+                    
+                    // Add contacts to dropdown
+                    contacts.forEach(contact => {
+                        const option = document.createElement('option');
+                        option.value = contact.id;
+                        option.textContent = contact.name;
+                        contactDropdown.appendChild(option);
+                    });
+                    
+                    taskForm.classList.remove('hidden');
+                });
+            }
+            
+            if (cancelTaskBtn) {
+                cancelTaskBtn.addEventListener('click', function() {
+                    taskForm.classList.add('hidden');
+                });
+            }
+            
+            if (saveTaskBtn) {
+                saveTaskBtn.addEventListener('click', function() {
+                    const title = document.getElementById('taskTitle').value;
+                    
+                    if (!title) {
+                        alert('Task title is required');
+                        return;
+                    }
+                    
+                    const newTask = {
+                        id: Date.now().toString(),
+                        title: title,
+                        dueDate: document.getElementById('taskDueDate').value,
+                        priority: document.getElementById('taskPriority').value,
+                        status: document.getElementById('taskStatus').value,
+                        contactId: document.getElementById('taskContact').value,
+                        description: document.getElementById('taskDescription').value,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+                    
+                    tasks.push(newTask);
+                    saveDataToLocalStorage();
+                    renderTasks();
+                    updateOverview();
+                    taskForm.classList.add('hidden');
+                    
+                    // Reset form
+                    document.getElementById('taskTitle').value = '';
+                    document.getElementById('taskDueDate').value = '';
+                    document.getElementById('taskPriority').value = 'medium';
+                    document.getElementById('taskStatus').value = 'pending';
+                    document.getElementById('taskContact').value = '';
+                    document.getElementById('taskDescription').value = '';
+                });
+            }
+            
+            // Load data from localStorage
+            function loadDataFromLocalStorage() {
+                const storedContacts = localStorage.getItem('contacts');
+                if (storedContacts) {
+                    contacts = JSON.parse(storedContacts);
+                }
+                
+                const storedOrgs = localStorage.getItem('organizations');
+                if (storedOrgs) {
+                    organizations = JSON.parse(storedOrgs);
+                }
+                
+                const storedTasks = localStorage.getItem('tasks');
+                if (storedTasks) {
+                    tasks = JSON.parse(storedTasks);
+                }
+                
+                renderContacts();
+                renderOrganizations();
+                renderTasks();
+                updateOverview();
+            }
+            
+            // Save data to localStorage
+            function saveDataToLocalStorage() {
+                localStorage.setItem('contacts', JSON.stringify(contacts));
+                localStorage.setItem('organizations', JSON.stringify(organizations));
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+            
+            // Render contacts
+            function renderContacts() {
+                const contactsList = document.getElementById('contactsList');
+                
+                if (contacts.length === 0) {
+                    contactsList.innerHTML = `
+                        <div class="text-center py-8 text-gray-500">
+                            No contacts found. Click "Add Contact" to create your first contact.
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = `
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Name
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Email
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Company
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                `;
+                
+                contacts.forEach(contact => {
+                    let statusClass = '';
+                    switch(contact.status) {
+                        case 'lead':
+                            statusClass = 'bg-yellow-100 text-yellow-800';
+                            break;
+                        case 'opportunity':
+                            statusClass = 'bg-blue-100 text-blue-800';
+                            break;
+                        case 'customer':
+                            statusClass = 'bg-green-100 text-green-800';
+                            break;
+                        case 'partner':
+                            statusClass = 'bg-purple-100 text-purple-800';
+                            break;
+                        default:
+                            statusClass = 'bg-gray-100 text-gray-800';
+                    }
+                    
+                    html += `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                ${contact.name}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                ${contact.email}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                ${contact.company || '-'}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 rounded text-xs ${statusClass}">
+                                    ${contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="text-blue-600 hover:text-blue-900 mr-4" onclick="editContact('${contact.id}')">
+                                    Edit
+                                </button>
+                                <button class="text-red-600 hover:text-red-900" onclick="deleteContact('${contact.id}')">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                contactsList.innerHTML = html;
+            }
+            
+            // Render organizations
+            function renderOrganizations() {
+                const orgsList = document.getElementById('orgsList');
+                
+                if (organizations.length === 0) {
+                    orgsList.innerHTML = `
+                        <div class="text-center py-8 text-gray-500">
+                            No organizations found. Click "Add Organization" to create your first organization.
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = `
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Name
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Industry
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Size
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Website
+                                    </th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                `;
+                
+                organizations.forEach(org => {
+                    let sizeText = '';
+                    switch(org.size) {
+                        case 'small':
+                            sizeText = 'Small (1-50)';
+                            break;
+                        case 'medium':
+                            sizeText = 'Medium (51-500)';
+                            break;
+                        case 'large':
+                            sizeText = 'Large (500+)';
+                            break;
+                        default:
+                            sizeText = 'Unknown';
+                    }
+                    
+                    html += `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                ${org.name}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                ${org.industry || '-'}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                ${sizeText}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                ${org.website ? `<a href="${org.website}" target="_blank" class="text-blue-600 hover:underline">${org.website.replace(/^https?:\/\//i, '')}</a>` : '-'}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="text-blue-600 hover:text-blue-900 mr-4" onclick="editOrg('${org.id}')">
+                                    Edit
+                                </button>
+                                <button class="text-red-600 hover:text-red-900" onclick="deleteOrg('${org.id}')">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                orgsList.innerHTML = html;
+            }
+            
+            // Render tasks
+            function renderTasks() {
+                const tasksList = document.getElementById('tasksList');
+                
+                if (tasks.length === 0) {
+                    tasksList.innerHTML = `
+                        <div class="text-center py-8 text-gray-500">
+                            No tasks found. Click "Add Task" to create your first task.
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = `
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Title
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Due Date
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Priority
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Contact
+                                    </th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                `;
+                
+                tasks.forEach(task => {
+                    let priorityClass = '';
+                    switch(task.priority) {
+                        case 'high':
+                            priorityClass = 'bg-red-100 text-red-800';
+                            break;
+                        case 'medium':
+                            priorityClass = 'bg-yellow-100 text-yellow-800';
+                            break;
+                        case 'low':
+                            priorityClass = 'bg-green-100 text-green-800';
+                            break;
+                        default:
+                            priorityClass = 'bg-gray-100 text-gray-800';
+                    }
+                    
+                    let statusClass = '';
+                    switch(task.status) {
+                        case 'completed':
+                            statusClass = 'bg-green-100 text-green-800';
+                            break;
+                        case 'in-progress':
+                            statusClass = 'bg-blue-100 text-blue-800';
+                            break;
+                        case 'pending':
+                            statusClass = 'bg-yellow-100 text-yellow-800';
+                            break;
+                        default:
+                            statusClass = 'bg-gray-100 text-gray-800';
+                    }
+                    
+                    const formattedDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString() : '-';
+                    let contactName = '-';
+                    
+                    if (task.contactId) {
+                        const contact = contacts.find(c => c.id === task.contactId);
+                        if (contact) {
+                            contactName = contact.name;
+                        }
+                    }
+                    
+                    html += `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                ${task.title}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                ${formattedDate}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 rounded text-xs ${priorityClass}">
+                                    ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 rounded text-xs ${statusClass}">
+                                    ${task.status.replace('-', ' ').split(' ').map(word => 
+                                        word.charAt(0).toUpperCase() + word.slice(1)
+                                    ).join(' ')}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                ${contactName}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                ${task.status !== 'completed' ? `
+                                    <button class="text-green-600 hover:text-green-900 mr-3" onclick="completeTask('${task.id}')">
+                                        Complete
+                                    </button>
+                                ` : ''}
+                                <button class="text-blue-600 hover:text-blue-900 mr-3" onclick="editTask('${task.id}')">
+                                    Edit
+                                </button>
+                                <button class="text-red-600 hover:text-red-900" onclick="deleteTask('${task.id}')">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                tasksList.innerHTML = html;
+            }
+            
+            // Update overview stats
+            function updateOverview() {
+                // Update counts
+                document.querySelector('.tab-content.active .bg-white:first-child .text-3xl:nth-of-type(1)').textContent = contacts.length;
+                document.querySelector('.tab-content.active .bg-white:first-child .text-3xl:nth-of-type(2)').textContent = organizations.length;
+                
+                // Update task counts
+                const pendingTasks = tasks.filter(t => t.status === 'pending').length;
+                const inProgressTasks = tasks.filter(t => t.status === 'in-progress').length;
+                const completedTasks = tasks.filter(t => t.status === 'completed').length;
+                
+                const pendingElem = document.querySelector('.tab-content.active .bg-white:first-child .flex:nth-of-type(1) .font-medium');
+                const inProgressElem = document.querySelector('.tab-content.active .bg-white:first-child .flex:nth-of-type(2) .font-medium');
+                const completedElem = document.querySelector('.tab-content.active .bg-white:first-child .flex:nth-of-type(3) .font-medium');
+                
+                if (pendingElem) pendingElem.textContent = pendingTasks;
+                if (inProgressElem) inProgressElem.textContent = inProgressTasks;
+                if (completedElem) completedElem.textContent = completedTasks;
+                
+                // Update recent tasks
+                const recentTasksContainer = document.querySelector('.tab-content.active .bg-white:nth-child(3)');
+                if (recentTasksContainer) {
+                    if (tasks.length === 0) {
+                        recentTasksContainer.innerHTML = `
+                            <h3 class="text-lg font-medium mb-4">Recent Tasks</h3>
+                            <div class="text-center py-10 text-gray-500">
+                                No recent tasks found
+                            </div>
+                        `;
+                    } else {
+                        const recentTasks = [...tasks]
+                            .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+                            .slice(0, 5);
+                        
+                        let html = `<h3 class="text-lg font-medium mb-4">Recent Tasks</h3>
+                                   <div class="space-y-3">`;
+                        
+                        recentTasks.forEach(task => {
+                            let statusClass = '';
+                            switch(task.status) {
+                                case 'completed':
+                                    statusClass = 'bg-green-100 text-green-800';
+                                    break;
+                                case 'in-progress':
+                                    statusClass = 'bg-blue-100 text-blue-800';
+                                    break;
+                                case 'pending':
+                                    statusClass = 'bg-yellow-100 text-yellow-800';
+                                    break;
+                                default:
+                                    statusClass = 'bg-gray-100 text-gray-800';
+                            }
+                            
+                            html += `
+                                <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                                    <div>
+                                        <div class="font-medium">${task.title}</div>
+                                        <div class="text-sm text-gray-500">
+                                            ${new Date(task.updatedAt).toLocaleDateString()}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="px-2 py-1 rounded-full text-xs ${statusClass}">
+                                            ${task.status.replace('-', ' ').split(' ').map(word => 
+                                                word.charAt(0).toUpperCase() + word.slice(1)
+                                            ).join(' ')}
+                                        </span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        html += '</div>';
+                        recentTasksContainer.innerHTML = html;
+                    }
+                }
+            }
+            
+            // Edit, Delete, and Complete functions
+            window.editContact = function(id) {
+                alert('Edit contact not implemented yet');
+            };
+            
+            window.deleteContact = function(id) {
+                if (confirm('Are you sure you want to delete this contact?')) {
+                    contacts = contacts.filter(contact => contact.id !== id);
+                    saveDataToLocalStorage();
+                    renderContacts();
+                    updateOverview();
+                }
+            };
+            
+            window.editOrg = function(id) {
+                alert('Edit organization not implemented yet');
+            };
+            
+            window.deleteOrg = function(id) {
+                if (confirm('Are you sure you want to delete this organization?')) {
+                    organizations = organizations.filter(org => org.id !== id);
+                    saveDataToLocalStorage();
+                    renderOrganizations();
+                    updateOverview();
+                }
+            };
+            
+            window.editTask = function(id) {
+                alert('Edit task not implemented yet');
+            };
+            
+            window.deleteTask = function(id) {
+                if (confirm('Are you sure you want to delete this task?')) {
+                    tasks = tasks.filter(task => task.id !== id);
+                    saveDataToLocalStorage();
+                    renderTasks();
+                    updateOverview();
+                }
+            };
+            
+            window.completeTask = function(id) {
+                const task = tasks.find(t => t.id === id);
+                if (task) {
+                    task.status = 'completed';
+                    task.updatedAt = new Date().toISOString();
+                    saveDataToLocalStorage();
+                    renderTasks();
+                    updateOverview();
+                }
+            };
+        });
+    </script>
+</body>
+</html>
