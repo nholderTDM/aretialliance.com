@@ -334,89 +334,101 @@
                                     </div>
                                     
                                     <!-- Basic Info Content -->
-                                    <div id="basic-info" class="contact-tab-content">
+                                    <div id="Basic Info" class="delivery-tab-content active">
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                    Name *
+                                                    Delivery ID *
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    id="contactName"
-                                                    required
+                                                    id="deliveryId"
                                                     class="w-full px-3 py-2 border rounded"
+                                                    readonly
+                                                    value="D-23041"
                                                 />
+                                                <p class="text-xs text-gray-500 mt-1">Auto-generated</p>
                                             </div>
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                    Email *
-                                                </label>
-                                                <input
-                                                    type="email"
-                                                    id="contactEmail"
-                                                    required
-                                                    class="w-full px-3 py-2 border rounded"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                    Phone
-                                                </label>
-                                                <input
-                                                    type="tel"
-                                                    id="contactPhone"
-                                                    class="w-full px-3 py-2 border rounded"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                    Status
+                                                    Delivery Type *
                                                 </label>
                                                 <select
-                                                    id="contactStatus"
+                                                    id="deliveryType"
+                                                    required
                                                     class="w-full px-3 py-2 border rounded"
                                                 >
-                                                    <option value="lead">Lead</option>
-                                                    <option value="prospect">Prospect</option>
-                                                    <option value="qualified">Qualified Lead</option>
-                                                    <option value="opportunity">Opportunity</option>
-                                                    <option value="proposal">Proposal</option>
-                                                    <option value="negotiation">Negotiation</option>
-                                                    <option value="customer">Customer</option>
-                                                    <option value="partner">Partner</option>
-                                                    <option value="lost">Lost</option>
-                                                    <option value="inactive">Inactive</option>
+                                                    <option value="">Select Type</option>
+                                                    <option value="standard">Standard Delivery</option>
+                                                    <option value="same-day">Same Day Delivery</option>
+                                                    <option value="express">Express (1-2 hrs)</option>
+                                                    <option value="scheduled">Scheduled Delivery</option>
+                                                    <option value="bulk">Bulk Shipment</option>
                                                 </select>
                                             </div>
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                    Tags (comma separated)
+                                                    Customer/Organization *
+                                                </label>
+                                                <select
+                                                    id="deliveryCustomer"
+                                                    required
+                                                    class="w-full px-3 py-2 border rounded"
+                                                >
+                                                    <option value="">Select Customer</option>
+                                                    <!-- Will be populated dynamically -->
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                    Contact Person
+                                                </label>
+                                                <select
+                                                    id="deliveryContact"
+                                                    class="w-full px-3 py-2 border rounded"
+                                                >
+                                                    <option value="">Select Contact</option>
+                                                    <!-- Will be populated dynamically -->
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                    Scheduled Date *
                                                 </label>
                                                 <input
-                                                    type="text"
-                                                    id="contactTags"
+                                                    type="date"
+                                                    id="deliveryDate"
+                                                    required
                                                     class="w-full px-3 py-2 border rounded"
-                                                    placeholder="logistics, ecommerce, etc."
                                                 />
                                             </div>
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                    Next Follow-up Date
+                                                    Time Window
                                                 </label>
-                                                <input
-                                                    type="date"
-                                                    id="contactNextFollowUp"
-                                                    class="w-full px-3 py-2 border rounded"
-                                                />
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <input
+                                                        type="time"
+                                                        id="deliveryTimeStart"
+                                                        class="w-full px-3 py-2 border rounded"
+                                                        placeholder="Start"
+                                                    />
+                                                    <input
+                                                        type="time"
+                                                        id="deliveryTimeEnd"
+                                                        class="w-full px-3 py-2 border rounded"
+                                                        placeholder="End"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                         
                                         <div class="mb-4">
                                             <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                Notes
+                                                Special Instructions
                                             </label>
                                             <textarea
-                                                id="contactNotes"
+                                                id="deliveryInstructions"
                                                 rows="3"
                                                 class="w-full px-3 py-2 border rounded"
                                             ></textarea>
@@ -803,7 +815,7 @@
                             </div>
                         </div>
                         
-                        <!-- Deliveries Tab -->
+        <!-- Deliveries Tab -->
 <div id="deliveries" class="tab-content">
     <div class="bg-white p-6 rounded-lg shadow">
         <div class="flex justify-between items-center mb-6">
@@ -821,371 +833,31 @@
             <div class="mb-4 border-b border-gray-200">
                 <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
                     <li class="mr-2">
-                        <a href="#" class="delivery-tab-link active inline-block p-4 border-b-2 border-blue-600 text-blue-600" data-tab="delivery-basic">Basic Info</a>
+                        <a href="#" class="delivery-tab-link active inline-block p-4 border-b-2 border-blue-600 text-blue-600" data-tab="Basic Info">Basic Info</a>
                     </li>
                     <li class="mr-2">
-                        <a href="#" class="delivery-tab-link inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300" data-tab="delivery-details">Delivery Details</a>
+                        <a href="#" class="delivery-tab-link inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300" data-tab="Delivery Details">Delivery Details</a>
                     </li>
                     <li class="mr-2">
-                        <a href="#" class="delivery-tab-link inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300" data-tab="delivery-tracking">Tracking & Status</a>
+                        <a href="#" class="delivery-tab-link inline-block p-4 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300" data-tab="Tracking & Status">Tracking & Status</a>
                     </li>
                 </ul>
             </div>
             
-            <!-- Basic Info Content -->
-            <div id="delivery-basic" class="delivery-tab-content">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Delivery ID *
-                        </label>
-                        <input
-                            type="text"
-                            id="deliveryId"
-                            class="w-full px-3 py-2 border rounded"
-                            readonly
-                        />
-                        <p class="text-xs text-gray-500 mt-1">Auto-generated</p>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Delivery Type *
-                        </label>
-                        <select
-                            id="deliveryType"
-                            required
-                            class="w-full px-3 py-2 border rounded"
-                        >
-                            <option value="">Select Type</option>
-                            <option value="standard">Standard Delivery</option>
-                            <option value="same-day">Same Day Delivery</option>
-                            <option value="express">Express (1-2 hrs)</option>
-                            <option value="scheduled">Scheduled Delivery</option>
-                            <option value="bulk">Bulk Shipment</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Customer/Organization *
-                        </label>
-                        <select
-                            id="deliveryCustomer"
-                            required
-                            class="w-full px-3 py-2 border rounded"
-                        >
-                            <option value="">Select Customer</option>
-                            <!-- Will be populated dynamically -->
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Contact Person
-                        </label>
-                        <select
-                            id="deliveryContact"
-                            class="w-full px-3 py-2 border rounded"
-                        >
-                            <option value="">Select Contact</option>
-                            <!-- Will be populated dynamically -->
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Scheduled Date *
-                        </label>
-                        <input
-                            type="date"
-                            id="deliveryDate"
-                            required
-                            class="w-full px-3 py-2 border rounded"
-                        />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Time Window
-                        </label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input
-                                type="time"
-                                id="deliveryTimeStart"
-                                class="w-full px-3 py-2 border rounded"
-                                placeholder="Start"
-                            />
-                            <input
-                                type="time"
-                                id="deliveryTimeEnd"
-                                class="w-full px-3 py-2 border rounded"
-                                placeholder="End"
-                            />
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Special Instructions
-                    </label>
-                    <textarea
-                        id="deliveryInstructions"
-                        rows="3"
-                        class="w-full px-3 py-2 border rounded"
-                    ></textarea>
-                </div>
+            <!-- Tab Content Areas -->
+            <div id="Basic Info" class="delivery-tab-content active">
+                <!-- Basic Info content goes here -->
             </div>
             
-            <!-- Delivery Details Content -->
-            <div id="delivery-details" class="delivery-tab-content hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Pickup Address *
-                        </label>
-                        <input
-                            type="text"
-                            id="pickupAddress"
-                            required
-                            class="w-full px-3 py-2 border rounded"
-                            placeholder="Street address"
-                        />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Pickup City/State/ZIP *
-                        </label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <input
-                                type="text"
-                                id="pickupCity"
-                                required
-                                class="w-full px-3 py-2 border rounded"
-                                placeholder="City"
-                            />
-                            <input
-                                type="text"
-                                id="pickupState"
-                                required
-                                class="w-full px-3 py-2 border rounded"
-                                placeholder="State"
-                                maxlength="2"
-                            />
-                            <input
-                                type="text"
-                                id="pickupZip"
-                                required
-                                class="w-full px-3 py-2 border rounded"
-                                placeholder="ZIP"
-                            />
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Delivery Address *
-                        </label>
-                        <input
-                            type="text"
-                            id="deliveryAddress"
-                            required
-                            class="w-full px-3 py-2 border rounded"
-                            placeholder="Street address"
-                        />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Delivery City/State/ZIP *
-                        </label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <input
-                                type="text"
-                                id="deliveryCity"
-                                required
-                                class="w-full px-3 py-2 border rounded"
-                                placeholder="City"
-                            />
-                            <input
-                                type="text"
-                                id="deliveryState"
-                                required
-                                class="w-full px-3 py-2 border rounded"
-                                placeholder="State"
-                                maxlength="2"
-                            />
-                            <input
-                                type="text"
-                                id="deliveryZip"
-                                required
-                                class="w-full px-3 py-2 border rounded"
-                                placeholder="ZIP"
-                            />
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Package Details
-                    </label>
-                    <div class="bg-white p-3 border rounded">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2">Package Type</th>
-                                    <th class="text-left py-2">Quantity</th>
-                                    <th class="text-left py-2">Weight (lbs)</th>
-                                    <th class="text-left py-2">Dimensions</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="packageTableBody">
-                                <tr>
-                                    <td class="py-2">
-                                        <select class="w-full px-2 py-1 border rounded package-type">
-                                            <option value="envelope">Envelope</option>
-                                            <option value="small-box">Small Box</option>
-                                            <option value="medium-box">Medium Box</option>
-                                            <option value="large-box">Large Box</option>
-                                            <option value="pallet">Pallet</option>
-                                            <option value="custom">Custom</option>
-                                        </select>
-                                    </td>
-                                    <td class="py-2">
-                                        <input type="number" min="1" value="1" class="w-full px-2 py-1 border rounded package-quantity">
-                                    </td>
-                                    <td class="py-2">
-                                        <input type="number" min="0" step="0.1" class="w-full px-2 py-1 border rounded package-weight">
-                                    </td>
-                                    <td class="py-2">
-                                        <input type="text" placeholder="L×W×H" class="w-full px-2 py-1 border rounded package-dimensions">
-                                    </td>
-                                    <td class="py-2">
-                                        <button type="button" class="text-red-600 hover:text-red-800 remove-package">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <button type="button" id="addPackageBtn" class="mt-3 text-sm text-blue-600 hover:text-blue-800">
-                            <i class="ri-add-line"></i> Add Package
-                        </button>
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Estimated Value
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="text-gray-500">$</span>
-                        </div>
-                        <input
-                            type="number"
-                            id="deliveryValue"
-                            min="0"
-                            step="0.01"
-                            class="w-full pl-7 px-3 py-2 border rounded"
-                        />
-                    </div>
-                </div>
+            <div id="Delivery Details" class="delivery-tab-content hidden">
+                <!-- Delivery Details content goes here -->
             </div>
             
-            <!-- Tracking & Status Content -->
-            <div id="delivery-tracking" class="delivery-tab-content hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Status
-                        </label>
-                        <select
-                            id="deliveryStatus"
-                            class="w-full px-3 py-2 border rounded"
-                        >
-                            <option value="scheduled">Scheduled</option>
-                            <option value="in-transit">In Transit</option>
-                            <option value="out-for-delivery">Out for Delivery</option>
-                            <option value="delivered">Delivered</option>
-                            <option value="failed">Failed Attempt</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Assigned Driver
-                        </label>
-                        <select
-                            id="assignedDriver"
-                            class="w-full px-3 py-2 border rounded"
-                        >
-                            <option value="">Unassigned</option>
-                            <!-- Will be populated dynamically -->
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Estimated Delivery Time
-                        </label>
-                        <input
-                            type="datetime-local"
-                            id="estimatedDelivery"
-                            class="w-full px-3 py-2 border rounded"
-                        />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Actual Delivery Time
-                        </label>
-                        <input
-                            type="datetime-local"
-                            id="actualDelivery"
-                            class="w-full px-3 py-2 border rounded"
-                        />
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Tracking Number
-                    </label>
-                    <input
-                        type="text"
-                        id="trackingNumber"
-                        class="w-full px-3 py-2 border rounded"
-                        readonly
-                    />
-                    <p class="text-xs text-gray-500 mt-1">Auto-generated when delivery is scheduled</p>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Proof of Delivery
-                    </label>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-sm text-gray-500">Signature Required:</span>
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="signatureRequired" value="yes" class="form-radio">
-                            <span class="ml-2">Yes</span>
-                        </label>
-                        <label class="inline-flex items-center ml-4">
-                            <input type="radio" name="signatureRequired" value="no" class="form-radio" checked>
-                            <span class="ml-2">No</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Delivery Notes
-                    </label>
-                    <textarea
-                        id="deliveryNotes"
-                        rows="3"
-                        class="w-full px-3 py-2 border rounded"
-                        placeholder="Add notes about delivery status, issues, etc."
-                    ></textarea>
-                </div>
+            <div id="Tracking & Status" class="delivery-tab-content hidden">
+                <!-- Tracking & Status content goes here -->
             </div>
             
-            <div class="flex justify-end space-x-2">
+            <div class="flex justify-end space-x-2 mt-4">
                 <button
                     type="button"
                     id="cancelDeliveryBtn"
@@ -1204,65 +876,8 @@
         </div>
         
         <!-- Delivery Management Tools -->
-        <div id="deliveryManagementTools" class="mb-6">
-            <div class="mb-6 flex flex-col md:flex-row justify-between">
-                <div class="flex items-center mb-4 md:mb-0">
-                    <label class="mr-2 text-sm font-medium">View:</label>
-                    <select id="deliveryViewMode" class="border rounded px-2 py-1">
-                        <option value="all">All Deliveries</option>
-                        <option value="scheduled">Scheduled</option>
-                        <option value="in-transit">In Transit</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="pending">Pending</option>
-                    </select>
-                    
-                    <label class="mx-2 ml-4 text-sm font-medium">Sort by:</label>
-                    <select id="deliverySortOrder" class="border rounded px-2 py-1">
-                        <option value="date-asc">Date (Oldest First)</option>
-                        <option value="date-desc" selected>Date (Newest First)</option>
-                        <option value="status">Status</option>
-                        <option value="customer">Customer Name</option>
-                    </select>
-                </div>
-                
-                <div class="relative">
-                    <input 
-                        type="text" 
-                        id="deliverySearch" 
-                        placeholder="Search deliveries..."
-                        class="pl-8 pr-4 py-1 border rounded w-full md:w-64"
-                    >
-                    <i class="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                </div>
-            </div>
-            
-            <!-- Delivery Status Tabs -->
-            <div class="mb-6">
-                <div class="border-b border-gray-200">
-                    <nav class="flex -mb-px">
-                        <a href="#" class="delivery-status-tab active text-center w-1/5 py-2 px-1 border-b-2 border-blue-500 text-blue-600 font-medium text-sm">
-                            All
-                            <span class="bg-gray-100 text-gray-700 ml-1 py-0.5 px-2 rounded-full text-xs delivery-count-all">0</span>
-                        </a>
-                        <a href="#" class="delivery-status-tab text-center w-1/5 py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm" data-status="scheduled">
-                            Scheduled
-                            <span class="bg-blue-100 text-blue-700 ml-1 py-0.5 px-2 rounded-full text-xs delivery-count-scheduled">0</span>
-                        </a>
-                        <a href="#" class="delivery-status-tab text-center w-1/5 py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm" data-status="in-transit">
-                            In Transit
-                            <span class="bg-yellow-100 text-yellow-700 ml-1 py-0.5 px-2 rounded-full text-xs delivery-count-in-transit">0</span>
-                        </a>
-                        <a href="#" class="delivery-status-tab text-center w-1/5 py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm" data-status="delivered">
-                            Delivered
-                            <span class="bg-green-100 text-green-700 ml-1 py-0.5 px-2 rounded-full text-xs delivery-count-delivered">0</span>
-                        </a>
-                        <a href="#" class="delivery-status-tab text-center w-1/5 py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm" data-status="issue">
-                            Issues
-                            <span class="bg-red-100 text-red-700 ml-1 py-0.5 px-2 rounded-full text-xs delivery-count-issue">0</span>
-                        </a>
-                    </nav>
-                </div>
-            </div>
+        <div id="deliveryManagementTools">
+            <!-- Filter, sort, and search tools will go here -->
         </div>
         
         <!-- Deliveries List -->
@@ -1606,61 +1221,68 @@
             
             // Load data from localStorage
             function loadDataFromLocalStorage() {
-                try {
-                    // Initialize empty arrays first
-                    contacts = [];
-                    organizations = [];
-                    tasks = [];
-                    
-                    const storedContacts = localStorage.getItem('contacts');
-                    if (storedContacts) {
-                        const parsedContacts = JSON.parse(storedContacts);
-                        // Ensure contacts is an array
-                        if (Array.isArray(parsedContacts)) {
-                            contacts = parsedContacts;
-                        } else {
-                            console.error('Stored contacts is not an array, using empty array');
-                        }
-                    }
-                    
-                    const storedOrgs = localStorage.getItem('organizations');
-                    if (storedOrgs) {
-                        const parsedOrgs = JSON.parse(storedOrgs);
-                        // Ensure organizations is an array
-                        if (Array.isArray(parsedOrgs)) {
-                            organizations = parsedOrgs;
-                        } else {
-                            console.error('Stored organizations is not an array, using empty array');
-                        }
-                    }
-                    
-                    const storedTasks = localStorage.getItem('tasks');
-                    if (storedTasks) {
-                        const parsedTasks = JSON.parse(storedTasks);
-                        // Ensure tasks is an array
-                        if (Array.isArray(parsedTasks)) {
-                            tasks = parsedTasks;
-                        } else {
-                            console.error('Stored tasks is not an array, using empty array');
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error loading data from localStorage:', error);
-                }
-                
-                // Always render UI components, regardless of success/failure
-                renderContacts();
-                renderOrganizations();
-                renderTasks();
-                updateOverview();
+    try {
+        // Initialize empty arrays first
+        contacts = [];
+        organizations = [];
+        tasks = [];
+        
+        const storedContacts = localStorage.getItem('contacts');
+        if (storedContacts) {
+            const parsedContacts = JSON.parse(storedContacts);
+            if (Array.isArray(parsedContacts)) {
+                contacts = parsedContacts;
+            } else {
+                console.error('Stored contacts is not an array, using empty array');
             }
+        }
+        
+        const storedOrgs = localStorage.getItem('organizations');
+        if (storedOrgs) {
+            const parsedOrgs = JSON.parse(storedOrgs);
+            if (Array.isArray(parsedOrgs)) {
+                organizations = parsedOrgs;
+            } else {
+                console.error('Stored organizations is not an array, using empty array');
+            }
+        }
+        
+        const storedTasks = localStorage.getItem('tasks');
+        if (storedTasks) {
+            const parsedTasks = JSON.parse(storedTasks);
+            if (Array.isArray(parsedTasks)) {
+                tasks = parsedTasks;
+            } else {
+                console.error('Stored tasks is not an array, using empty array');
+            }
+        }
+        
+        // We don't need a global deliveries array since we load it directly in the renderDeliveries function
+        
+    } catch (error) {
+        console.error('Error loading data from localStorage:', error);
+    }
+    
+    // Always render UI components, regardless of success/failure
+    renderContacts();
+    renderOrganizations();
+    renderTasks();
+    updateOverview();
+    
+    // If the deliveries tab is active, also render deliveries
+    if (document.querySelector('#deliveries').classList.contains('active')) {
+        renderDeliveries();
+    }
+}
             
             // Save data to localStorage
             function saveDataToLocalStorage() {
-                localStorage.setItem('contacts', JSON.stringify(contacts));
-                localStorage.setItem('organizations', JSON.stringify(organizations));
-                localStorage.setItem('tasks', JSON.stringify(tasks));
-            }
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+    localStorage.setItem('organizations', JSON.stringify(organizations));
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    // We don't need to save deliveries here since it's handled in the save function
+    // localStorage.setItem('deliveries', JSON.stringify(deliveries));
+}
             
             // Render contacts with enhanced lead management capabilities
 function renderContacts() {
@@ -3476,7 +3098,7 @@ function initDeliveryFormTabs() {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Remove active class from all tabs
+            // Remove active class from all tabs and contents
             tabLinks.forEach(tab => {
                 tab.classList.remove('active', 'border-blue-600', 'text-blue-600');
                 tab.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
@@ -3486,12 +3108,15 @@ function initDeliveryFormTabs() {
                 content.classList.add('hidden');
             });
             
-            // Add active class to current tab
+            // Add active class to current tab and show content
             this.classList.add('active', 'border-blue-600', 'text-blue-600');
             this.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
             
             const tabId = this.getAttribute('data-tab');
-            document.getElementById(tabId).classList.remove('hidden');
+            const tabContent = document.getElementById(tabId);
+            if (tabContent) {
+                tabContent.classList.remove('hidden');
+            }
         });
     });
 }
@@ -3988,6 +3613,112 @@ if (addDeliveryBtn) {
         document.getElementById('deliveriesList').classList.add('hidden');
     });
 }
+// Add event listener for the "Add Delivery" button
+document.getElementById('addDeliveryBtn').addEventListener('click', function() {
+    // Show delivery form
+    document.getElementById('deliveryForm').classList.remove('hidden');
+    
+    // Hide the management tools and list
+    document.getElementById('deliveryManagementTools').classList.add('hidden');
+    document.getElementById('deliveriesList').classList.add('hidden');
+    
+    // Initialize tabs
+    initDeliveryFormTabs();
+    
+    // Populate customer dropdown from contacts and organizations
+    populateCustomersDropdown();
+    
+    // Populate drivers dropdown
+    populateDriversDropdown();
+    
+    // Set default values
+    document.getElementById('deliveryId').value = 'D-' + Math.floor(10000 + Math.random() * 90000);
+    document.getElementById('trackingNumber').value = 'AA' + new Date().toISOString().slice(0,10).replace(/-/g,'') + Math.floor(1000 + Math.random() * 9000);
+});
+
+// Add event listener for the "Cancel" button
+document.getElementById('cancelDeliveryBtn').addEventListener('click', function() {
+    // Hide form
+    document.getElementById('deliveryForm').classList.add('hidden');
+    
+    // Show the management tools and list
+    document.getElementById('deliveryManagementTools').classList.remove('hidden');
+    document.getElementById('deliveriesList').classList.remove('hidden');
+});
+
+// Add event listener for the "Save Delivery" button
+document.getElementById('saveDeliveryBtn').addEventListener('click', function() {
+    // Validate required fields
+    const requiredFields = [
+        'deliveryType', 'deliveryCustomer', 'deliveryDate',
+        'pickupAddress', 'pickupCity', 'pickupState', 'pickupZip',
+        'deliveryAddress', 'deliveryCity', 'deliveryState', 'deliveryZip'
+    ];
+    
+    let isValid = true;
+    requiredFields.forEach(field => {
+        const input = document.getElementById(field);
+        if (input && !input.value) {
+            input.classList.add('border-red-500');
+            isValid = false;
+        } else if (input) {
+            input.classList.remove('border-red-500');
+        }
+    });
+    
+    if (!isValid) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    // Get values from form
+    const deliveryData = {
+        id: document.getElementById('deliveryId').value,
+        type: document.getElementById('deliveryType').value,
+        customerId: document.getElementById('deliveryCustomer').value,
+        contactId: document.getElementById('deliveryContact').value,
+        date: document.getElementById('deliveryDate').value,
+        timeStart: document.getElementById('deliveryTimeStart').value,
+        timeEnd: document.getElementById('deliveryTimeEnd').value,
+        instructions: document.getElementById('deliveryInstructions').value,
+        pickupAddress: {
+            street: document.getElementById('pickupAddress').value,
+            city: document.getElementById('pickupCity').value,
+            state: document.getElementById('pickupState').value,
+            zip: document.getElementById('pickupZip').value
+        },
+        deliveryAddress: {
+            street: document.getElementById('deliveryAddress').value,
+            city: document.getElementById('deliveryCity').value,
+            state: document.getElementById('deliveryState').value,
+            zip: document.getElementById('deliveryZip').value
+        },
+        status: document.getElementById('deliveryStatus').value,
+        driverId: document.getElementById('assignedDriver').value,
+        trackingNumber: document.getElementById('trackingNumber').value,
+        signatureRequired: document.querySelector('input[name="signatureRequired"]:checked').value === 'yes',
+        notes: document.getElementById('deliveryNotes').value,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+    };
+    
+    // Save the delivery (localStorage)
+    let deliveries = JSON.parse(localStorage.getItem('deliveries') || '[]');
+    deliveries.push(deliveryData);
+    localStorage.setItem('deliveries', JSON.stringify(deliveries));
+    
+    // Update the UI
+    renderDeliveries();
+    
+    // Hide form
+    document.getElementById('deliveryForm').classList.add('hidden');
+    
+    // Show the management tools and list
+    document.getElementById('deliveryManagementTools').classList.remove('hidden');
+    document.getElementById('deliveriesList').classList.remove('hidden');
+    
+    alert('Delivery saved successfully!');
+});
 
 if (cancelDeliveryBtn) {
     cancelDeliveryBtn.addEventListener('click', function() {
@@ -4335,7 +4066,481 @@ document.querySelector('.tab-link[data-tab="deliveries"]').addEventListener('cli
     // Initialize deliveries component
     setTimeout(initDeliveries, 100);
 });
+    // Populate customers dropdown with contacts and organizations
+function populateCustomersDropdown() {
+    const dropdown = document.getElementById('deliveryCustomer');
+    
+    // Clear current options (except the first one)
+    while (dropdown.options.length > 1) {
+        dropdown.remove(1);
+    }
+    
+    // Add organizations
+    const organizations = JSON.parse(localStorage.getItem('organizations') || '[]');
+    
+    if (organizations.length > 0) {
+        const orgGroup = document.createElement('optgroup');
+        orgGroup.label = 'Organizations';
         
+        organizations.forEach(org => {
+            const option = document.createElement('option');
+            option.value = 'org_' + org.id;
+            option.textContent = org.name;
+            orgGroup.appendChild(option);
+        });
+        
+        dropdown.appendChild(orgGroup);
+    }
+    
+    // Add individual contacts
+    const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+    const individualContacts = contacts.filter(c => !c.relatedOrganizationId);
+    
+    if (individualContacts.length > 0) {
+        const contactGroup = document.createElement('optgroup');
+        contactGroup.label = 'Individual Contacts';
+        
+        individualContacts.forEach(contact => {
+            const option = document.createElement('option');
+            option.value = 'contact_' + contact.id;
+            option.textContent = contact.name;
+            contactGroup.appendChild(option);
+        });
+        
+        dropdown.appendChild(contactGroup);
+    }
+}
+
+// Update contacts dropdown based on selected organization
+function updateContactsDropdown() {
+    const customerValue = document.getElementById('deliveryCustomer').value;
+    const contactDropdown = document.getElementById('deliveryContact');
+    
+    // Clear current options (except the first one)
+    while (contactDropdown.options.length > 1) {
+        contactDropdown.remove(1);
+    }
+    
+    // If an organization is selected, populate with its contacts
+    if (customerValue && customerValue.startsWith('org_')) {
+        const orgId = customerValue.replace('org_', '');
+        const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+        const orgContacts = contacts.filter(c => c.relatedOrganizationId === orgId);
+        
+        orgContacts.forEach(contact => {
+            const option = document.createElement('option');
+            option.value = contact.id;
+            option.textContent = contact.name;
+            contactDropdown.appendChild(option);
+        });
+    }
+}
+
+// Populate drivers dropdown
+function populateDriversDropdown() {
+    const dropdown = document.getElementById('assignedDriver');
+    
+    // Clear current options (except the first one)
+    while (dropdown.options.length > 1) {
+        dropdown.remove(1);
+    }
+    
+    // For now, add some sample drivers
+    // In a real implementation, this would pull from a drivers database
+    const sampleDrivers = [
+        { id: 'driver1', name: 'John Smith' },
+        { id: 'driver2', name: 'Maria Garcia' },
+        { id: 'driver3', name: 'David Johnson' },
+        { id: 'driver4', name: 'Sarah Williams' }
+    ];
+    
+    sampleDrivers.forEach(driver => {
+        const option = document.createElement('option');
+        option.value = driver.id;
+        option.textContent = driver.name;
+        dropdown.appendChild(option);
+    });
+}
+ // Render deliveries list
+function renderDeliveries() {
+    const container = document.getElementById('deliveriesList');
+    const deliveries = JSON.parse(localStorage.getItem('deliveries') || '[]');
+    
+    if (deliveries.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8 text-gray-500">
+                No deliveries found. Click "Add Delivery" to create your first delivery.
+            </div>
+        `;
+        return;
+    }
+    
+    // Create cards for each delivery
+    let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
+    
+    deliveries.forEach(delivery => {
+        // Determine status badge color
+        let statusClass = '';
+        switch(delivery.status) {
+            case 'scheduled':
+                statusClass = 'bg-blue-100 text-blue-800';
+                break;
+            case 'in-transit':
+                statusClass = 'bg-yellow-100 text-yellow-800';
+                break;
+            case 'out-for-delivery':
+                statusClass = 'bg-purple-100 text-purple-800';
+                break;
+            case 'delivered':
+                statusClass = 'bg-green-100 text-green-800';
+                break;
+            case 'failed':
+                statusClass = 'bg-red-100 text-red-800';
+                break;
+            case 'cancelled':
+                statusClass = 'bg-gray-100 text-gray-800';
+                break;
+            default:
+                statusClass = 'bg-gray-100 text-gray-800';
+        }
+        
+        // Format the customer name
+        let customerName = 'Unknown Customer';
+        if (delivery.customerId) {
+            if (delivery.customerId.startsWith('org_')) {
+                const orgId = delivery.customerId.replace('org_', '');
+                const organizations = JSON.parse(localStorage.getItem('organizations') || '[]');
+                const org = organizations.find(o => o.id === orgId);
+                if (org) customerName = org.name;
+            } else if (delivery.customerId.startsWith('contact_')) {
+                const contactId = delivery.customerId.replace('contact_', '');
+                const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+                const contact = contacts.find(c => c.id === contactId);
+                if (contact) customerName = contact.name;
+            }
+        }
+        
+        html += `
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">${customerName}</h3>
+                            <p class="text-sm text-gray-500">${delivery.trackingNumber}</p>
+                        </div>
+                        <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full ${statusClass}">
+                            ${delivery.status.charAt(0).toUpperCase() + delivery.status.slice(1).replace('-', ' ')}
+                        </span>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="mb-3">
+                        <div class="flex items-center text-sm mb-1">
+                            <i class="ri-calendar-line text-gray-500 mr-2"></i>
+                            <span>${new Date(delivery.date).toLocaleDateString()}</span>
+                            ${delivery.timeStart ? ` (${delivery.timeStart}-${delivery.timeEnd})` : ''}
+                        </div>
+                        <div class="flex items-center text-sm mb-1">
+                            <i class="ri-map-pin-line text-gray-500 mr-2"></i>
+                            <span>${delivery.deliveryAddress ? `${delivery.deliveryAddress.street}, ${delivery.deliveryAddress.city}` : 'No address'}</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mt-4">
+                        <button onclick="viewDeliveryDetails('${delivery.id}')" class="text-sm text-blue-600 hover:text-blue-800">
+                            View Details
+                        </button>
+                        <div>
+                            <button onclick="editDelivery('${delivery.id}')" class="text-blue-600 hover:text-blue-800 mx-2">
+                                <i class="ri-edit-line"></i>
+                            </button>
+                            <button onclick="deleteDelivery('${delivery.id}')" class="text-red-600 hover:text-red-800">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+} 
+
+// Edit a delivery
+window.editDelivery = function(id) {
+    const deliveries = JSON.parse(localStorage.getItem('deliveries') || '[]');
+    const delivery = deliveries.find(d => d.id === id);
+    
+    if (!delivery) {
+        alert('Delivery not found');
+        return;
+    }
+    
+    // Populate form with delivery data
+    document.getElementById('deliveryId').value = delivery.id;
+    document.getElementById('deliveryType').value = delivery.type || '';
+    document.getElementById('deliveryCustomer').value = delivery.customerId || '';
+    document.getElementById('deliveryDate').value = delivery.date || '';
+    document.getElementById('deliveryTimeStart').value = delivery.timeStart || '';
+    document.getElementById('deliveryTimeEnd').value = delivery.timeEnd || '';
+    document.getElementById('deliveryInstructions').value = delivery.instructions || '';
+    
+    // Populate address fields
+    if (delivery.pickupAddress) {
+        document.getElementById('pickupAddress').value = delivery.pickupAddress.street || '';
+        document.getElementById('pickupCity').value = delivery.pickupAddress.city || '';
+        document.getElementById('pickupState').value = delivery.pickupAddress.state || '';
+        document.getElementById('pickupZip').value = delivery.pickupAddress.zip || '';
+    }
+    
+    if (delivery.deliveryAddress) {
+        document.getElementById('deliveryAddress').value = delivery.deliveryAddress.street || '';
+        document.getElementById('deliveryCity').value = delivery.deliveryAddress.city || '';
+        document.getElementById('deliveryState').value = delivery.deliveryAddress.state || '';
+        document.getElementById('deliveryZip').value = delivery.deliveryAddress.zip || '';
+    }
+    
+    // Populate tracking tab
+    document.getElementById('deliveryStatus').value = delivery.status || 'scheduled';
+    document.getElementById('trackingNumber').value = delivery.trackingNumber || '';
+    
+    if (delivery.signatureRequired) {
+        document.querySelector('input[name="signatureRequired"][value="yes"]').checked = true;
+    } else {
+        document.querySelector('input[name="signatureRequired"][value="no"]').checked = true;
+    }
+    
+    document.getElementById('deliveryNotes').value = delivery.notes || '';
+    
+    // Populate dropdowns
+    populateCustomersDropdown();
+    populateDriversDropdown();
+    
+    // Update contact dropdown based on customer
+    updateContactsDropdown();
+    document.getElementById('deliveryContact').value = delivery.contactId || '';
+    
+    // Show the form
+    document.getElementById('deliveryForm').classList.remove('hidden');
+    document.getElementById('deliveryManagementTools').classList.add('hidden');
+    document.getElementById('deliveriesList').classList.add('hidden');
+    
+    // Set form title
+    document.getElementById('deliveryFormTitle').textContent = 'Edit Delivery';
+    
+    // Initialize tabs
+    initDeliveryFormTabs();
+};
+
+// Delete a delivery
+window.deleteDelivery = function(id) {
+    if (confirm('Are you sure you want to delete this delivery?')) {
+        let deliveries = JSON.parse(localStorage.getItem('deliveries') || '[]');
+        deliveries = deliveries.filter(d => d.id !== id);
+        localStorage.setItem('deliveries', JSON.stringify(deliveries));
+        renderDeliveries();
+    }
+};
+
+// View delivery details
+window.viewDeliveryDetails = function(id) {
+    // In a real implementation, this would show a detailed view
+    alert('View delivery details: ' + id);
+};
+// Add event listener for the "Save Delivery" button
+document.getElementById('saveDeliveryBtn').addEventListener('click', function() {
+    // Validate required fields
+    const requiredFields = [
+        'deliveryType', 'deliveryCustomer', 'deliveryDate',
+        'pickupAddress', 'pickupCity', 'pickupState', 'pickupZip',
+        'deliveryAddress', 'deliveryCity', 'deliveryState', 'deliveryZip'
+    ];
+    
+    let isValid = true;
+    requiredFields.forEach(field => {
+        const input = document.getElementById(field);
+        if (input && !input.value) {
+            input.classList.add('border-red-500');
+            isValid = false;
+        } else if (input) {
+            input.classList.remove('border-red-500');
+        }
+    });
+    
+    if (!isValid) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    // Get values from form
+    const deliveryId = document.getElementById('deliveryId').value;
+    
+    const deliveryData = {
+        id: deliveryId,
+        type: document.getElementById('deliveryType').value,
+        customerId: document.getElementById('deliveryCustomer').value,
+        contactId: document.getElementById('deliveryContact').value,
+        date: document.getElementById('deliveryDate').value,
+        timeStart: document.getElementById('deliveryTimeStart').value,
+        timeEnd: document.getElementById('deliveryTimeEnd').value,
+        instructions: document.getElementById('deliveryInstructions').value,
+        pickupAddress: {
+            street: document.getElementById('pickupAddress').value,
+            city: document.getElementById('pickupCity').value,
+            state: document.getElementById('pickupState').value,
+            zip: document.getElementById('pickupZip').value
+        },
+        deliveryAddress: {
+            street: document.getElementById('deliveryAddress').value,
+            city: document.getElementById('deliveryCity').value,
+            state: document.getElementById('deliveryState').value,
+            zip: document.getElementById('deliveryZip').value
+        },
+        status: document.getElementById('deliveryStatus').value,
+        driverId: document.getElementById('assignedDriver').value,
+        trackingNumber: document.getElementById('trackingNumber').value,
+        signatureRequired: document.querySelector('input[name="signatureRequired"]:checked').value === 'yes',
+        notes: document.getElementById('deliveryNotes').value,
+        updatedAt: new Date().toISOString()
+    };
+    
+    // Save the delivery to localStorage
+    let deliveries = JSON.parse(localStorage.getItem('deliveries') || '[]');
+    
+    // Check if this is a new delivery or updating an existing one
+    const existingIndex = deliveries.findIndex(d => d.id === deliveryId);
+    
+    if (existingIndex >= 0) {
+        // Update existing delivery
+        deliveries[existingIndex] = {
+            ...deliveries[existingIndex],
+            ...deliveryData
+        };
+    } else {
+        // Add created timestamp for new deliveries
+        deliveryData.createdAt = new Date().toISOString();
+        // Add to deliveries array
+        deliveries.push(deliveryData);
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('deliveries', JSON.stringify(deliveries));
+    
+    // Update the UI
+    renderDeliveries();
+    
+    // Hide form
+    document.getElementById('deliveryForm').classList.add('hidden');
+    
+    // Show the management tools and list
+    document.getElementById('deliveryManagementTools').classList.remove('hidden');
+    document.getElementById('deliveriesList').classList.remove('hidden');
+    
+    // Show success message
+    alert('Delivery saved successfully!');
+});
+// Initialize delivery form tabs
+function initDeliveryFormTabs() {
+    const tabLinks = document.querySelectorAll('.delivery-tab-link');
+    const tabContents = document.querySelectorAll('.delivery-tab-content');
+    
+    tabLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all tabs and contents
+            tabLinks.forEach(tab => {
+                tab.classList.remove('active', 'border-blue-600', 'text-blue-600');
+                tab.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+            });
+            
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Add active class to current tab and show content
+            this.classList.add('active', 'border-blue-600', 'text-blue-600');
+            this.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
+            
+            const tabId = this.getAttribute('data-tab');
+            const tabContent = document.getElementById(tabId);
+            if (tabContent) {
+                tabContent.classList.remove('hidden');
+            }
+        });
+    });
+}
+// Initialize the Deliveries component when the tab is clicked
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all tab links
+    const tabLinks = document.querySelectorAll('.tab-link');
+    
+    // Add click event to handle tab changes
+    tabLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            
+            // Initialize deliveries component when the deliveries tab is clicked
+            if (tabId === 'deliveries') {
+                // Add package button event listener
+                if (document.getElementById('addPackageBtn')) {
+                    document.getElementById('addPackageBtn').addEventListener('click', function() {
+                        addPackageRow();
+                    });
+                }
+                
+                // Render the deliveries list
+                renderDeliveries();
+            }
+        });
+    });
+    
+    // Function to add a new package row
+    function addPackageRow() {
+        const packageTableBody = document.getElementById('packageTableBody');
+        if (!packageTableBody) return;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="py-2">
+                <select class="w-full px-2 py-1 border rounded package-type">
+                    <option value="envelope">Envelope</option>
+                    <option value="small-box">Small Box</option>
+                    <option value="medium-box">Medium Box</option>
+                    <option value="large-box">Large Box</option>
+                    <option value="pallet">Pallet</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </td>
+            <td class="py-2">
+                <input type="number" min="1" value="1" class="w-full px-2 py-1 border rounded package-quantity">
+            </td>
+            <td class="py-2">
+                <input type="number" min="0" step="0.1" class="w-full px-2 py-1 border rounded package-weight">
+            </td>
+            <td class="py-2">
+                <input type="text" placeholder="L×W×H" class="w-full px-2 py-1 border rounded package-dimensions">
+            </td>
+            <td class="py-2">
+                <button type="button" class="text-red-600 hover:text-red-800 remove-package">
+                    <i class="ri-delete-bin-line"></i>
+                </button>
+            </td>
+        `;
+        
+        // Add event listener for remove button
+        const removeBtn = row.querySelector('.remove-package');
+        removeBtn.addEventListener('click', function() {
+            // Only remove if there's more than one row
+            if (packageTableBody.querySelectorAll('tr').length > 1) {
+                packageTableBody.removeChild(row);
+            }
+        });
+        
+        packageTableBody.appendChild(row);
+    }
+});
     </script>
 </body>
 </html>
