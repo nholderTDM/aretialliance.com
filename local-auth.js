@@ -28,7 +28,24 @@ const users = [
     name: 'Fonda Gill',
     email: 'fgill@aretialliance.com',
     role: 'user'
-  }
+  },
+  {
+    id: '4',
+    username: 'demotest',
+    password: 'aretidemo',
+    name: 'Areti Demo',
+    email: 'demo@aretialliance.com',
+    role: 'user'
+  },
+  {
+    id: '5',
+    username: 'demoadmin',
+    password: 'aretidemo',
+    name: 'Areti Ademo',
+    email: 'demo1@aretialliance.com',
+    role: 'admin'
+  },
+
 ];
 
 // Simple authentication function
