@@ -245,9 +245,8 @@ const Dashboard = () => {
             {sidebarOpen && <span className="ml-3">Overview</span>}
           </a>
 
-          <a 
-  href="#" 
-  onClick={() => setCurrentTab('scripts')}
+        <a href="#" 
+          onClick={() => setCurrentTab('scripts')}
   className={`flex items-center py-3 px-4 ${currentTab === 'scripts' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
 >
   <FileText size={20} />
@@ -381,6 +380,15 @@ const Dashboard = () => {
                 <span className="ml-3">Overview</span>
               </a>
               
+              <a 
+  href="#" 
+  onClick={() => { setCurrentTab('scripts'); toggleMobileMenu(); }}
+  className={`flex items-center py-3 px-4 ${currentTab === 'scripts' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+>
+  <FileText size={20} />
+  <span className="ml-3">Script Navigator</span>
+</a>
+
               <a 
                 href="#" 
                 onClick={() => { setCurrentTab('contacts'); toggleMobileMenu(); }}
