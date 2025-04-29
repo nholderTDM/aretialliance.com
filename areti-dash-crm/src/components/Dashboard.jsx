@@ -123,6 +123,7 @@ const Dashboard = () => {
       case 'overview':
         return <Overview />;
       case 'scripts':
+        console.log('Rendering ScriptNavigatorr');
         return <ScriptNavigator />;
       case 'contacts':
         return <Contacts />;
@@ -245,10 +246,9 @@ const Dashboard = () => {
             {sidebarOpen && <span className="ml-3">Overview</span>}
           </a>
 
-        <a href="#" 
-          onClick={() => setCurrentTab('scripts')}
-  className={`flex items-center py-3 px-4 ${currentTab === 'scripts' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
->
+        <a href="#" onClick={() => setCurrentTab('scripts')}
+        className={`flex items-center py-3 px-4 ${currentTab === 'scripts' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+          >
   <FileText size={20} />
   {sidebarOpen && <span className="ml-3">Script Navigator</span>}
 </a>
@@ -281,7 +281,7 @@ const Dashboard = () => {
           </a>
           
           <a 
-            href="#" 
+            href="https://aretialliance.com/dashboard/#scripts" 
             onClick={() => setCurrentTab('drivers')}
             className={`flex items-center py-3 px-4 ${currentTab === 'drivers' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
           >
@@ -516,6 +516,14 @@ const Dashboard = () => {
             </div>
           </div>
         </header>
+
+{/* Add this right after the header */}
+<button 
+  onClick={() => setCurrentTab('scripts')} 
+  className="m-4 p-2 bg-red-500 text-white"
+>
+  Go to Script Navigator
+</button>
 
         {/* Page Content */}
         <main className="p-4 overflow-y-auto" style={{ height: 'calc(100vh - 64px)' }}>
