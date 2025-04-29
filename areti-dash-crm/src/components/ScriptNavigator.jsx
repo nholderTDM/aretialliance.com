@@ -15,7 +15,7 @@ const ScriptNavigator = () => {
     title: '',
     email: '',
     phone: '',
-    industry: ''
+    industry: ''  
   });
   
   // UI state
