@@ -1,92 +1,45 @@
+// src/components/ScriptNavigator.jsx
 import React, { useState, useEffect } from 'react';
-import { Phone, X, Save, Calendar, Clock, ChevronDown, ChevronUp, Search, Star, StarOff, 
-  Info, FileText, Clipboard, Download, Volume2, UserPlus, BarChart2 } from 'lucide-react';
+import { 
+  Phone, X, Save, Calendar, Clock, ChevronDown, ChevronUp, Search, 
+  Star, StarOff, Info, FileText, Clipboard, Download, Volume2, UserPlus, BarChart2 
+} from 'lucide-react';
 
-// Types for conversation steps
-type ConversationOption = {
-  label: string;
-  nextStep: string;
-};
-
-type ConversationStep = {
-  title: string;
-  script: string;
-  options: ConversationOption[];
-};
-
-type HistoryItem = {
-  step: string;
-  title: string;
-  timestamp: string;
-};
-
-type ContactInfo = {
-  name: string;
-  company: string;
-  title: string;
-  email: string;
-  phone: string;
-  industry: string;
-};
-
-type Task = {
-  id: number;
-  title: string;
-  dueDate: string;
-  priority: 'low' | 'medium' | 'high';
-  completed: boolean;
-};
-
-type AnalyticsData = {
-  pathsUsed: Record<string, number>;
-  objectionCounts: Record<string, number>;
-  successRates: Record<string, number>;
-  avgCallTime: number;
-  callCount: number;
-  consultationsScheduled: number;
-  leadConversionRate: number;
-  savedCalls?: number;
-};
-
-const ScriptNavigator: React.FC = () => {
+const ScriptNavigator = () => {
   // Track conversation state
-  const [currentStep, setCurrentStep] = useState<string>('introduction');
-  const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [notes, setNotes] = useState<string>('');
-  const [contactInfo, setContactInfo] = useState<ContactInfo>({
+  const [currentStep, setCurrentStep] = useState('introduction');
+  const [history, setHistory] = useState([]);
+  const [notes, setNotes] = useState('');
+  const [contactInfo, setContactInfo] = useState({
     name: '',
     company: '',
     title: '',
     email: '',
     phone: '',
-    industry: ''
+    industry: ''  
   });
   
   // UI state
-  const [showScript, setShowScript] = useState<boolean>(true);
-  const [showContact, setShowContact] = useState<boolean>(true);
-  const [showNotes, setShowNotes] = useState<boolean>(true);
-  const [favoriteScripts, setFavoriteScripts] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [searchResults, setSearchResults] = useState<{key: string, title: string}[]>([]);
-  const [scriptVariant, setScriptVariant] = useState<'standard' | 'assertive' | 'consultative'>('standard');
-  const [customScriptVersion, setCustomScriptVersion] = useState<string>('v1');
-  const [callTimer, setCallTimer] = useState<number>(0);
-  const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
-  const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
-  const [savedName, setSavedName] = useState<string>('');
-  const [followUpTasks, setFollowUpTasks] = useState<Task[]>([]);
-  const [showAddTask, setShowAddTask] = useState<boolean>(false);
-  const [newTask, setNewTask] = useState<Omit<Task, 'id' | 'completed'>>({ 
-    title: '', 
-    dueDate: '', 
-    priority: 'medium' 
-  });
-  const [showKeyPhrases, setShowKeyPhrases] = useState<boolean>(false);
-  const [showAnalytics, setShowAnalytics] = useState<boolean>(false);
+  const [showScript, setShowScript] = useState(true);
+  const [showContact, setShowContact] = useState(true);
+  const [showNotes, setShowNotes] = useState(true);
+  const [favoriteScripts, setFavoriteScripts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [scriptVariant, setScriptVariant] = useState('standard');
+  const [customScriptVersion, setCustomScriptVersion] = useState('v1');
+  const [callTimer, setCallTimer] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [savedName, setSavedName] = useState('');
+  const [followUpTasks, setFollowUpTasks] = useState([]);
+  const [showAddTask, setShowAddTask] = useState(false);
+  const [newTask, setNewTask] = useState({ title: '', dueDate: '', priority: 'medium' });
+  const [showKeyPhrases, setShowKeyPhrases] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
   
   // Analytics tracking
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({
+  const [analyticsData, setAnalyticsData] = useState({
     pathsUsed: {},
     objectionCounts: {},
     successRates: {},
@@ -98,25 +51,33 @@ const ScriptNavigator: React.FC = () => {
   
   // Load saved data on component mount
   useEffect(() => {
-    const savedFavorites = localStorage.getItem('favoriteScripts');
-    if (savedFavorites) {
-      setFavoriteScripts(JSON.parse(savedFavorites));
-    }
-    
-    const savedAnalytics = localStorage.getItem('scriptAnalytics');
-    if (savedAnalytics) {
-      setAnalyticsData(JSON.parse(savedAnalytics));
+    try {
+      const savedFavorites = localStorage.getItem('favoriteScripts');
+      if (savedFavorites) {
+        setFavoriteScripts(JSON.parse(savedFavorites));
+      }
+      
+      const savedAnalytics = localStorage.getItem('scriptAnalytics');
+      if (savedAnalytics) {
+        setAnalyticsData(JSON.parse(savedAnalytics));
+      }
+    } catch (error) {
+      console.error("Error loading data from localStorage:", error);
     }
   }, []);
   
   // Save favorites when they change
   useEffect(() => {
-    localStorage.setItem('favoriteScripts', JSON.stringify(favoriteScripts));
+    try {
+      localStorage.setItem('favoriteScripts', JSON.stringify(favoriteScripts));
+    } catch (error) {
+      console.error("Error saving favorites to localStorage:", error);
+    }
   }, [favoriteScripts]);
   
   // Call timer
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval;
     if (isTimerRunning) {
       interval = setInterval(() => {
         setCallTimer(prevTime => prevTime + 1);
@@ -126,14 +87,14 @@ const ScriptNavigator: React.FC = () => {
   }, [isTimerRunning]);
   
   // Format timer display
-  const formatTime = (timeInSeconds: number): string => {
+  const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
   
   // Start/stop timer
-  const toggleTimer = (): void => {
+  const toggleTimer = () => {
     if (!isTimerRunning && callTimer === 0) {
       // Starting a new call - add to analytics
       setAnalyticsData(prev => ({
@@ -146,7 +107,7 @@ const ScriptNavigator: React.FC = () => {
   };
   
   // Reset timer
-  const resetTimer = (): void => {
+  const resetTimer = () => {
     if (callTimer > 0 && !isTimerRunning) {
       // Update average call time
       setAnalyticsData(prev => {
@@ -164,7 +125,7 @@ const ScriptNavigator: React.FC = () => {
   };
   
   // Track step changes for analytics
-  const handleStepChange = (nextStep: string): void => {
+  const handleStepChange = (nextStep) => {
     // Record the current step in history
     if (currentStep && conversationSteps[currentStep]) {
       setHistory(prev => [...prev, { 
@@ -224,7 +185,7 @@ const ScriptNavigator: React.FC = () => {
   }, [searchTerm]);
   
   // Toggle favorite script
-  const toggleFavorite = (stepKey: string): void => {
+  const toggleFavorite = (stepKey) => {
     if (favoriteScripts.includes(stepKey)) {
       setFavoriteScripts(favoriteScripts.filter(key => key !== stepKey));
     } else {
@@ -233,13 +194,13 @@ const ScriptNavigator: React.FC = () => {
   };
   
   // Save current conversation
-  const saveConversation = (): void => {
+  const saveConversation = () => {
     // This would connect to your CRM's API in production
     const conversation = {
       name: savedName,
       history: [...history, { 
         step: currentStep, 
-        title: conversationSteps[currentStep]?.title || 'Unknown Step' 
+        title: conversationSteps[currentStep]?.title || 'Unknown Step'
       }],
       notes,
       contactInfo,
@@ -251,7 +212,12 @@ const ScriptNavigator: React.FC = () => {
     const updateAnalytics = { ...analyticsData };
     updateAnalytics.savedCalls = (updateAnalytics.savedCalls || 0) + 1;
     setAnalyticsData(updateAnalytics);
-    localStorage.setItem('scriptAnalytics', JSON.stringify(updateAnalytics));
+    
+    try {
+      localStorage.setItem('scriptAnalytics', JSON.stringify(updateAnalytics));
+    } catch (error) {
+      console.error("Error saving analytics to localStorage:", error);
+    }
     
     console.log('Saving conversation:', conversation);
     
@@ -263,7 +229,7 @@ const ScriptNavigator: React.FC = () => {
   };
   
   // Add follow-up task
-  const addFollowUpTask = (): void => {
+  const addFollowUpTask = () => {
     if (!newTask.title || !newTask.dueDate) return;
     
     setFollowUpTasks([...followUpTasks, {
@@ -278,13 +244,13 @@ const ScriptNavigator: React.FC = () => {
   };
   
   // Generate analytics report
-  const generateReport = (): void => {
+  const generateReport = () => {
     // Analytics calculations would happen here
     setShowAnalytics(!showAnalytics);
   };
   
   // Define industry-specific key phrases
-  const industryKeyPhrases: Record<string, string[]> = {
+  const industryKeyPhrases = {
     retail: [
       "Same-day delivery to increase customer satisfaction",
       "Reduce cart abandonment with reliable delivery options",
@@ -328,7 +294,7 @@ const ScriptNavigator: React.FC = () => {
   };
   
   // Script variations based on industry or approach
-  const scriptVariations: Record<string, Record<string, ConversationStep>> = {
+  const scriptVariations = {
     standard: {
       introduction: {
         title: "Introduction",
@@ -371,7 +337,7 @@ const ScriptNavigator: React.FC = () => {
   };
   
   // Main conversation steps
-  const conversationSteps: Record<string, ConversationStep> = {
+  const conversationSteps = {
     introduction: {
       title: "Introduction",
       script: "Hello, my name is [Your Name] from Areti Alliance. We're a last-mile delivery service provider based in Atlanta. May I ask who I'm speaking with today?",
@@ -391,8 +357,16 @@ const ScriptNavigator: React.FC = () => {
         { label: "Need more information", nextStep: "expand_value_proposition" }
       ]
     },
-    // Many more conversation steps...
-    // For brevity, I've not included all of them here but they would follow the same pattern
+    // For brevity, I'll include just a few more steps. You can expand this section with more steps
+    expand_value_proposition: {
+      title: "Expanded Value Proposition",
+      script: "Our approach is unique because we start small with specific routes or delivery types to prove our value before expanding. This minimizes risk and lets you see results before making a larger commitment. We offer real-time tracking, reliable drivers, flexible scaling during peaks, and detailed analytics on delivery performance. Many of our clients see improved customer satisfaction and operational efficiency. Which of these aspects would be most valuable to your business?",
+      options: [
+        { label: "They specify an aspect", nextStep: "address_stated_priorities" },
+        { label: "Continue to decision maker", nextStep: "identify_decision_maker" },
+        { label: "Need more specifics", nextStep: "industry_specific_benefits" }
+      ]
+    },
     handle_not_interested: {
       title: "Handle Not Interested",
       script: "I understand this might not be a priority right now. Many businesses come to us when they're experiencing delivery challenges or looking to improve customer satisfaction. Would it be alright if I check back in a few months, or is there a specific time when reviewing your delivery options might be more relevant?",
@@ -417,11 +391,11 @@ const ScriptNavigator: React.FC = () => {
         { label: "Start new call", nextStep: "introduction" }
       ]
     },
-    // Add any additional conversation steps needed...
+    // You can add more conversation steps as needed
   };
 
   // Helper function to get current step's script based on selected variant
-  const getCurrentStepScript = (): ConversationStep => {
+  const getCurrentStepScript = () => {
     // Check if the current step exists in the selected variant
     if (scriptVariations[scriptVariant] && scriptVariations[scriptVariant][currentStep]) {
       return scriptVariations[scriptVariant][currentStep];
@@ -478,7 +452,7 @@ const ScriptNavigator: React.FC = () => {
             <select 
               className="w-full p-2 border rounded"
               value={scriptVariant}
-              onChange={(e) => setScriptVariant(e.target.value as any)}
+              onChange={(e) => setScriptVariant(e.target.value)}
             >
               <option value="standard">Standard</option>
               <option value="assertive">Assertive</option>
@@ -879,7 +853,7 @@ const ScriptNavigator: React.FC = () => {
                     <div className="flex-1">
                       <select
                         value={newTask.priority}
-                        onChange={(e) => setNewTask({...newTask, priority: e.target.value as 'low' | 'medium' | 'high'})}
+                        onChange={(e) => setNewTask({...newTask, priority: e.target.value})}
                         className="w-full p-2 border rounded"
                       >
                         <option value="low">Low Priority</option>
