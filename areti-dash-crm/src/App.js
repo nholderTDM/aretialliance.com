@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, HashRouter } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import ScriptNavigatorPage from './components/ScriptNavigator';
 // import Callback from './components/Callback';
@@ -27,14 +27,16 @@ function App() {
 //   );
 // }
   return (
-    <Routes>
-      <Route path="/script-navigator" element={<ScriptNavigatorPage />} />
+    <HashRouter>
+      <Routes>
+        <Route path="/script-navigator" element={<ScriptNavigatorPage />} />
       {/* <Route path="/callback" element={<Callback />} /> */}
       {/* <Route path="/dashboard/*" element={<Dashboard />} /> */}
-      <Route path="/*" element={<Dashboard />} /> 
+        <Route path="/*" element={<Dashboard />} /> 
       {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
       {/* <Route path="/test-script" element={<TestScriptNav />} /> */}
-    </Routes>
+      </Routes>
+    </HashRouter>
   );
 }
 
