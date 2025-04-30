@@ -119,10 +119,12 @@ const Dashboard = () => {
   
   // Content rendering based on tab
   const renderContent = () => {
+    console.log('Current tab:', currentTab); // Added for debugging
     switch(currentTab) {
       case 'overview':
         return <Overview />;
       case 'scripts':
+        console.log('Rendering ScriptNavigator component'); // Added for debugging
         return <ScriptNavigator />;
       case 'contacts':
         return <Contacts />;
