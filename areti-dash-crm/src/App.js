@@ -1,10 +1,11 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
+import ScriptNavigatorPage from './components/ScriptNavigator';
 // import Callback from './components/Callback';
 // import AuthService from './services/auth';
 // import TestScriptNav from './components/TestScriptNav';
-import FixScriptNav from './components/FixScriptNav';
+// import FixScriptNav from './components/FixScriptNav';
 
 function App() {
  // const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +28,7 @@ function App() {
 // }
   return (
     <Routes>
-      <Route path="/fix-script" element={<FixScriptNav />} />
+      <Route path="/script-navigator" element={<ScriptNavigatorPage />} />
       {/* <Route path="/callback" element={<Callback />} /> */}
       {/* <Route path="/dashboard/*" element={<Dashboard />} /> */}
       <Route path="/*" element={<Dashboard />} /> 
