@@ -12,7 +12,7 @@
     "react-scripts": "^3.0.1",
     "recharts": "^2.15.3"
   },
-  "homepage": "https://nholderTDM.github.io/aretialliance.com",
+  "homepage": "https://aretialliance.com",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",

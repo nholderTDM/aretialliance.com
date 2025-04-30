@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
-//import Dashboard from './pages/Dashboard';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Callback from './components/Callback';
 import AuthService from './services/auth';
@@ -28,7 +27,9 @@ function App() {
   return (
     <Routes>
       <Route path="/callback" element={<Callback />} />
-      <Route path="/*" element={<Dashboard />} />
+      <Route path="/dashboard/*" element={<Dashboard />} />
+      <Route path="/" element={<Dashboard />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
