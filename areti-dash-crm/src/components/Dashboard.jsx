@@ -123,7 +123,6 @@ const Dashboard = () => {
       case 'overview':
         return <Overview />;
       case 'scripts':
-        console.log('Rendering ScriptNavigatorr');
         return <ScriptNavigator />;
       case 'contacts':
         return <Contacts />;
@@ -237,111 +236,111 @@ const Dashboard = () => {
             {sidebarOpen ? 'MAIN MENU' : ''}
           </div>
           
-          <a 
-            href="#" 
+          <button 
             onClick={() => setCurrentTab('overview')}
-            className={`flex items-center py-3 px-4 ${currentTab === 'overview' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            className={`flex items-center py-3 px-4 ${currentTab === 'overview' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors text-left w-full`}
           >
             <Layers size={20} />
             {sidebarOpen && <span className="ml-3">Overview</span>}
-          </a>
+          </button>
 
-        <a href="#" onClick={() => setCurrentTab('scripts')}
-        className={`flex items-center py-3 px-4 ${currentTab === 'scripts' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
-          >
+<button onClick={() => setCurrentTab('scripts')}
+className={`flex items-center py-3 px-4 ${currentTab === 'scripts' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%' }}
+>
   <FileText size={20} />
   {sidebarOpen && <span className="ml-3">Script Navigator</span>}
-</a>
+</button>
           
-          <a 
-            href="#" 
+          <button 
             onClick={() => setCurrentTab('contacts')}
             className={`flex items-center py-3 px-4 ${currentTab === 'contacts' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%' }}
           >
             <Users size={20} />
             {sidebarOpen && <span className="ml-3">Contacts</span>}
-          </a>
+          </button>
           
-          <a 
-            href="#" 
+          <button 
             onClick={() => setCurrentTab('organizations')}
             className={`flex items-center py-3 px-4 ${currentTab === 'organizations' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%' }}
           >
             <Building size={20} />
             {sidebarOpen && <span className="ml-3">Organizations</span>}
-          </a>
+          </button>
           
-          <a 
-            href="#" 
+          <button 
             onClick={() => setCurrentTab('tasks')}
             className={`flex items-center py-3 px-4 ${currentTab === 'tasks' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%' }}
           >
             <CheckSquare size={20} />
             {sidebarOpen && <span className="ml-3">Tasks</span>}
-          </a>
+          </button>
           
-          <a 
-            href="https://aretialliance.com/dashboard/#scripts" 
+          <button 
             onClick={() => setCurrentTab('drivers')}
             className={`flex items-center py-3 px-4 ${currentTab === 'drivers' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%' }}
           >
             <Users size={20} />
             {sidebarOpen && <span className="ml-3">Drivers</span>}
-          </a>
+          </button>
           
-          <a 
-            href="#" 
+          <button 
             onClick={() => setCurrentTab('deliveries')}
             className={`flex items-center py-3 px-4 ${currentTab === 'deliveries' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%' }}
           >
             <Truck size={20} />
             {sidebarOpen && <span className="ml-3">Deliveries</span>}
-          </a>
+          </button>
           
-          <a 
-            href="#" 
+          <button 
             onClick={() => setCurrentTab('quotes')}
             className={`flex items-center py-3 px-4 ${currentTab === 'quotes' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%' }}
           >
             <FileText size={20} />
             {sidebarOpen && <span className="ml-3">Quotes</span>}
-          </a>
+          </button>
           
-          <a 
-            href="#" 
+          <button 
             onClick={() => setCurrentTab('revenue')}
             className={`flex items-center py-3 px-4 ${currentTab === 'revenue' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%' }}
           >
-            <DollarSign size={20} />
-            {sidebarOpen && <span className="ml-3">Revenue</span>}
-          </a>
+          <DollarSign size={20} />
+          {sidebarOpen && <span className="ml-3">Revenue</span>}
+          </button>
           
-          <a 
-            href="#" 
+          <button 
             onClick={() => setCurrentTab('routes')}
             className={`flex items-center py-3 px-4 ${currentTab === 'routes' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%' }}
           >
             <MapPin size={20} />
             {sidebarOpen && <span className="ml-3">Routes</span>}
-          </a>
+          </button>
           
-          <a 
-            href="#" 
+          <button 
             onClick={() => setCurrentTab('performance')}
             className={`flex items-center py-3 px-4 ${currentTab === 'performance' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%' }}
           >
             <Activity size={20} />
             {sidebarOpen && <span className="ml-3">Performance</span>}
-          </a>
+          </button>
           
-          <a 
-            href="#" 
+          <button 
             onClick={() => setCurrentTab('settings')}
             className={`flex items-center py-3 px-4 ${currentTab === 'settings' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
+            style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', width: '100%' }}
           >
             <Settings size={20} />
             {sidebarOpen && <span className="ml-3">Settings</span>}
-          </a>
+         </button> 
         </nav>
         
         <div className="absolute bottom-0 w-full p-4 border-t border-blue-900">
