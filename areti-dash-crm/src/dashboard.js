@@ -239,7 +239,7 @@ const Dashboard = () => {
             className={`flex items-center py-3 px-4 ${currentTab === 'tasks' ? 'bg-blue-900' : 'hover:bg-blue-700'} transition-colors`}
           >
             <CheckSquare size={20} />
-            {sidebarOpen && <span className="ml-3">Tasks</span>}
+            {sidebarOpen && <span className="ml-3">X-Tasks-X</span>}
           </a>
           <a 
             href="#" 
