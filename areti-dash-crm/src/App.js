@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Callback from './components/Callback';
 import AuthService from './services/auth';
+import TestScriptNav from './components/TestScriptNav';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +31,7 @@ function App() {
       <Route path="/dashboard/*" element={<Dashboard />} />
       <Route path="/" element={<Dashboard />} />
       <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/test-script" element={<TestScriptNav />} />
     </Routes>
   );
 }

@@ -48,7 +48,7 @@ const ScriptNavigator = () => {
     consultationsScheduled: 0,
     leadConversionRate: 0
   });
-  
+  console.log('ScriptNavigator component is being called');
   // Load saved data on component mount
   useEffect(() => {
     try {

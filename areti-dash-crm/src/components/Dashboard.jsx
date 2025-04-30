@@ -31,8 +31,8 @@ import ScriptNavigator from './ScriptNavigator';
 
 const Dashboard = () => {
   // Authentication state
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+ // const [isAuthenticated, setIsAuthenticated] = useState(false);
+ // const [currentUser, setCurrentUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   
   // UI state
