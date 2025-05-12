@@ -1101,7 +1101,7 @@
         <section class="testimonials">
             <div class="container">
                 <div class="section-header">
-                    <h2></h2>What Our Clients Say</h2>
+                    <h2>What Our Clients Say</h2>
                     <p data-i18n="hero.subtitle">Don't just take our word for it - hear from businesses that rely on Areti Alliance every day.</p>
                 </div>
                 <div class="testimonial-container">
@@ -2063,59 +2063,109 @@
         </div>
     </footer>
 
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Book Your Delivery</h2>
+            <p>Complete your booking details below:</p>
+            
+            <form id="booking-form">
+                <div class="form-group">
+                    <label for="booking-pickup-address">Pickup Address</label>
+                    <input type="text" id="booking-pickup-address" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="booking-delivery-address">Delivery Address</label>
+                    <input type="text" id="booking-delivery-address" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="booking-instructions">Special Instructions</label>
+                    <textarea id="booking-instructions" class="form-control" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="booking-payment">Payment Method</label>
+                    <select id="booking-payment" class="form-control" required>
+                        <option value="">Select Payment Method</option>
+                        <option value="credit">Credit Card</option>
+                        <option value="invoice">Invoice (Business Only)</option>
+                        <option value="paypal">PayPal</option>
+                    </select>
+                </div>
+                
+                <div id="quote-summary" class="summary-box">
+                    <h3>Quote Summary</h3>
+                    <p><span>Total Cost:</span> <span id="summary-total">$0.00</span></p>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="terms-agree" required>
+                        <label for="terms-agree">I agree to the <a href="terms.html" target="_blank">Terms and Conditions</a></label>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <button type="submit" class="btn">Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Tab navigation
         document.addEventListener('DOMContentLoaded', function() {
             console.log("DOM fully loaded");
             
             // Add phone formatting to contact form
-const contactPhoneInput = document.getElementById('phone');
-if (contactPhoneInput) {
-    contactPhoneInput.addEventListener('input', function() {
-        // Remove any non-numeric characters
-        let value = this.value.replace(/\D/g, '');
-        
-        // Limit to 10 digits
-        if (value.length > 10) {
-            value = value.slice(0, 10);
-        }
-        
-        // Apply formatting as XXX-XXX-XXXX as user types
-        if (value.length > 0) {
-            if (value.length <= 3) {
-                this.value = value;
-            } else if (value.length <= 6) {
-                this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
-            } else {
-                this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
+            const contactPhoneInput = document.getElementById('phone');
+            if (contactPhoneInput) {
+                contactPhoneInput.addEventListener('input', function() {
+                    // Remove any non-numeric characters
+                    let value = this.value.replace(/\D/g, '');
+                    
+                    // Limit to 10 digits
+                    if (value.length > 10) {
+                        value = value.slice(0, 10);
+                    }
+                    
+                    // Apply formatting as XXX-XXX-XXXX as user types
+                    if (value.length > 0) {
+                        if (value.length <= 3) {
+                            this.value = value;
+                        } else if (value.length <= 6) {
+                            this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
+                        } else {
+                            this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
+                        }
+                    }
+                });
             }
-        }
-    });
-}
+            
             // Add phone formatting to quote form
-const quotePhoneInput = document.getElementById('quote-phone');
-if (quotePhoneInput) {
-    quotePhoneInput.addEventListener('input', function() {
-        // Remove any non-numeric characters
-        let value = this.value.replace(/\D/g, '');
-        
-        // Limit to 10 digits
-        if (value.length > 10) {
-            value = value.slice(0, 10);
-        }
-        
-        // Apply formatting as XXX-XXX-XXXX as user types
-        if (value.length > 0) {
-            if (value.length <= 3) {
-                this.value = value;
-            } else if (value.length <= 6) {
-                this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
-            } else {
-                this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
+            const quotePhoneInput = document.getElementById('quote-phone');
+            if (quotePhoneInput) {
+                quotePhoneInput.addEventListener('input', function() {
+                    // Remove any non-numeric characters
+                    let value = this.value.replace(/\D/g, '');
+                    
+                    // Limit to 10 digits
+                    if (value.length > 10) {
+                        value = value.slice(0, 10);
+                    }
+                    
+                    // Apply formatting as XXX-XXX-XXXX as user types
+                    if (value.length > 0) {
+                        if (value.length <= 3) {
+                            this.value = value;
+                        } else if (value.length <= 6) {
+                            this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
+                        } else {
+                            this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
+                        }
+                    }
+                });
             }
-        }
-    });
-}
+            
             const tabLinks = document.querySelectorAll('.tab-link');
             const tabContents = document.querySelectorAll('.tab-content');
             const hamburger = document.getElementById('hamburger');
@@ -2200,20 +2250,35 @@ if (quotePhoneInput) {
             const baseRate = document.getElementById('base-rate');
             const distanceFee = document.getElementById('distance-fee');
             const expeditedFee = document.getElementById('expedited-fee');
-         //   const bookDeliveryBtn = document.getElementById('book-delivery-btn');
+            const bookDeliveryBtn = document.getElementById('book-delivery-btn');
     
+            // Function to display quote result
+            function displayQuoteResult(totalCost, baseCost, distanceCost, speedCost) {
+                // Update price displays
+                quotePrice.textContent = '$' + totalCost.toFixed(2);
+                baseRate.textContent = '$' + baseCost.toFixed(2);
+                distanceFee.textContent = '$' + distanceCost.toFixed(2);
+                expeditedFee.textContent = '$' + speedCost.toFixed(2);
+                
+                // Show the result section
+                quoteResult.style.display = 'block';
+                
+                // Scroll to result
+                quoteResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
             if (quoteForm) {
                 quoteForm.addEventListener('submit', function(e) {
                     e.preventDefault();
 
                     // Validate phone number has exactly 10 digits
-        const phoneInput = document.getElementById('quote-phone');
-        const phoneDigits = phoneInput.value.replace(/\D/g, '');
-        if (phoneDigits.length !== 10) {
-            alert('Please enter a valid 10-digit phone number.');
-            phoneInput.focus();
-            return false;
-        }
+                    const phoneInput = document.getElementById('quote-phone');
+                    const phoneDigits = phoneInput.value.replace(/\D/g, '');
+                    if (phoneDigits.length !== 10) {
+                        alert('Please enter a valid 10-digit phone number.');
+                        phoneInput.focus();
+                        return false;
+                    }
                     
                     // Get form values
                     const quoteName = document.getElementById('quote-name').value;
@@ -2226,139 +2291,7 @@ if (quotePhoneInput) {
                     const deliveryDate = document.getElementById('delivery-date').value || 'Not specified';
                     const deliverySpeed = document.getElementById('delivery-speed').value;
                     const speedText = deliverySpeed ? document.getElementById('delivery-speed').options[document.getElementById('delivery-speed').selectedIndex].text : 'Not specified';
-                    // Apply phone number formatting to quote calculator
-document.addEventListener('DOMContentLoaded', function() {
-    // Get the phone input field from quote form
-    const quotePhoneInput = document.getElementById('quote-phone');
-    
-    if (quotePhoneInput) {
-        // Add event listener to validate and format as the user types
-        quotePhoneInput.addEventListener('input', function(e) {
-            // Remove any non-numeric characters
-            let value = this.value.replace(/\D/g, '');
-            
-            // Limit to 10 digits
-            if (value.length > 10) {
-                value = value.slice(0, 10);
-            }
-            
-            // Apply formatting as XXX-XXX-XXXX as user types
-            if (value.length > 0) {
-                if (value.length <= 3) {
-                    // Just the area code
-                    this.value = value;
-                } else if (value.length <= 6) {
-                    // Area code and prefix
-                    this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
-                } else {
-                    // Complete number
-                    this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
-                }
-            } else {
-                this.value = value;
-            }
-        });
-    }
-    
-    // Add validation to the quote form submission
-    const quoteForm = document.getElementById('quote-form');
-    if (quoteForm) {
-        // Store the original submit event handler
-        const originalSubmitHandler = quoteForm.onsubmit;
-        
-        // Override the submit event
-        quoteForm.addEventListener('submit', function(e) {
-            // Get the phone number value
-            const quotePhone = document.getElementById('quote-phone').value;
-            
-            // Validate phone number has exactly 10 digits
-            const phoneDigits = quotePhone.replace(/\D/g, '');
-            if (phoneDigits.length !== 10) {
-                e.preventDefault(); // Prevent form submission
-                alert('Please enter a valid 10-digit phone number.');
-                document.getElementById('quote-phone').focus();
-                return false;
-            }
-            
-            // Continue with the original form submission if phone is valid
-            // The rest of your existing quote form submission code will run
-        }, true); // Use capturing to run this before the original handler
-    }
-});
-                    // Add this to your main JavaScript section, outside of any other functions
-// This should go around line 2091, inside the main DOMContentLoaded event listener
-// but not nested inside any other functions
-
-// Phone number formatting and validation for all phone fields
-document.addEventListener('DOMContentLoaded', function() {
-    // Format and validate phone numbers across the site
-    const phoneInputs = [
-        document.getElementById('quote-phone'),
-        document.getElementById('driver-phone'),
-        document.getElementById('phone')
-    ];
-    
-    phoneInputs.forEach(input => {
-        if (input) {
-            // Add event listener to validate and format as the user types
-            input.addEventListener('input', function(e) {
-                // Remove any non-numeric characters
-                let value = this.value.replace(/\D/g, '');
-                
-                // Limit to 10 digits
-                if (value.length > 10) {
-                    value = value.slice(0, 10);
-                }
-                
-                // Apply formatting as XXX-XXX-XXXX as user types
-                if (value.length > 0) {
-                    if (value.length <= 3) {
-                        // Just the area code
-                        this.value = value;
-                    } else if (value.length <= 6) {
-                        // Area code and prefix
-                        this.value = `${value.substring(0, 3)}-${value.substring(3)}`;
-                    } else {
-                        // Complete number
-                        this.value = `${value.substring(0, 3)}-${value.substring(3, 6)}-${value.substring(6)}`;
-                    }
-                } else {
-                    this.value = value;
-                }
-            });
-        }
-    });
-    
-    // Add validation to all forms with phone numbers
-    const forms = [
-        document.getElementById('quote-form'),
-        document.getElementById('driver-form'),
-        document.getElementById('contact-form')
-    ];
-    
-    forms.forEach(form => {
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                // Find the phone input in this form
-                const phoneInput = this.querySelector('input[type="tel"]');
-                if (phoneInput) {
-                    // Validate phone number has exactly 10 digits
-                    const phoneDigits = phoneInput.value.replace(/\D/g, '');
-                    if (phoneDigits.length !== 10) {
-                        e.preventDefault(); // Prevent form submission
-                        alert('Please enter a valid 10-digit phone number.');
-                        phoneInput.focus();
-                        return false;
-                    }
-                }
-                // If we get here, the phone number is valid
-            }, true); // Using capturing to run this before other handlers
-        }
-    });
-});
-
-// Remove the duplicate phone validation code that's currently inside the quote form handler
-// (around line 2300-2328 in your code)
+                    
                     // Get package quantities
                     const packageQuantities = {};
                     let packageDetails = '';
@@ -2378,7 +2311,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         packageDetails = 'None specified';
                     }
                     
-                    // Calculate quote (same as your existing code)
+                    // Calculate quote
                     const baseRates = {
                         'envelope': 12.99,
                         'small': 18.99,
@@ -2421,20 +2354,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Calculate total
                     const totalCost = baseCost + distanceCost + speedCost;
                     
-                    // When displaying the quote result, include more detailed booking options
-function displayQuoteResult(totalCost, baseCost, distanceCost, speedCost) {
-    // Update existing price displays
-    quotePrice.textContent = '$' + totalCost.toFixed(2);
-    baseRate.textContent = '$' + baseCost.toFixed(2);
-    distanceFee.textContent = '$' + distanceCost.toFixed(2);
-    expeditedFee.textContent = '$' + speedCost.toFixed(2);
-    
-    // Show the result section
-    quoteResult.style.display = 'block';
-    
-    // Scroll to result
-    quoteResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
+                    // Display the quote result
+                    displayQuoteResult(totalCost, baseCost, distanceCost, speedCost);
                     
                     // Build the formatted message for email
                     const formattedMessage = `
@@ -2502,102 +2423,78 @@ function displayQuoteResult(totalCost, baseCost, distanceCost, speedCost) {
             }
     
             // Book delivery button
-            // Handle the booking process
-const bookDeliveryBtn = document.getElementById('book-delivery-btn');
-const bookingModal = document.getElementById('booking-modal');
-const closeModal = document.querySelector('.close-modal');
-const bookingForm = document.getElementById('booking-form');
-const summaryTotal = document.getElementById('summary-total');
+            if (bookDeliveryBtn) {
+                bookDeliveryBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Get the current quote information
+                    const quoteAmount = quotePrice.textContent;
+                    
+                    // Update the booking modal with quote information
+                    const summaryTotal = document.getElementById('summary-total');
+                    if (summaryTotal) {
+                        summaryTotal.textContent = quoteAmount;
+                    }
+                    
+                    // Show the booking modal
+                    const bookingModal = document.getElementById('booking-modal');
+                    if (bookingModal) {
+                        bookingModal.style.display = 'block';
+                    }
+                    
+                    // Pre-fill any information we already have
+                    const pickupZip = document.getElementById('pickup-zip').value;
+                    const deliveryZip = document.getElementById('delivery-zip').value;
+                });
+            }
 
-if (bookDeliveryBtn) {
-    bookDeliveryBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Get the current quote information
-        const quoteAmount = quotePrice.textContent;
-        
-        // Update the booking modal with quote information
-        summaryTotal.textContent = quoteAmount;
-        
-        // Show the booking modal
-        bookingModal.style.display = 'block';
-        
-        // Pre-fill any information we already have
-        const pickupZip = document.getElementById('pickup-zip').value;
-        const deliveryZip = document.getElementById('delivery-zip').value;
-        
-        // If we have pre-filled information, you could use an address lookup service
-        // to suggest full addresses based on ZIP codes
-    });
-}
+            // Close the modal when clicking the X
+            const closeModal = document.querySelector('.close-modal');
+            if (closeModal) {
+                closeModal.addEventListener('click', function() {
+                    const bookingModal = document.getElementById('booking-modal');
+                    if (bookingModal) {
+                        bookingModal.style.display = 'none';
+                    }
+                });
+            }
 
-// Close the modal when clicking the X
-if (closeModal) {
-    closeModal.addEventListener('click', function() {
-        bookingModal.style.display = 'none';
-    });
-}
+            // Close the modal when clicking outside of it
+            window.addEventListener('click', function(e) {
+                const bookingModal = document.getElementById('booking-modal');
+                if (bookingModal && e.target === bookingModal) {
+                    bookingModal.style.display = 'none';
+                }
+            });
 
-// Close the modal when clicking outside of it
-window.addEventListener('click', function(e) {
-    if (e.target === bookingModal) {
-        bookingModal.style.display = 'none';
-    }
-});
-
-// Handle the booking form submission
-if (bookingForm) {
-    bookingForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get all the form values
-        const pickupAddress = document.getElementById('booking-pickup-address').value;
-        const deliveryAddress = document.getElementById('booking-delivery-address').value;
-        const instructions = document.getElementById('booking-instructions').value;
-        const paymentMethod = document.getElementById('booking-payment').value;
-        const termsAgreed = document.getElementById('terms-agree').checked;
-        
-        // Get the original quote details
-        const quoteName = document.getElementById('quote-name').value;
-        const quoteEmail = document.getElementById('quote-email').value;
-        const quotePhone = document.getElementById('quote-phone').value;
-        const quoteCompany = document.getElementById('quote-company').value;
-        const quoteAmount = quotePrice.textContent;
-        
-        // Combine all details for submission
-        const bookingDetails = {
-            customer: {
-                name: quoteName,
-                email: quoteEmail,
-                phone: quotePhone,
-                company: quoteCompany
-            },
-            delivery: {
-                pickupAddress: pickupAddress,
-                deliveryAddress: deliveryAddress,
-                instructions: instructions
-            },
-            quote: {
-                amount: quoteAmount,
-                baseRate: baseRate.textContent,
-                distanceFee: distanceFee.textContent,
-                expeditedFee: expeditedFee.textContent
-            },
-            payment: paymentMethod,
-            termsAgreed: termsAgreed
-        };
-        
-        // Show loading state
-        const submitBtn = bookingForm.querySelector('button[type="submit"]');
-        const originalBtnText = submitBtn.textContent;
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Processing...';
-        
-        // Option 1: Send to a booking API if you have one
-        // This would be your backend system that processes bookings
-        
-        // Option 2: For now, just send an email notification with the booking details
-        const formattedMessage = `
+            // Handle the booking form submission
+            const bookingForm = document.getElementById('booking-form');
+            if (bookingForm) {
+                bookingForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get all the form values
+                    const pickupAddress = document.getElementById('booking-pickup-address').value;
+                    const deliveryAddress = document.getElementById('booking-delivery-address').value;
+                    const instructions = document.getElementById('booking-instructions').value;
+                    const paymentMethod = document.getElementById('booking-payment').value;
+                    const termsAgreed = document.getElementById('terms-agree').checked;
+                    
+                    // Get the original quote details
+                    const quoteName = document.getElementById('quote-name').value;
+                    const quoteEmail = document.getElementById('quote-email').value;
+                    const quotePhone = document.getElementById('quote-phone').value;
+                    const quoteCompany = document.getElementById('quote-company').value;
+                    const quoteAmount = quotePrice.textContent;
+                    
+                    // Show loading state
+                    const submitBtn = bookingForm.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.textContent;
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Processing...';
+                    
+                    // Prepare data for API
+                    const formattedMessage = `
 BOOKING REQUEST
 --------------
 
@@ -2628,278 +2525,236 @@ Terms Agreed: Yes
 
 Generated: ${new Date().toLocaleString()}
 `;
-        
-        // Prepare email data
-        const formData = new FormData();
-        formData.append('_subject', `Booking Request: ${quoteName} - ${quoteCompany}`);
-        formData.append('name', quoteName);
-        formData.append('email', quoteEmail);
-        formData.append('message', formattedMessage);
-        
-        // Send to Formspree (you can replace with your actual booking system API later)
-        fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', { // Replace with your Formspree ID
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
+                    
+                    // Prepare email data
+                    const formData = new FormData();
+                    formData.append('_subject', `Booking Request: ${quoteName} - ${quoteCompany}`);
+                    formData.append('name', quoteName);
+                    formData.append('email', quoteEmail);
+                    formData.append('message', formattedMessage);
+                    
+                    // Send to Formspree
+                    fetch('https://formspree.io/f/mnnpoebe', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok) {
+                            // Hide modal
+                            const bookingModal = document.getElementById('booking-modal');
+                            if (bookingModal) {
+                                bookingModal.style.display = 'none';
+                            }
+                            
+                            // Show success message
+                            alert('Your booking request has been submitted! Our team will confirm the details shortly.');
+                            
+                            // Reset form
+                            bookingForm.reset();
+                            
+                            // Reset button
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalBtnText;
+                        } else {
+                            alert('There was an issue processing your booking. Please try again or contact us directly.');
+                            console.error('Formspree error:', data);
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalBtnText;
+                        }
+                    })
+                    .catch(error => {
+                        alert('There was an error submitting your booking. Please try again later or contact us directly.');
+                        console.error('Error:', error);
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalBtnText;
+                    });
+                });
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.ok) {
-                // Hide modal
-                bookingModal.style.display = 'none';
-                
-                // Show success message
-                alert('Your booking request has been submitted! Our team will confirm the details shortly.');
-                
-                // Reset form
-                bookingForm.reset();
-                
-                // Reset button
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
-                
-                // You could redirect to a thank you page
-                // window.location.href = 'booking-confirmation.html';
-            } else {
-                alert('There was an issue processing your booking. Please try again or contact us directly.');
-                console.error('Formspree error:', data);
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
-            }
-        })
-        .catch(error => {
-            alert('There was an error submitting your booking. Please try again later or contact us directly.');
-            console.error('Error:', error);
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalBtnText;
-        });
-    });
-}
             
             // Custom quote button
-const customQuoteBtn = document.getElementById('custom-quote-btn');
-if (customQuoteBtn) {
-    customQuoteBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Switch to contact tab
-        document.querySelector('[data-tab="contact"]').click();
-        
-        // Wait for tab transition
-        setTimeout(() => {
-            // Scroll to the contact form
+            const customQuoteBtn = document.getElementById('custom-quote-btn');
+            if (customQuoteBtn) {
+                customQuoteBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Switch to contact tab
+                    document.querySelector('[data-tab="contact"]').click();
+                    
+                    // Wait for tab transition
+                    setTimeout(() => {
+                        // Scroll to the contact form
+                        const contactForm = document.getElementById('contact-form');
+                        if (contactForm) {
+                            contactForm.scrollIntoView({ behavior: 'smooth' });
+                            
+                            // Pre-select the subject as "quote"
+                            const subjectField = document.getElementById('subject');
+                            if (subjectField) {
+                                subjectField.value = 'quote';
+                            }
+                            
+                            // Pre-fill message with custom quote request
+                            const messageField = document.getElementById('message');
+                            if (messageField) {
+                                messageField.value = 'I would like to request a custom quote for bulk shipments / special handling requirements.';
+                            }
+                            
+                            // Focus on the first empty required field
+                            const firstEmptyField = Array.from(contactForm.querySelectorAll('input[required]'))
+                                .find(input => !input.value);
+                            if (firstEmptyField) {
+                                firstEmptyField.focus();
+                            }
+                        }
+                    }, 300); // Give time for the tab switch to complete
+                });
+            }
+            
+            // Driver application form
+            const driverForm = document.getElementById('driver-form');
+            if (driverForm) {
+                driverForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get form values
+                    const driverName = document.getElementById('driver-name').value;
+                    const driverEmail = document.getElementById('driver-email').value;
+                    const driverPhone = document.getElementById('driver-phone').value;
+                    const contactPreference = document.getElementById('contact-preference').value;
+                    const driverCity = document.getElementById('driver-city').value;
+                    const driverState = document.getElementById('driver-state').value;
+                    
+                    // Validate phone number has exactly 10 digits
+                    const phoneDigits = driverPhone.replace(/\D/g, '');
+                    if (phoneDigits.length !== 10) {
+                        alert('Please enter a valid 10-digit phone number.');
+                        document.getElementById('driver-phone').focus();
+                        return false;
+                    }
+                    
+                    // Check if SMS consent is required but not granted
+                    const smsConsent = document.getElementById('sms-consent').checked;
+                    if (contactPreference === 'text' && !smsConsent) {
+                        alert('SMS consent is required when selecting Text Message as your preferred contact method.');
+                        document.getElementById('sms-consent').focus();
+                        return false;
+                    }
+                
+                    // Format phone number consistently as XXX-XXX-XXXX
+                    const formattedPhone = `${phoneDigits.substring(0, 3)}-${phoneDigits.substring(3, 6)}-${phoneDigits.substring(6)}`;
+                    
+                    // Get selected vehicle types
+                    const vehicleTypes = Array.from(document.querySelectorAll('input[name="vehicle-types"]:checked'))
+                      .map(checkbox => checkbox.value);
+                    
+                    // Get consent checkboxes
+                    const backgroundCheck = document.getElementById('background-check').checked;
+                    const drivingHistory = document.getElementById('driving-history').checked;
+                    const generalConsent = document.getElementById('consent').checked;
+                    
+                    // Prepare data for submission
+                    const formDataForSubmission = {
+                      name: driverName,
+                      email: driverEmail,
+                      phone: formattedPhone,
+                      contactPreference: contactPreference,
+                      city: driverCity,
+                      state: driverState,
+                      vehicleTypes: vehicleTypes,
+                      backgroundCheck: backgroundCheck,
+                      drivingHistory: drivingHistory,
+                      smsConsent: smsConsent,
+                      generalConsent: generalConsent,
+                      notes: "Application submitted from website"
+                    };
+                    
+                    console.log('Form data being sent:', formDataForSubmission);
+                    
+                    // Show loading state
+                    const submitBtn = driverForm.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.textContent;
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Submitting...';
+                    
+                    // Prepare email data
+                    const formData = new FormData();
+                    formData.append('_subject', `Driver Application: ${driverName}`);
+                    formData.append('name', driverName);
+                    formData.append('email', driverEmail);
+                    formData.append('phone', formattedPhone);
+                    formData.append('city', driverCity);
+                    formData.append('state', driverState);
+                    formData.append('vehicles', vehicleTypes.join(', '));
+                    formData.append('contact_preference', contactPreference);
+                    formData.append('sms_consent', smsConsent ? 'Yes' : 'No');
+                    
+                    // Send data to Formspree
+                    fetch('https://formspree.io/f/mnnpoebe', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok) {
+                            // Show success message
+                            alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
+                            
+                            // Reset the form
+                            driverForm.reset();
+                            
+                            // Reset button
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalBtnText;
+                        } else {
+                            alert('There was an issue submitting your application. Please try again or contact us directly.');
+                            console.error('Formspree error:', data);
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalBtnText;
+                        }
+                    })
+                    .catch(error => {
+                        alert('There was an error submitting your application. Please try again later.');
+                        console.error('Error:', error);
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalBtnText;
+                    });
+                });
+            }
+
+            // Contact form
             const contactForm = document.getElementById('contact-form');
             if (contactForm) {
-                contactForm.scrollIntoView({ behavior: 'smooth' });
-                
-                // Pre-select the subject as "quote"
-                const subjectField = document.getElementById('subject');
-                if (subjectField) {
-                    subjectField.value = 'quote';
-                }
-                
-                // Pre-fill message with custom quote request
-                const messageField = document.getElementById('message');
-                if (messageField) {
-                    messageField.value = 'I would like to request a custom quote for bulk shipments / special handling requirements.';
-                }
-                
-                // Focus on the first empty required field
-                const firstEmptyField = Array.from(contactForm.querySelectorAll('input[required]'))
-                    .find(input => !input.value);
-                if (firstEmptyField) {
-                    firstEmptyField.focus();
-                }
-            }
-        }, 300); // Give time for the tab switch to complete
-    });
-}
-            
- // Driver application form with submission to both Google Sheets and backend API
-const driverForm = document.getElementById('driver-form');
-if (driverForm) {
-  driverForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Get form values
-    const driverName = document.getElementById('driver-name').value;
-    const driverEmail = document.getElementById('driver-email').value;
-    const driverPhone = document.getElementById('driver-phone').value;
-    const contactPreference = document.getElementById('contact-preference').value;
-    const driverCity = document.getElementById('driver-city').value;
-    const driverState = document.getElementById('driver-state').value;
-    const smsConsent = document.getElementById('sms-consent').checked;
-    
-    // Validate phone number has exactly 10 digits
-    const phoneDigits = driverPhone.replace(/\D/g, '');
-    if (phoneDigits.length !== 10) {
-      alert('Please enter a valid 10-digit phone number.');
-      document.getElementById('driver-phone').focus();
-      return false;
-    }
-    
-    // Check if SMS consent is required but not checked
-    if (contactPreference === 'text' && !smsConsent) {
-      alert('SMS consent is required when selecting Text Message as your preferred contact method.');
-      document.getElementById('sms-consent').focus();
-      return false;
-    }
-    
-    // Format phone number consistently as XXX-XXX-XXXX
-    const formattedPhone = `${phoneDigits.substring(0, 3)}-${phoneDigits.substring(3, 6)}-${phoneDigits.substring(6)}`;
-    
-    // Get selected vehicle types
-    const vehicleTypes = Array.from(document.querySelectorAll('input[name="vehicle-types"]:checked'))
-      .map(checkbox => checkbox.value);
-    
-    // Get consent checkboxes
-    const backgroundCheck = document.getElementById('background-check').checked;
-    const drivingHistory = document.getElementById('driving-history').checked;
-    const generalConsent = document.getElementById('consent').checked;
-    
-    // Prepare data for Google Sheets (keep this part)
-    const formDataForSheets = {
-      name: driverName,
-      email: driverEmail,
-      phone: formattedPhone,
-      contactPreference: contactPreference,
-      city: driverCity,
-      state: driverState,
-      vehicleTypes: vehicleTypes,
-      backgroundCheck: backgroundCheck,
-      drivingHistory: drivingHistory,
-      smsConsent: smsConsent,
-      generalConsent: generalConsent
-    };
-    
-    // Prepare data for API (this is new)
-    const formDataForAPI = {
-      name: driverName,
-      email: driverEmail,
-      phone: formattedPhone,
-      contactPreference: contactPreference,
-      city: driverCity,
-      state: driverState,
-      vehicleTypes: vehicleTypes,
-      backgroundCheck: backgroundCheck,
-      drivingHistory: drivingHistory,
-      smsConsent: smsConsent,
-      generalConsent: generalConsent,
-      notes: "Application submitted from website"
-    };
-    
-    console.log('Form data being sent:', formDataForSheets);
-    
-    // Show loading state
-    const submitBtn = driverForm.querySelector('button[type="submit"]');
-    const originalBtnText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    
-    // Submit to Google Sheets (keep your existing code here)
-    try {
-      // Using no-cors mode - this is your existing Google Sheets submission
-      fetch('https://script.google.com/macros/s/AKfycbz79D35pdPkSBHyT1Z3neHbQRJiuRKMcA3gOv4zZpZfHsQrcyHGAdZ3sc0ir4BZTzU/exec', {
-        method: 'POST', 
-        body: JSON.stringify(formDataForSheets),
-        mode: 'no-cors' // Using no-cors mode
-      })
-      .then(() => {
-        // Now also submit to our backend API
-        return fetch('/api/public/driver-applications', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formDataForAPI)
-        });
-      })
-      .then(response => {
-        // Since Google Sheets uses no-cors, we only check the API response
-        if (response && !response.ok) {
-          // API submission failed, but Google Sheets submission may have succeeded
-          console.warn('API submission failed, but Google Sheets submission may have succeeded');
-          // We'll still show a success message since the Google Sheets data was captured
-          return { success: true, sheetsOnly: true };
-        }
-        return response ? response.json() : { success: true };
-      })
-      .then(data => {
-        // Show success message regardless of API success (as long as Sheets worked)
-        alert('Thank you for your application! We will contact you within 48 hours to discuss next steps.');
-        
-        // Reset the form
-        driverForm.reset();
-        
-        // Reset SMS consent label if it was modified
-        const smsConsentLabel = document.querySelector('label[for="sms-consent"]');
-        if (smsConsentLabel && originalLabelText) {
-          // Store the original label text at the global level
-        const originalLabelText = smsConsentLabel ? smsConsentLabel.textContent : "I allow Areti Alliance to communicate with me via SMS messaging. Standard rates will apply.";
-          smsConsentLabel.style.color = '';
-          smsConsentLabel.style.fontWeight = '';
-        }
-        
-        // Log if we had partial success
-        if (data.sheetsOnly) {
-          console.log('Note: Data was saved to Google Sheets but not to the CRM API');
-        }
-      })
-      .catch((err) => {
-        // This would only happen if both submissions failed or if there's a JS error
-        console.error('Error:', err);
-        alert('There was an error submitting your application. Please try again or contact us directly.');
-      })
-      .finally(() => {
-        // Reset button
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalBtnText;
-      });
-    } catch (err) {
-      // This would only happen if there's a syntax error or similar
-      console.error('Error:', err);
-      alert('There was an unexpected error submitting your application. Please try again later.');
-      
-      // Reset button
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalBtnText;
-    }
-  });
-}
-
-// Contact form
-const contactForm = document.getElementById('contact-form');
-if (contactForm) {
-    console.log('Contact form found, attaching event listener');
-    
-    contactForm.addEventListener('submit', function(e) {
-
-        // Prevent the default form submission
-        e.preventDefault();
-        // Validate phone number has exactly 10 digits
-        const phoneInput = document.getElementById('phone');
-        const phoneDigits = phoneInput.value.replace(/\D/g, '');
-        if (phoneDigits.length !== 10) {
-            alert('Please enter a valid 10-digit phone number.');
-            phoneInput.focus();
-            return false;
-        }
-        console.log('Form submitted by user, processing...');
-        
-        // Get form values
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const company = document.getElementById('company').value;
-        const subject = document.getElementById('subject').value;
-        const subjectText = subject ? document.getElementById('subject').options[document.getElementById('subject').selectedIndex].text : 'Not specified';
-        const message = document.getElementById('message').value;
-        const smsConsent = document.getElementById('sms-consent').checked;
-        
-        // Build the formatted message for email
-        const formattedMessage = `
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Validate phone number has exactly 10 digits
+                    const phoneInput = document.getElementById('phone');
+                    const phoneDigits = phoneInput.value.replace(/\D/g, '');
+                    if (phoneDigits.length !== 10) {
+                        alert('Please enter a valid 10-digit phone number.');
+                        phoneInput.focus();
+                        return false;
+                    }
+                    
+                    // Get form values
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const phone = document.getElementById('phone').value;
+                    const company = document.getElementById('company').value;
+                    const subject = document.getElementById('subject').value;
+                    const subjectText = subject ? document.getElementById('subject').options[document.getElementById('subject').selectedIndex].text : 'Not specified';
+                    const message = document.getElementById('message').value;
+                    const smsConsent = document.getElementById('sms-consent').checked;
+                    
+                    // Build the formatted message for email
+                    const formattedMessage = `
 CONTACT FORM SUBMISSION
 -----------------------
 
@@ -2919,43 +2774,55 @@ ${message}
 
 Generated: ${new Date().toLocaleString()}
 `;
-        
-        // Prepare data for Formspree
-        const formData = new FormData();
-        formData.append('_subject', `Contact Form: ${name} - ${subjectText}`);
-        formData.append('name', name);
-        formData.append('email', email);
-        formData.append('phone', phone);
-        formData.append('company', company);
-        formData.append('subject', subjectText);
-        formData.append('message', formattedMessage);
-        formData.append('sms_consent', smsConsent ? 'Yes' : 'No');
-        
-        // Send data to Formspree
-        fetch('https://formspree.io/f/xnnplaay', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
+                    
+                    // Show loading state
+                    const submitBtn = contactForm.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.textContent;
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Sending...';
+                    
+                    // Prepare data for Formspree
+                    const formData = new FormData();
+                    formData.append('_subject', `Contact Form: ${name} - ${subjectText}`);
+                    formData.append('name', name);
+                    formData.append('email', email);
+                    formData.append('phone', phone);
+                    formData.append('company', company);
+                    formData.append('subject', subjectText);
+                    formData.append('message', formattedMessage);
+                    formData.append('sms_consent', smsConsent ? 'Yes' : 'No');
+                    
+                    // Send data to Formspree
+                    fetch('https://formspree.io/f/xnnplaay', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok) {
+                            alert('Thank you for your message! We will get back to you as soon as possible.');
+                            contactForm.reset();
+                            console.log('Contact form data sent successfully');
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalBtnText;
+                        } else {
+                            alert('There was an issue sending your message. Please try again or contact us directly.');
+                            console.error('Formspree error:', data);
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalBtnText;
+                        }
+                    })
+                    .catch(error => {
+                        alert('There was an error sending your request. Please try again later.');
+                        console.error('Error:', error);
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalBtnText;
+                    });
+                });
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.ok) {
-                alert('Thank you for your message! We will get back to you as soon as possible.');
-                contactForm.reset();
-                console.log('Contact form data sent successfully');
-            } else {
-                alert('There was an issue sending your message. Please try again or contact us directly.');
-                console.error('Formspree error:', data);
-            }
-        })
-        .catch(error => {
-            alert('There was an error sending your request. Please try again later.');
-            console.error('Error:', error);
-        });
-    });
-};
         
             // Add animation on scroll
             const animateElements = document.querySelectorAll('.feature-card, .service-card, .testimonial-card, .contact-item');
@@ -2989,133 +2856,117 @@ Generated: ${new Date().toLocaleString()}
                     }
                 });
             });
+            
             // Language switcher functionality
-let currentLang = 'en';
-const translations = {};
+            let currentLang = 'en';
+            const translations = {};
 
-// Function to load language file
-async function loadLanguage(lang) {
-  if (translations[lang]) {
-    return translations[lang];
-  }
-  
-  try {
-    const response = await fetch(`/lang/${lang}.json`);
-    if (!response.ok) throw new Error('Language file not found');
-    translations[lang] = await response.json();
-    return translations[lang];
-  } catch (error) {
-    console.error('Error loading language file:', error);
-    return null;
-  }
-}
+            // Function to load language file
+            async function loadLanguage(lang) {
+                if (translations[lang]) {
+                    return translations[lang];
+                }
+                
+                try {
+                    const response = await fetch(`/lang/${lang}.json`);
+                    if (!response.ok) throw new Error('Language file not found');
+                    translations[lang] = await response.json();
+                    return translations[lang];
+                } catch (error) {
+                    console.error('Error loading language file:', error);
+                    return null;
+                }
+            }
 
-// Function to update all text elements with translations
-async function setLanguage(lang) {
-  const translation = await loadLanguage(lang);
-  if (!translation) return;
-  
-  currentLang = lang;
-  document.getElementById('current-lang').textContent = {
-    'en': 'English',
-    'es': 'Español',
-    'fr': 'Français'
-  }[lang] || lang;
-  
-  // Update navigation items
-  document.querySelectorAll('nav ul li a').forEach((item, index) => {
-    const key = ['home', 'services', 'drivers', 'about', 'contact'][index];
-    if (translation.nav && translation.nav[key]) {
-      item.textContent = translation.nav[key];
-    }
-  });
-  
-  // Update hero section
-  const heroSection = document.querySelector('.hero');
-  if (heroSection && translation.hero) {
-    const heroTitle = heroSection.querySelector('h2');
-    const heroSubtitle = heroSection.querySelector('p');
-    const heroCta = heroSection.querySelector('.btn');
-    
-    if (heroTitle && translation.hero.title) heroTitle.textContent = translation.hero.title;
-    if (heroSubtitle && translation.hero.subtitle) heroSubtitle.textContent = translation.hero.subtitle;
-    if (heroCta && translation.hero.cta) heroCta.textContent = translation.hero.cta;
-  }
-  
-  // Add more elements to translate as needed
-  
-  // Store language preference
-  localStorage.setItem('preferredLanguage', lang);
-}
+            // Function to update all text elements with translations
+            async function setLanguage(lang) {
+                const translation = await loadLanguage(lang);
+                if (!translation) return;
+                
+                currentLang = lang;
+                document.getElementById('current-lang').textContent = {
+                    'en': 'English',
+                    'es': 'Español',
+                    'fr': 'Français'
+                }[lang] || lang;
+                
+                // Update navigation items
+                document.querySelectorAll('nav ul li a').forEach((item, index) => {
+                    const key = ['home', 'services', 'drivers', 'about', 'contact'][index];
+                    if (translation.nav && translation.nav[key]) {
+                        item.textContent = translation.nav[key];
+                    }
+                });
+                
+                // Update hero section
+                const heroSection = document.querySelector('.hero');
+                if (heroSection && translation.hero) {
+                    const heroTitle = heroSection.querySelector('h2');
+                    const heroSubtitle = heroSection.querySelector('p');
+                    const heroCta = heroSection.querySelector('.btn');
+                    
+                    if (heroTitle && translation.hero.title) heroTitle.textContent = translation.hero.title;
+                    if (heroSubtitle && translation.hero.subtitle) heroSubtitle.textContent = translation.hero.subtitle;
+                    if (heroCta && translation.hero.cta) heroCta.textContent = translation.hero.cta;
+                }
+                
+                // Store language preference
+                localStorage.setItem('preferredLanguage', lang);
+            }
 
-// Add event listeners to language switcher
-document.addEventListener('DOMContentLoaded', function() {
-  // Set initial language from localStorage or browser preference
-  const savedLang = localStorage.getItem('preferredLanguage');
-  const browserLang = navigator.language.split('-')[0];
-  const initialLang = savedLang || (browserLang in translations ? browserLang : 'en');
-  
-  setLanguage(initialLang);
-  
-  // Add click handlers for language options
-  document.querySelectorAll('.language-dropdown a').forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const lang = this.getAttribute('data-lang');
-      setLanguage(lang);
-    });
-  });
-});
+            // Add event listeners to language switcher
+            const languageLinks = document.querySelectorAll('.language-dropdown a');
+            if (languageLinks.length > 0) {
+                // Set initial language from localStorage or browser preference
+                const savedLang = localStorage.getItem('preferredLanguage');
+                const browserLang = navigator.language.split('-')[0];
+                const initialLang = savedLang || (browserLang in translations ? browserLang : 'en');
+                
+                if (initialLang !== 'en') {
+                    setLanguage(initialLang);
+                }
+                
+                // Add click handlers for language options
+                languageLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const lang = this.getAttribute('data-lang');
+                        setLanguage(lang);
+                    });
+                });
+            }
+            
+            // Initialize checkbox states for SMS consent
+            document.addEventListener('DOMContentLoaded', function() {
+                // Contact form phone field
+                const contactPhoneField = document.getElementById('phone');
+                if (contactPhoneField) {
+                    contactPhoneField.addEventListener('input', function() {
+                        if (this.value.replace(/\D/g, '').length > 0) {
+                            // If phone number has digits, check the SMS consent box
+                            const smsConsentCheckbox = document.getElementById('sms-consent');
+                            if (smsConsentCheckbox) {
+                                smsConsentCheckbox.checked = true;
+                            }
+                        }
+                    });
+                }
+                
+                // Driver form phone field
+                const driverPhoneField = document.getElementById('driver-phone');
+                if (driverPhoneField) {
+                    driverPhoneField.addEventListener('input', function() {
+                        if (this.value.replace(/\D/g, '').length > 0) {
+                            // If phone number has digits, check the SMS consent box
+                            const driverSmsConsentCheckbox = document.getElementById('sms-consent');
+                            if (driverSmsConsentCheckbox) {
+                                driverSmsConsentCheckbox.checked = true;
+                            }
+                        }
+                    });
+                }
+            });
         });
-
     </script>
-<!-- Add this to your HTML, just before the closing body tag -->
-<div id="booking-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>Book Your Delivery</h2>
-        <p>Complete your booking details below:</p>
-        
-        <form id="booking-form">
-            <div class="form-group">
-                <label for="booking-pickup-address">Pickup Address</label>
-                <input type="text" id="booking-pickup-address" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="booking-delivery-address">Delivery Address</label>
-                <input type="text" id="booking-delivery-address" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="booking-instructions">Special Instructions</label>
-                <textarea id="booking-instructions" class="form-control" rows="3"></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="booking-payment">Payment Method</label>
-                <select id="booking-payment" class="form-control" required>
-                    <option value="">Select Payment Method</option>
-                    <option value="credit">Credit Card</option>
-                    <option value="invoice">Invoice (Business Only)</option>
-                    <option value="paypal">PayPal</option>
-                </select>
-            </div>
-            
-            <div id="quote-summary" class="summary-box">
-                <h3>Quote Summary</h3>
-                <p><span>Total Cost:</span> <span id="summary-total">$0.00</span></p>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="terms-agree" required>
-                    <label for="terms-agree">I agree to the <a href="terms.html" target="_blank">Terms and Conditions</a></label>
-                </div>
-            </div>
-            
-            <div class="form-group" style="margin-top: 20px;">
-                <button type="submit" class="btn">Confirm Booking</button>
-            </div>
-        </form>
-    </div>
-</div>
 </body>
 </html>
